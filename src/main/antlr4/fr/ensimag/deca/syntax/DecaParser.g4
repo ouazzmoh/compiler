@@ -97,8 +97,10 @@ decl_var[AbstractIdentifier t] returns[AbstractDeclVar tree]
 
 list_inst returns[ListInst tree]
 @init {
+	$tree = new ListInst();
 }
     : (inst {
+    	$tree.add($inst.tree);
         }
       )*
     ;
@@ -114,6 +116,7 @@ inst returns[AbstractInst tree]
         }
     | PRINTLN OPARENT list_expr CPARENT SEMI {
             assert($list_expr.tree != null);
+            System.out.println($list_expr.tree);
         }
     | PRINTX OPARENT list_expr CPARENT SEMI {
             assert($list_expr.tree != null);
@@ -148,10 +151,13 @@ if_then_else returns[IfThenElse tree]
 
 list_expr returns[ListExpr tree]
 @init   {
+			$tree = new ListExpr();
         }
     : (e1=expr {
+    		$tree.add($e1.tree);
         }
        (COMMA e2=expr {
+       		$tree.add($e2.tree);
         }
        )* )?
     ;
@@ -159,6 +165,7 @@ list_expr returns[ListExpr tree]
 expr returns[AbstractExpr tree]
     : assign_expr {
             assert($assign_expr.tree != null);
+            $tree = $assign_expr.tree;
         }
     ;
 
@@ -305,6 +312,7 @@ select_expr returns[AbstractExpr tree]
 primary_expr returns[AbstractExpr tree]
     : ident {
             assert($ident.tree != null);
+            
         }
     | m=ident OPARENT args=list_expr CPARENT {
             assert($args.tree != null);
@@ -360,6 +368,9 @@ ident returns[AbstractIdentifier tree]
 /****     Class related rules     ****/
 
 list_classes returns[ListDeclClass tree]
+@init   {
+            $tree = new ListDeclClass();
+        }
     :
       (c1=class_decl {
         }
@@ -445,3 +456,4 @@ param
     : type ident {
         }
     ;
+
