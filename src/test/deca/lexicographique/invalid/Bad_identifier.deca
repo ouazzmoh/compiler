@@ -1,0 +1,12 @@
+// Description:
+//    Teste une declaration de variable qui manque de terminaison ;
+//
+// Resultats:
+//    Erreur
+//
+// Historique:
+//    cree le 04/01/2023
+
+{
+    int i = 5
+}
