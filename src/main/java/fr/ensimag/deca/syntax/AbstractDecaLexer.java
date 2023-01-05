@@ -217,7 +217,13 @@ public abstract class AbstractDecaLexer extends Lexer {
                 getLine(), getCharPositionInLine());
         includes.push(ss);
         setInputStream(newInput);
+        Token s = this.nextToken();
+        /*
+        try {
         throw new SkipANTLRPostAction();
+        } catch (RuntimeException e) {
+        	Token s = this.nextToken();
+        }*/
     }
 
     /**

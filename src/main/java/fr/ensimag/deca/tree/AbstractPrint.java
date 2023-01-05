@@ -10,6 +10,9 @@ import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.Label;
 import java.io.PrintStream;
+
+import javax.print.DocFlavor.STRING;
+
 import org.apache.commons.lang.Validate;
 
 /**
@@ -39,7 +42,10 @@ public abstract class AbstractPrint extends AbstractInst {
     protected void verifyInst(DecacCompiler compiler, EnvironmentExp localEnv,
             ClassDefinition currentClass, Type returnType)
             throws ContextualError {
-        throw new UnsupportedOperationException("not yet implemented");
+        //throw new UnsupportedOperationException("not yet implemented");
+    	for (AbstractExpr i : arguments.getList()) {
+    		i.verifyCondition(compiler, localEnv, currentClass);
+    	}
     }
 
     @Override
