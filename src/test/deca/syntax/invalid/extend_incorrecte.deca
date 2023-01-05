@@ -1,12 +1,11 @@
 // Description:
-//    test d'un flottant minorée vers 0
+//    extend fichier inexistant
 //
 // Resultats:
 //    Une erreur de compilation
 //
 // Historique:
 //    cree le 04/01/2023
+class Pangolin_a_queu extends Animal{
 
-{
-    flottant a = 0.1e-100000;             
 }
