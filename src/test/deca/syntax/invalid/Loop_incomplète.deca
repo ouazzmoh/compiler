@@ -1,0 +1,13 @@
+// Description:
+//    Une boucle for qui a une condition manquante
+//
+// Resultats:
+//    Erreur
+//
+// Historique:
+//    cree le 04/01/2023
+
+{
+    int i = 5;
+    for(i>)
+}
