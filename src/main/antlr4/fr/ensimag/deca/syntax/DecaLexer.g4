@@ -13,13 +13,25 @@ options {
 
 // Deca lexer rules.
 
+fragment LETTER : 'a' .. 'z' 'A' .. 'Z';
+fragment DIGIT : '0' .. '9';
+
+INCLUDE: '#include' .* ';' '\n' { doInclude(getText()); };
 OBRACE: '{' ;
 CBRACE: '}' ;
 OPARENT: '(';
 CPARENT: ')' ;
 SEMI: ';' ;
 COMMA: ',' ;
+
 PRINTLN: 'println';
+TRUE: 'true';
+FALSE: 'false';
+THIS: 'this';
+
+FLOAT: DIGIT+ '.' (DIGIT)+;
+INT: DIGIT+;
+
 STRING: '"' .* '"' ;
 
 WS  :   ( ' '
