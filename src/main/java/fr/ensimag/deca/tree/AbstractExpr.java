@@ -127,7 +127,7 @@ public abstract class AbstractExpr extends AbstractInst {
     			symbol = compiler.symbolTable.create("FloatType");
     			type = new FloatType(symbol);
     		}
-    		else throw new ContextualError("type not accepted ", null);
+    		else throw new ContextualError("type not accepted ", this.getLocation());
     	}
     }
 
