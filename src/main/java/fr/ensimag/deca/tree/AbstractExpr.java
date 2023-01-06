@@ -5,8 +5,13 @@ import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.deca.context.EnvironmentType;
+import fr.ensimag.deca.context.FloatType;
+import fr.ensimag.deca.context.IntType;
+import fr.ensimag.deca.context.StringType;
 import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.deca.tools.SymbolTable.Symbol;
 import fr.ensimag.ima.pseudocode.Label;
 import java.io.PrintStream;
 import org.apache.commons.lang.Validate;
@@ -105,7 +110,25 @@ public abstract class AbstractExpr extends AbstractInst {
      */
     void verifyCondition(DecacCompiler compiler, EnvironmentExp localEnv,
             ClassDefinition currentClass) throws ContextualError {
-        throw new UnsupportedOperationException("not yet implemented");
+        //throw new UnsupportedOperationException("not yet implemented");
+    	if (currentClass == null) {
+    		// on est dans le main
+    		EnvironmentType env_types = compiler.environmentType;
+    		Symbol symbol;
+    		if (this instanceof StringLiteral) {
+    			symbol = compiler.symbolTable.create("StringType");
+    			type = new StringType(symbol);
+    		}
+    		else if (this instanceof IntLiteral) {
+    			symbol = compiler.symbolTable.create("IntType");
+    			type = new IntType(symbol);
+    		}
+    		else if (this instanceof FloatLiteral) {
+    			symbol = compiler.symbolTable.create("FloatType");
+    			type = new FloatType(symbol);
+    		}
+    		else throw new ContextualError("type not accepted ", this.getLocation());
+    	}
     }
 
     /**

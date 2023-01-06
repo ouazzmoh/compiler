@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.lang.String;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -41,7 +42,12 @@ public class CompilerOptions {
     private boolean printBanner = false;
     private List<File> sourceFiles = new ArrayList<File>();
 
-    
+    /**
+     * Parsing the arguments passed for the decac command
+     * -b: shows a banner of the team
+     * @param args
+     * @throws CLIException
+     */
     public void parseArgs(String[] args) throws CLIException {
         // A FAIRE : parcourir args pour positionner les options correctement.
         Logger logger = Logger.getRootLogger();
@@ -67,7 +73,22 @@ public class CompilerOptions {
             logger.info("Java assertions disabled");
         }
 
-        throw new UnsupportedOperationException("not yet implemented");
+//        throw new UnsupportedOperationException("not yet implemented");
+        logger.debug("Trying the decac with no option arguments yet");
+        if(args.length == 0){
+            //TODO: show all options
+            logger.debug("arguments empty");
+        }
+        else if (args[0].equals("-b")){
+            logger.info("Showing the banner for the team");
+            printBanner = true;
+
+        }
+        else{
+            //TODO: refine this with all the options
+            File currSource = new File(args[0]);
+            sourceFiles.add(currSource);
+        }
     }
 
     protected void displayUsage() {

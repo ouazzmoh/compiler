@@ -62,6 +62,8 @@ block returns[ListDeclVar decls, ListInst insts]
             assert($list_inst.tree != null);
             $decls = $list_decl.tree;
             $insts = $list_inst.tree;
+            setLocation($decls, $list_decl.start);
+            setLocation($insts, $list_inst.start);
         }
     ;
 
@@ -117,6 +119,7 @@ inst returns[AbstractInst tree]
     | PRINTLN OPARENT list_expr CPARENT SEMI {
             assert($list_expr.tree != null);
             $tree = new Println(false, $list_expr.tree);
+            setLocation($tree, $list_expr.start);
             System.out.println("wiiiiiiiiii3");
         }
     | PRINTX OPARENT list_expr CPARENT SEMI {
@@ -156,6 +159,7 @@ list_expr returns[ListExpr tree]
         }
     : (e1=expr {
     		$tree.add($e1.tree);
+    		setLocation($tree, $e1.start);
         }
        (COMMA e2=expr {
        		$tree.add($e2.tree);
@@ -356,18 +360,27 @@ type returns[AbstractIdentifier tree]
 literal returns[AbstractExpr tree]
     : INT {
    		 $tree = new IntLiteral(Integer.parseInt($INT.text));
+   		 setLocation($tree, $INT);
+   		 
         }
     | fd=FLOAT {
     	 $tree = new FloatLiteral(Float.parseFloat($fd.text));
+    	 setLocation($tree, $fd);
+    	 
         }
     | STRING {
     	$tree = new StringLiteral($STRING.text);
+    	setLocation($tree, $STRING);
+    	
         }
     | TRUE {
     	$tree = new BooleanLiteral(true);
+    	setLocation($tree, $TRUE);
+    	
         }
     | FALSE {
     	$tree = new BooleanLiteral(false);
+    	setLocation($tree, $FALSE);
         }
     | THIS {
         }
