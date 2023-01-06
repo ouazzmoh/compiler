@@ -154,10 +154,8 @@ if_then_else returns[IfThenElse tree]
     ;
 
 list_expr returns[ListExpr tree]
-@init   {
-			$tree = new ListExpr();
-        }
     : (e1=expr {
+    		$tree = new ListExpr();
     		$tree.add($e1.tree);
     		setLocation($tree, $e1.start);
         }
