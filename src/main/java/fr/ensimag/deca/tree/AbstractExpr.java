@@ -113,7 +113,6 @@ public abstract class AbstractExpr extends AbstractInst {
         //throw new UnsupportedOperationException("not yet implemented");
     	if (currentClass == null) {
     		// on est dans le main
-    		EnvironmentType env_types = compiler.environmentType;
     		Symbol symbol;
     		if (this instanceof StringLiteral) {
     			symbol = compiler.symbolTable.create("StringType");

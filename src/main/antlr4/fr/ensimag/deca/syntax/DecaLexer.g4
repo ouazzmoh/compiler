@@ -17,6 +17,10 @@ fragment LETTER : 'a' .. 'z' 'A' .. 'Z';
 fragment DIGIT : '0' .. '9';
 
 INCLUDE: '#include' .* ';' { doInclude(getText()); };
+
+COMMENTMONO : '//' (~('\n'))* { skip(); };
+COMMENT : '/*' .*? '*/' { skip(); };
+
 OBRACE: '{' ;
 CBRACE: '}' ;
 OPARENT: '(';
@@ -32,7 +36,7 @@ THIS: 'this';
 FLOAT: DIGIT+ '.' (DIGIT)+;
 INT: DIGIT+;
 
-STRING: '"' .* '"' ;
+STRING: '"' .*? '"' ;
 
 WS  :   ( ' '
         | '\t'
