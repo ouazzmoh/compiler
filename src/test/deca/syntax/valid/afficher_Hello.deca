@@ -1,0 +1,12 @@
+// Description:
+//    print Hello World!
+//
+// Resultats:
+//    Affiche Hello World!
+//
+// Historique:
+//    cree le 04/01/2023
+
+{
+    println("Hello world!");        
+}
