@@ -13,7 +13,7 @@ options {
 
 // Deca lexer rules.
 
-fragment LETTER : 'a' .. 'z' 'A' .. 'Z';
+fragment LETTER : 'a' .. 'z';
 fragment DIGIT : '0' .. '9';
 
 INCLUDE: '#include' .* ';' { doInclude(getText()); };
@@ -33,8 +33,20 @@ TRUE: 'true';
 FALSE: 'false';
 THIS: 'this';
 
+IDENT: ( LETTER
+		| '$'
+		| '_'
+		)
+		( LETTER
+		| DIGIT
+		| '$'
+		| '_'
+		)*;
+
 FLOAT: DIGIT+ '.' (DIGIT)+;
 INT: DIGIT+;
+
+EQUALS: '=';
 
 STRING: '"' .*? '"' ;
 

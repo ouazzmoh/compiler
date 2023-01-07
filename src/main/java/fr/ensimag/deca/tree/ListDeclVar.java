@@ -33,6 +33,10 @@ public class ListDeclVar extends TreeList<AbstractDeclVar> {
      */    
     void verifyListDeclVariable(DecacCompiler compiler, EnvironmentExp localEnv,
             ClassDefinition currentClass) throws ContextualError {
+        //throw new UnsupportedOperationException("not yet implemented");
+        for (AbstractDeclVar i : getList()) {
+            i.verifyDeclVar(compiler, localEnv, currentClass);
+        }
     }
 
 

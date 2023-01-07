@@ -176,7 +176,13 @@ public class Identifier extends AbstractIdentifier {
      */
     @Override
     public Type verifyType(DecacCompiler compiler) throws ContextualError {
-        throw new UnsupportedOperationException("not yet implemented");
+        //throw new UnsupportedOperationException("not yet implemented");
+    	try {
+    		return compiler.environmentType.defOfType(name).getType();
+    	} catch (Exception e) {
+    		throw new ContextualError("type not declared in env", this.getLocation());
+    	}
+    	
     }
     
     

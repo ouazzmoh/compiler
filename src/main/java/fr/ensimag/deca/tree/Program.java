@@ -39,19 +39,15 @@ public class Program extends AbstractProgram {
         //throw new UnsupportedOperationException("not yet implemented");
         // LOG.debug("verify program: end");
         
-        EnvironmentType env_types_predef = compiler.environmentType;
-        EnvironmentType env_typesr = env_types_predef;
-        
         classes.verifyListClass(compiler);
         
         // passe2 on hérite env_typesr
-        EnvironmentType env_types0 = env_typesr;
         classes.verifyListClassBody(compiler);
         
         //passe3 herite l'attribut synthetisé de 2
-        EnvironmentType env_types = env_types0;
         classes.verifyListClassMembers(compiler);
         main.verifyMain(compiler);
+        LOG.debug("mATNSSACH TZIID F VERIF DECLVAR DIKCHI NTAR ENVIRONMENT EXPR");
     }
 
     @Override

@@ -88,10 +88,14 @@ list_decl_var[ListDeclVar l, AbstractIdentifier t]
 
 decl_var[AbstractIdentifier t] returns[AbstractDeclVar tree]
 @init   {
+			AbstractIdentifier varName;
         }
     : i=ident {
+    		varName = $i.tree;
         }
       (EQUALS e=expr {
+      	  $tree = new DeclVar(t, varName, new Initialization($e.tree));
+      	  setLocation($tree, $e.start);
         }
       )? {
         }
@@ -324,6 +328,7 @@ select_expr returns[AbstractExpr tree]
 primary_expr returns[AbstractExpr tree]
     : ident {
             assert($ident.tree != null);
+            $tree = $ident.tree;
         }
     | m=ident OPARENT args=list_expr CPARENT {
             assert($args.tree != null);
@@ -352,6 +357,7 @@ primary_expr returns[AbstractExpr tree]
 type returns[AbstractIdentifier tree]
     : ident {
             assert($ident.tree != null);
+            $tree = $ident.tree;
         }
     ;
 
@@ -388,6 +394,8 @@ literal returns[AbstractExpr tree]
 
 ident returns[AbstractIdentifier tree]
     : IDENT {
+    	$tree = new Identifier(getDecacCompiler().createSymbol($IDENT.text));
+    	setLocation($tree, $IDENT);
     }
     ;
 

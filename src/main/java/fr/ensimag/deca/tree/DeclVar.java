@@ -1,11 +1,14 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.context.Type;
+import fr.ensimag.deca.context.TypeDefinition;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.deca.tools.SymbolTable.Symbol;
+
 import java.io.PrintStream;
 import org.apache.commons.lang.Validate;
 
@@ -33,6 +36,15 @@ public class DeclVar extends AbstractDeclVar {
     protected void verifyDeclVar(DecacCompiler compiler,
             EnvironmentExp localEnv, ClassDefinition currentClass)
             throws ContextualError {
+    	//throw new UnsupportedOperationException("verifyDeclVar not yet implemented");
+    	if (type.getName().equals("void")) {
+    		throw new ContextualError("type = void impossible", this.getLocation());
+    	}
+    	Type t = this.type.verifyType(compiler);
+    	Symbol name = varName.getName();
+    	this.varName.setDefinition(new TypeDefinition(t, this.getLocation()));
+    	
+    	
     }
 
     
