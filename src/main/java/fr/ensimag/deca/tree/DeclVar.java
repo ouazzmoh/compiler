@@ -44,9 +44,7 @@ public class DeclVar extends AbstractDeclVar {
     	Symbol name = varName.getName();
     	this.varName.setDefinition(new TypeDefinition(t, this.varName.getLocation()));
     	this.type.setDefinition(compiler.environmentType.defOfType(type.getName()));  
-    	
     }
-
     
     @Override
     public void decompile(IndentPrintStream s) {
