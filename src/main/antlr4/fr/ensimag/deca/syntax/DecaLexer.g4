@@ -18,8 +18,8 @@ fragment DIGIT : '0' .. '9';
 
 INCLUDE: '#include' .* ';' { doInclude(getText()); };
 
-COMMENTMONO : '//' (~('\n'))* { skip(); };
-COMMENT : '/*' .*? '*/' { skip(); };
+COMMENTMONO: '//' (~('\n'))* { skip(); };
+COMMENT: '/*' .*? '*/' { skip(); };
 
 OBRACE: '{' ;
 CBRACE: '}' ;
