@@ -1,6 +1,7 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.context.Type;
+import fr.ensimag.deca.context.TypeDefinition;
 import fr.ensimag.deca.context.ClassType;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
@@ -178,6 +179,7 @@ public class Identifier extends AbstractIdentifier {
     public Type verifyType(DecacCompiler compiler) throws ContextualError {
         //throw new UnsupportedOperationException("not yet implemented");
     	try {
+    		TypeDefinition typelocation = compiler.environmentType.defOfType(name);
     		return compiler.environmentType.defOfType(name).getType();
     	} catch (Exception e) {
     		throw new ContextualError("type not declared in env", this.getLocation());

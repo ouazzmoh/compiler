@@ -42,8 +42,8 @@ public class DeclVar extends AbstractDeclVar {
     	}
     	Type t = this.type.verifyType(compiler);
     	Symbol name = varName.getName();
-    	this.varName.setDefinition(new TypeDefinition(t, this.getLocation()));
-    	
+    	this.varName.setDefinition(new TypeDefinition(t, this.varName.getLocation()));
+    	this.type.setDefinition(compiler.environmentType.defOfType(type.getName()));  
     	
     }
 
