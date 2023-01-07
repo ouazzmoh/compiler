@@ -110,21 +110,7 @@ public abstract class AbstractExpr extends AbstractInst {
      */
     void verifyCondition(DecacCompiler compiler, EnvironmentExp localEnv,
             ClassDefinition currentClass) throws ContextualError {
-        //throw new UnsupportedOperationException("not yet implemented");
-    	EnvironmentType env = compiler.environmentType;
-    	if (currentClass == null) {
-    		// on est dans le main
-    		if (this instanceof StringLiteral) {
-    			type = env.STRING;
-    		}
-    		else if (this instanceof IntLiteral) {
-    			type = env.INT;
-    		}
-    		else if (this instanceof FloatLiteral) {
-    			type = env.FLOAT;
-    		}
-    		else throw new ContextualError("type not accepted ", this.getLocation());
-    	}
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     /**

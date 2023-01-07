@@ -7,6 +7,7 @@ import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.deca.context.EnvironmentType;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.Label;
 import java.io.PrintStream;
@@ -43,8 +44,12 @@ public abstract class AbstractPrint extends AbstractInst {
             ClassDefinition currentClass, Type returnType)
             throws ContextualError {
         //throw new UnsupportedOperationException("not yet implemented");
+    	Type type = null;
     	for (AbstractExpr i : arguments.getList()) {
-    		i.verifyCondition(compiler, localEnv, currentClass);
+    		type = i.verifyExpr(compiler, localEnv, currentClass);
+    		if (!type.getName().getName().equals("string") && !type.getName().getName().equals("int") && !type.getName().getName().equals("float")) {
+    			throw new ContextualError("type not accepted ", this.getLocation());   
+    		} 
     	}
     }
 
