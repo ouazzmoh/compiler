@@ -40,10 +40,13 @@ public class DeclVar extends AbstractDeclVar {
     	if (type.getName().equals("void")) {
     		throw new ContextualError("type = void impossible", this.getLocation());
     	}
-    	Type t = this.type.verifyType(compiler);
-    	Symbol name = varName.getName();
-    	this.varName.setDefinition(new TypeDefinition(t, this.varName.getLocation()));
+    	Type t1 = this.type.verifyType(compiler);
     	this.type.setDefinition(compiler.environmentType.defOfType(type.getName()));  
+
+    	Symbol name = varName.getName();
+    	
+    	initialization.verifyInitialization(compiler, t1, localEnv, currentClass);
+    	
     }
     
     @Override

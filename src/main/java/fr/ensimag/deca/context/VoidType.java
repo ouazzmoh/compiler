@@ -22,7 +22,11 @@ public class VoidType extends Type {
 
     @Override
     public boolean sameType(Type otherType) {
-        throw new UnsupportedOperationException("not yet implemented");
+        //throw new UnsupportedOperationException("not yet implemented");
+        if (otherType.isVoid()) {
+        	return true;
+        }
+        return false;
     }
 
 
