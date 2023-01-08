@@ -37,7 +37,7 @@ public class FloatLiteral extends AbstractExpr {
     public Type verifyExpr(DecacCompiler compiler, EnvironmentExp localEnv,
             ClassDefinition currentClass) throws ContextualError {
         //throw new UnsupportedOperationException("not yet implemented"); 
-    	this.setType(new FloatType(compiler.createSymbol("float")));
+    	this.setType(compiler.environmentType.FLOAT);
     	return this.getType();
     }
 
