@@ -16,6 +16,12 @@ import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
 import java.io.PrintStream;
+
+import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.WINT;
+import fr.ensimag.ima.pseudocode.instructions.WFLOAT;
+import fr.ensimag.ima.pseudocode.instructions.WSTR;
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
 
@@ -223,6 +229,24 @@ public class Identifier extends AbstractIdentifier {
             s.print(d);
             s.println();
         }
+    }
+
+    @Override
+    protected void codeGenPrint(DecacCompiler compiler){
+
+        //TODO : put the register R1 to its init state
+        if (this.getType().isInt()) {
+            compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
+            compiler.addInstruction(new WINT());
+        } else if (this.getType().isFloat()) {
+            compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
+            compiler.addInstruction(new WFLOAT());
+        }
+        //TODO: solve the case for strings
+        else{
+            throw new UnsupportedOperationException("not yet implemented");
+        }
+
     }
 
 }

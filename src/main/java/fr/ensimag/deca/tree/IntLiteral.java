@@ -67,10 +67,11 @@ public class IntLiteral extends AbstractExpr {
      */
     @Override
     protected void codeGenInit(DecacCompiler compiler){
+
         // LOAD #value, R2
         compiler.addInstruction(new LOAD(value, Register.getR(2)));
-        //STORE R2, 1(GB)
-        compiler.addInstruction(new STORE(Register.getR(2), new RegisterOffset(1, Register.GB)));
+//        //STORE R2, 1(GB)
+//        compiler.addInstruction(new STORE(Register.getR(2), this.);
 
     }
 
