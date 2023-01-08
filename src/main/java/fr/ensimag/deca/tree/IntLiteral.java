@@ -5,9 +5,14 @@ import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
-import fr.ensimag.deca.context.IntType;
-import fr.ensimag.deca.context.StringType;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.DAddr;
+import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.STORE;
+
 import java.io.PrintStream;
 
 /**
@@ -54,6 +59,19 @@ public class IntLiteral extends AbstractExpr {
     @Override
     protected void prettyPrintChildren(PrintStream s, String prefix) {
         // leaf node => nothing to do
+    }
+
+    /**
+     * Generate initialization code for a integer variable
+     * @param compiler
+     */
+    @Override
+    protected void codeGenInit(DecacCompiler compiler){
+        // LOAD #value, R2
+        compiler.addInstruction(new LOAD(value, Register.getR(2)));
+        //STORE R2, 1(GB)
+        compiler.addInstruction(new STORE(Register.getR(2), new RegisterOffset(1, Register.GB)));
+
     }
 
 }

@@ -67,14 +67,14 @@ public class DecacCompiler {
 
     /**
      * @see
-     * fr.ensimag.ima.pseudocode.IMAProgram#add(fr.ensimag.ima.pseudocode.AbstractLine)
+     * IMAProgram#add(AbstractLine)
      */
     public void add(AbstractLine line) {
         program.add(line);
     }
 
     /**
-     * @see fr.ensimag.ima.pseudocode.IMAProgram#addComment(java.lang.String)
+     * @see IMAProgram#addComment(java.lang.String)
      */
     public void addComment(String comment) {
         program.addComment(comment);
@@ -82,7 +82,7 @@ public class DecacCompiler {
 
     /**
      * @see
-     * fr.ensimag.ima.pseudocode.IMAProgram#addLabel(fr.ensimag.ima.pseudocode.Label)
+     * IMAProgram#addLabel(Label)
      */
     public void addLabel(Label label) {
         program.addLabel(label);
@@ -90,7 +90,7 @@ public class DecacCompiler {
 
     /**
      * @see
-     * fr.ensimag.ima.pseudocode.IMAProgram#addInstruction(fr.ensimag.ima.pseudocode.Instruction)
+     * IMAProgram#addInstruction(Instruction)
      */
     public void addInstruction(Instruction instruction) {
         program.addInstruction(instruction);
@@ -98,7 +98,7 @@ public class DecacCompiler {
 
     /**
      * @see
-     * fr.ensimag.ima.pseudocode.IMAProgram#addInstruction(fr.ensimag.ima.pseudocode.Instruction,
+     * IMAProgram#addInstruction(Instruction,
      * java.lang.String)
      */
     public void addInstruction(Instruction instruction, String comment) {
@@ -107,7 +107,7 @@ public class DecacCompiler {
     
     /**
      * @see 
-     * fr.ensimag.ima.pseudocode.IMAProgram#display()
+     * IMAProgram#display()
      */
     public String displayIMAProgram() {
         return program.display();

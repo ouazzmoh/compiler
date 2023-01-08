@@ -79,4 +79,10 @@ public class DeclVar extends AbstractDeclVar {
         varName.prettyPrint(s, prefix, false);
         initialization.prettyPrint(s, prefix, true);
     }
+
+    @Override
+    protected void codeGenDeclVariable(DecacCompiler compiler){
+            //TODO: If there is an initialization, initialize
+        initialization.codeGenInit(compiler);
+    }
 }
