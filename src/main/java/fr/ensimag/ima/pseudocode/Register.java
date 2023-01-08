@@ -1,4 +1,4 @@
-package fr.ensimag.deca.tools.pseudocode;
+package fr.ensimag.ima.pseudocode;
 
 /**
  * Register operand (including special registers like SP).

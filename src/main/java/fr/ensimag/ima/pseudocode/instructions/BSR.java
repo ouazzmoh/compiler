@@ -1,9 +1,9 @@
-package fr.ensimag.deca.tools.pseudocode.instructions;
+package fr.ensimag.ima.pseudocode.instructions;
 
-import fr.ensimag.deca.tools.pseudocode.DVal;
-import fr.ensimag.deca.tools.pseudocode.Label;
-import fr.ensimag.deca.tools.pseudocode.LabelOperand;
-import fr.ensimag.deca.tools.pseudocode.UnaryInstruction;
+import fr.ensimag.ima.pseudocode.DVal;
+import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.LabelOperand;
+import fr.ensimag.ima.pseudocode.UnaryInstruction;
 
 /**
  * @author Ensimag

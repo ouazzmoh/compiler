@@ -1,4 +1,4 @@
-package fr.ensimag.deca.tools.pseudocode;
+package fr.ensimag.ima.pseudocode;
 
 /**
  * Internal error related to IMA code. Should never happen.

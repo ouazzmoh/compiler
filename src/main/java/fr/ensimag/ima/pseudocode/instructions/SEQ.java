@@ -1,7 +1,7 @@
-package fr.ensimag.deca.tools.pseudocode.instructions;
+package fr.ensimag.ima.pseudocode.instructions;
 
-import fr.ensimag.deca.tools.pseudocode.GPRegister;
-import fr.ensimag.deca.tools.pseudocode.UnaryInstructionToReg;
+import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.UnaryInstructionToReg;
 
 /**
  *

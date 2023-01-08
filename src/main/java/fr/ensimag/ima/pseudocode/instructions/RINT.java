@@ -1,6 +1,6 @@
-package fr.ensimag.deca.tools.pseudocode.instructions;
+package fr.ensimag.ima.pseudocode.instructions;
 
-import fr.ensimag.deca.tools.pseudocode.NullaryInstruction;
+import fr.ensimag.ima.pseudocode.NullaryInstruction;
 
 /**
  * @author Ensimag

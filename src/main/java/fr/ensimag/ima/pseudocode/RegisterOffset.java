@@ -1,4 +1,4 @@
-package fr.ensimag.deca.tools.pseudocode;
+package fr.ensimag.ima.pseudocode;
 
 /**
  * Operand representing a register indirection with offset, e.g. 42(R3).
