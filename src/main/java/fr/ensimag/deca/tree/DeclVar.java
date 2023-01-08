@@ -2,10 +2,13 @@ package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.context.TypeDefinition;
+import fr.ensimag.deca.context.VariableDefinition;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.deca.context.EnvironmentExp.DoubleDefException;
+import fr.ensimag.deca.context.ExpDefinition;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
 
@@ -41,11 +44,19 @@ public class DeclVar extends AbstractDeclVar {
     		throw new ContextualError("type = void impossible", this.getLocation());
     	}
     	Type t1 = this.type.verifyType(compiler);
-    	this.type.setDefinition(compiler.environmentType.defOfType(type.getName()));  
+    	this.type.setDefinition(compiler.environmentType.defOfType(type.getName()));
 
     	Symbol name = varName.getName();
     	
-    	initialization.verifyInitialization(compiler, t1, localEnv, currentClass);
+    	initialization.verifyInitialization(compiler, t1, localEnv, currentClass);    
+    	try {
+    		ExpDefinition def =  new VariableDefinition(t1, this.getLocation());
+    		localEnv.declare(name,def);
+    		varName.setDefinition(def);
+    		varName.setType(t1);
+    	} catch (DoubleDefException e) {
+    		throw new ContextualError("something went wrong", this.getLocation());
+    	}
     	
     }
     

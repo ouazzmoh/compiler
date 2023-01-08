@@ -1,5 +1,8 @@
 package fr.ensimag.deca.context;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
 
 /**
@@ -25,6 +28,7 @@ public class EnvironmentExp {
     // d'empilement).
 
     EnvironmentExp parentEnvironment;
+    private final Map<Symbol, ExpDefinition> envTypes = new HashMap<Symbol, ExpDefinition>();
     
     public EnvironmentExp(EnvironmentExp parentEnvironment) {
         this.parentEnvironment = parentEnvironment;
@@ -39,7 +43,8 @@ public class EnvironmentExp {
      * symbol is undefined.
      */
     public ExpDefinition get(Symbol key) {
-        throw new UnsupportedOperationException("not yet implemented");
+        //throw new UnsupportedOperationException("not yet implemented");
+    	return envTypes.get(key);
     }
 
     /**
@@ -58,7 +63,8 @@ public class EnvironmentExp {
      *
      */
     public void declare(Symbol name, ExpDefinition def) throws DoubleDefException {
-        throw new UnsupportedOperationException("not yet implemented");
+        //throw new UnsupportedOperationException("not yet implemented");
+    	envTypes.put(name, def);
     }
 
 }
