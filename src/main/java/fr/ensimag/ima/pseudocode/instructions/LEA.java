@@ -1,8 +1,8 @@
-package fr.ensimag.ima.pseudocode.instructions;
+package fr.ensimag.deca.tools.pseudocode.instructions;
 
-import fr.ensimag.ima.pseudocode.BinaryInstructionDAddrToReg;
-import fr.ensimag.ima.pseudocode.DAddr;
-import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.deca.tools.pseudocode.BinaryInstructionDAddrToReg;
+import fr.ensimag.deca.tools.pseudocode.DAddr;
+import fr.ensimag.deca.tools.pseudocode.GPRegister;
 
 /**
  * @author Ensimag

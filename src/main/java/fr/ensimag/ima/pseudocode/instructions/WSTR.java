@@ -1,7 +1,7 @@
-package fr.ensimag.ima.pseudocode.instructions;
+package fr.ensimag.deca.tools.pseudocode.instructions;
 
-import fr.ensimag.ima.pseudocode.ImmediateString;
-import fr.ensimag.ima.pseudocode.UnaryInstruction;
+import fr.ensimag.deca.tools.pseudocode.ImmediateString;
+import fr.ensimag.deca.tools.pseudocode.UnaryInstruction;
 
 /**
  * @author Ensimag

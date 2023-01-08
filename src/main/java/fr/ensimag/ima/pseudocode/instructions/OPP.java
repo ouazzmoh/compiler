@@ -1,8 +1,8 @@
-package fr.ensimag.ima.pseudocode.instructions;
+package fr.ensimag.deca.tools.pseudocode.instructions;
 
-import fr.ensimag.ima.pseudocode.BinaryInstructionDValToReg;
-import fr.ensimag.ima.pseudocode.DVal;
-import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.deca.tools.pseudocode.BinaryInstructionDValToReg;
+import fr.ensimag.deca.tools.pseudocode.DVal;
+import fr.ensimag.deca.tools.pseudocode.GPRegister;
 
 /**
  * @author Ensimag

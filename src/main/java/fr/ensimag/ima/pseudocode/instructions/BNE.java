@@ -1,7 +1,7 @@
-package fr.ensimag.ima.pseudocode.instructions;
+package fr.ensimag.deca.tools.pseudocode.instructions;
 
-import fr.ensimag.ima.pseudocode.BranchInstruction;
-import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.deca.tools.pseudocode.BranchInstruction;
+import fr.ensimag.deca.tools.pseudocode.Label;
 
 /**
  *

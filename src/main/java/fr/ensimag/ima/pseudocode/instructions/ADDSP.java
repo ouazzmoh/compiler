@@ -1,7 +1,7 @@
-package fr.ensimag.ima.pseudocode.instructions;
+package fr.ensimag.deca.tools.pseudocode.instructions;
 
-import fr.ensimag.ima.pseudocode.ImmediateInteger;
-import fr.ensimag.ima.pseudocode.UnaryInstructionImmInt;
+import fr.ensimag.deca.tools.pseudocode.ImmediateInteger;
+import fr.ensimag.deca.tools.pseudocode.UnaryInstructionImmInt;
 
 /**
  * Add a value to stack pointer.

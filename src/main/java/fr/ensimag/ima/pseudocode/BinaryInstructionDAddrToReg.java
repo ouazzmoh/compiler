@@ -1,4 +1,4 @@
-package fr.ensimag.ima.pseudocode;
+package fr.ensimag.deca.tools.pseudocode;
 
 /**
  * Base class for instructions with 2 operands, the first being a
