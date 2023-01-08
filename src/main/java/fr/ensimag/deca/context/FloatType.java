@@ -22,8 +22,11 @@ public class FloatType extends Type {
 
     @Override
     public boolean sameType(Type otherType) {
-        throw new UnsupportedOperationException("not yet implemented");
-    }
+        //throw new UnsupportedOperationException("not yet implemented");
+        if (otherType.isFloat()) {
+        	return true;
+        }
+        return false;    }
 
 
 }
