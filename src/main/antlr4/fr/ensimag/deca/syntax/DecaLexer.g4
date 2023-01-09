@@ -28,7 +28,11 @@ CPARENT: ')' ;
 SEMI: ';' ;
 COMMA: ',' ;
 
+PRINTLNX: 'printlnx';
 PRINTLN: 'println';
+PRINTX: 'printx';
+PRINT: 'print';
+
 TRUE: 'true';
 FALSE: 'false';
 THIS: 'this';
