@@ -45,7 +45,6 @@ public class While extends AbstractInst {
             throws ContextualError {
     	condition.verifyCondition(compiler, localEnv, currentClass);
     	body.verifyListInst(compiler, localEnv, currentClass, returnType);
-    	
     }
 
     @Override
