@@ -46,7 +46,14 @@ public class Initialization extends AbstractInitialization {
 
     @Override
     public void decompile(IndentPrintStream s) {
-        throw new UnsupportedOperationException("Not yet implemented");
+        //throw new UnsupportedOperationException("Not yet implemented");
+        if(getExpression()==null){ // cas d'initialisation
+            s.print(" = ");
+            getExpression().decompile(s);
+        }
+        else{ // cas epsilon (pas d'initialisation)
+            decompile(s);
+        }
     }
 
     @Override
