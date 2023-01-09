@@ -62,7 +62,7 @@ public class IfThenElse extends AbstractInst {
         s.indent();
         getThenBranch().decompile(s);
         s.unindent();
-        s.println("else {");
+        s.println("} else {");
         s.indent();
         getElseBranch().decompile(s);
         s.unindent();
