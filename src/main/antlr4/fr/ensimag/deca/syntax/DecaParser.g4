@@ -131,12 +131,15 @@ inst returns[AbstractInst tree]
             $tree = new Print(false, $list_expr.tree);
             setLocation($tree, $list_expr.start);
         }
-    | PRINTLN OPARENT list_expr CPARENT SEMI {
-            assert($list_expr.tree != null);
-            $tree = new Println(false, $list_expr.tree);
-            setLocation($tree, $list_expr.start);
-            System.out.println("wiiiiiiiiii3");
-        }
+    | PRINTLN OPARENT list_expr CPARENT SEMI
+            /* condition: list_expr is null initialisation de la list */ {
+    	    $tree = new Println(false, new ListExpr());
+    		if ($list_expr.tree != null) {
+                setLocation($tree, $list_expr.start);
+                System.out.println("wiiiiiiiiii3");
+                $tree = new Println(false, $list_expr.tree);
+    		}
+    		}
     | PRINTX OPARENT list_expr CPARENT SEMI {
             assert($list_expr.tree != null);
             $tree = new Print(true, $list_expr.tree);
