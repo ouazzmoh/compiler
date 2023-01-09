@@ -135,10 +135,10 @@ inst returns[AbstractInst tree]
             /* condition: list_expr is null initialisation de la list */ {
     	    $tree = new Println(false, new ListExpr());
     		if ($list_expr.tree != null) {
-                setLocation($tree, $list_expr.start);
                 System.out.println("wiiiiiiiiii3");
                 $tree = new Println(false, $list_expr.tree);
     		}
+    		setLocation($tree, $PRINTLN);
     		}
     | PRINTX OPARENT list_expr CPARENT SEMI {
             assert($list_expr.tree != null);
@@ -193,7 +193,6 @@ if_then_else returns[IfThenElse tree]
         }
         }
       )?
-
     ;
 
 list_expr returns[ListExpr tree]
