@@ -55,7 +55,7 @@ public class DeclVar extends AbstractDeclVar {
     		varName.setDefinition(def);
     		varName.setType(t1);
     	} catch (DoubleDefException e) {
-    		throw new ContextualError("something went wrong", this.getLocation());
+    		throw new ContextualError("double declaration de la variable", this.getLocation());
     	}
     	
     }

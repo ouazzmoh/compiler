@@ -32,6 +32,9 @@ PRINTLN: 'println';
 TRUE: 'true';
 FALSE: 'false';
 THIS: 'this';
+WHILE: 'while';
+
+
 
 IDENT: ( LETTER
 		| '$'
@@ -48,7 +51,7 @@ INT: DIGIT+;
 
 EQUALS: '=';
 
-STRING: '"' .*? '"' ;
+STRING: '"' .*? '"' {setText(getText().substring(getText().indexOf('"')+1, getText().lastIndexOf('"')));};
 
 WS  :   ( ' '
         | '\t'

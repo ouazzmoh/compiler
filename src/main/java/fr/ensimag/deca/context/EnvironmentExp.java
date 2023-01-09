@@ -42,9 +42,14 @@ public class EnvironmentExp {
      * Return the definition of the symbol in the environment, or null if the
      * symbol is undefined.
      */
-    public ExpDefinition get(Symbol key) {
+    @SuppressWarnings("finally")
+	public ExpDefinition get(Symbol key) {
         //throw new UnsupportedOperationException("not yet implemented");
-    	return envTypes.get(key);
+    	try {
+    		return envTypes.get(key);
+    	} catch (Exception e) {
+    		return this.parentEnvironment.get(key);
+    	}
     }
 
     /**
@@ -64,6 +69,9 @@ public class EnvironmentExp {
      */
     public void declare(Symbol name, ExpDefinition def) throws DoubleDefException {
         //throw new UnsupportedOperationException("not yet implemented");
+    	if (envTypes.get(name) != null) {
+    		throw new DoubleDefException();
+    	}
     	envTypes.put(name, def);
     }
 

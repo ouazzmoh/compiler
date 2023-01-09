@@ -22,14 +22,18 @@ public class Assign extends AbstractBinaryExpr {
         return (AbstractLValue)super.getLeftOperand();
     }
 
-    public Assign(AbstractLValue leftOperand, AbstractExpr rightOperand) {
-        super(leftOperand, rightOperand);
+    public Assign(AbstractExpr tree, AbstractExpr rightOperand) {
+        super(tree, rightOperand);
     }
 
     @Override
     public Type verifyExpr(DecacCompiler compiler, EnvironmentExp localEnv,
             ClassDefinition currentClass) throws ContextualError {
-        throw new UnsupportedOperationException("not yet implemented");
+        //throw new UnsupportedOperationException("not yet implemented");
+    	Type t1 = this.getLeftOperand().verifyExpr(compiler, localEnv, currentClass);
+    	AbstractExpr exp = this.getRightOperand().verifyRValue(compiler, localEnv, currentClass, t1);
+    	this.setType(t1);
+    	return t1;
     }
 
 
