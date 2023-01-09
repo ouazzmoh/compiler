@@ -168,21 +168,26 @@ inst returns[AbstractInst tree]
 
 if_then_else returns[IfThenElse tree]
 @init {
+    ListInst derniere = new ListInst();
+    ListInst instructions = new ListInst();
 }
     : if1=IF OPARENT condition=expr CPARENT OBRACE li_if=list_inst CBRACE {
         assert($condition.tree != null);
         assert($li_if.tree != null);
-        $tree = new IfThenElse($condition.tree, $li_if.tree, new ListInst());
+        $tree = new IfThenElse($condition.tree, $li_if.tree,derniere);
         }
       (ELSE elsif=IF OPARENT elsif_cond=expr CPARENT OBRACE elsif_li=list_inst CBRACE {
         assert($elsif_cond.tree != null);
         assert($elsif_li.tree != null);
-        $tree = new IfThenElse($elsif_cond.tree, $elsif_li.tree, new ListInst());
+        IfThenElse t = new IfThenElse($elsif_cond.tree, $elsif_li.tree, instructions);
+        derniere.add(t);
         }
       )*
       (ELSE OBRACE li_else=list_inst CBRACE {
         assert($li_else.tree != null);
-        $tree = new IfThenElse($condition.tree, $li_if.tree, $li_else.tree);
+        for(AbstractInst i : $li_else.tree.getList()){
+            derniere.add(i);
+        }
         }
       )?
 
