@@ -68,9 +68,7 @@ public abstract class AbstractPrint extends AbstractInst {
         }
         s.print(getSuffix());
         s.print("(");
-        s.indent();
         getArguments().decompile(s);
-        s.unindent();
         s.print(") ;");
     }
 
