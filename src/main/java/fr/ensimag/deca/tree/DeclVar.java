@@ -92,8 +92,9 @@ public class DeclVar extends AbstractDeclVar {
         //Setting the adress
         //TODO: put it in the correpondant memory adresse(LIFO)
         varName.getExpDefinition().setOperand(new RegisterOffset(varOffset, Register.GB));
-        initialization.codeGenInit(compiler);
+        initialization.codeGenInit(compiler, varName.getExpDefinition().getOperand());
         //TODO: get a free register
-        compiler.addInstruction(new STORE(Register.getR(2), varName.getExpDefinition().getOperand()));
+//        compiler.addInstruction(new STORE(Register.getR(2), varName.getExpDefinition().getOperand()));
+//        compiler.getRegisterDescriptor().freeRegister();
     }
 }

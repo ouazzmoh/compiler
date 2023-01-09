@@ -1,5 +1,7 @@
 package fr.ensimag.deca;
 
+import fr.ensimag.deca.codegen.RegisterDescriptor;
+
 import java.io.File;
 import org.apache.log4j.Logger;
 
@@ -62,7 +64,6 @@ public class DecacMain {
             throw new UnsupportedOperationException("Parallel build not yet implemented");
         } else {
             for (File source : options.getSourceFiles()) {
-                //TODO: INITIALIZE THE VALUES FOR THE REGISTER descriptor
                 DecacCompiler compiler = new DecacCompiler(options, source);
                 if (compiler.compile()) {
                     error = true;

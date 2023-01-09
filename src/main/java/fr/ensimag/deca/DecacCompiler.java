@@ -1,5 +1,6 @@
 package fr.ensimag.deca;
 
+import fr.ensimag.deca.codegen.RegisterDescriptor;
 import fr.ensimag.deca.context.EnvironmentType;
 import fr.ensimag.deca.syntax.DecaLexer;
 import fr.ensimag.deca.syntax.DecaParser;
@@ -38,7 +39,12 @@ import org.apache.log4j.Logger;
  */
 public class DecacCompiler {
     private static final Logger LOG = Logger.getLogger(DecacCompiler.class);
-    
+
+    //attribute to hold information about the registers in the compiler
+    private RegisterDescriptor registerDescriptor;
+
+
+
     /**
      * Portable newline character.
      */
@@ -48,7 +54,19 @@ public class DecacCompiler {
         super();
         this.compilerOptions = compilerOptions;
         this.source = source;
+        //
+        this.registerDescriptor = new RegisterDescriptor();
     }
+
+
+    public RegisterDescriptor getRegisterDescriptor() {
+        return registerDescriptor;
+    }
+
+    public void setRegisterDescriptor(RegisterDescriptor registerDescriptor) {
+        this.registerDescriptor = registerDescriptor;
+    }
+
 
     /**
      * Source file associated with this compiler instance.

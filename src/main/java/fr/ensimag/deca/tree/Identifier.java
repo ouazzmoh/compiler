@@ -242,7 +242,6 @@ public class Identifier extends AbstractIdentifier {
             compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
             compiler.addInstruction(new WFLOAT());
         }
-        //TODO: solve the case for strings
         else{
             throw new UnsupportedOperationException("not yet implemented");
         }
