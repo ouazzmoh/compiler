@@ -45,8 +45,10 @@ public class ListDeclVar extends TreeList<AbstractDeclVar> {
         int d1 = getList().size();
         //TSTO #d1
         compiler.addInstruction(new ADDSP(d1));
+        int varOffset = 1; //Method to increment the address of the variable
         for (AbstractDeclVar d : getList()){
-            d.codeGenDeclVariable(compiler);
+            d.codeGenDeclVariable(compiler, varOffset);
+            varOffset++;
         }
 
 

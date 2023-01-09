@@ -85,13 +85,15 @@ public class DeclVar extends AbstractDeclVar {
     }
 
     @Override
-    protected void codeGenDeclVariable(DecacCompiler compiler){
+    protected void codeGenDeclVariable(DecacCompiler compiler, int varOffset){
             //TODO: If there is an initialization, initialize
 
-            //TODO: set adress for the variable
+
         //Setting the adress
-        varName.getExpDefinition().setOperand(new RegisterOffset(1, Register.GB));
+        //TODO: put it in the correpondant memory adresse(LIFO)
+        varName.getExpDefinition().setOperand(new RegisterOffset(varOffset, Register.GB));
         initialization.codeGenInit(compiler);
+        //TODO: get a free register
         compiler.addInstruction(new STORE(Register.getR(2), varName.getExpDefinition().getOperand()));
     }
 }
