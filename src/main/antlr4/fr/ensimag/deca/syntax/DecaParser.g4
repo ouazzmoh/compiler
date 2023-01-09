@@ -149,6 +149,10 @@ inst returns[AbstractInst tree]
             setLocation($tree, $list_expr.start);
             
         }
+    | if_then_else {
+    assert($if_then_else.tree != null);
+    $tree = $if_then_else.tree;
+        } 
     | WHILE OPARENT condition=expr CPARENT OBRACE body=list_inst CBRACE {
             assert($condition.tree != null);
             assert($body.tree != null);
@@ -261,6 +265,8 @@ eq_neq_expr returns[AbstractExpr tree]
     | e1=eq_neq_expr EQEQ e2=inequality_expr {
             assert($e1.tree != null);
             assert($e2.tree != null);
+            $tree = new Equals($e1.tree, $e2.tree);
+            setLocation($tree, $EQEQ);
         }
     | e1=eq_neq_expr NEQ e2=inequality_expr {
             assert($e1.tree != null);
