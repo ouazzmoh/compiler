@@ -11,8 +11,12 @@ import fr.ensimag.deca.context.EnvironmentExp.DoubleDefException;
 import fr.ensimag.deca.context.ExpDefinition;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
+import fr.ensimag.ima.pseudocode.instructions.STORE;
 
 import java.io.PrintStream;
+
+import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.RegisterOffset;
 import org.apache.commons.lang.Validate;
 
 /**
@@ -83,6 +87,11 @@ public class DeclVar extends AbstractDeclVar {
     @Override
     protected void codeGenDeclVariable(DecacCompiler compiler){
             //TODO: If there is an initialization, initialize
+
+            //TODO: set adress for the variable
+        //Setting the adress
+        varName.getExpDefinition().setOperand(new RegisterOffset(1, Register.GB));
         initialization.codeGenInit(compiler);
+        compiler.addInstruction(new STORE(Register.getR(2), varName.getExpDefinition().getOperand()));
     }
 }
