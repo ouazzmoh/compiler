@@ -33,6 +33,6 @@ done
 
 for cas_de_test in src/test/deca/syntax/valid/*.deca
 do
-    test_synt_invalide "$cas_de_test"
+    test_synt_valide "$cas_de_test"
 done
 

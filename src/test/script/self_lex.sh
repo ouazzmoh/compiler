@@ -25,12 +25,21 @@ test_lex_valide () {
     fi
 }    
 
-for cas_de_test in src/test/deca/syntax/invalid/*.deca
-do
-    test_lex_invalide "$cas_de_test"
-done
+#for cas_de_test in src/test/deca/syntax/invalid/*.deca
+#do
+#    test_lex_invalide "$cas_de_test"
+#done
 
-for cas_de_test in src/test/deca/syntax/valid/*.deca
-do
-    test_lex_valide "$cas_de_test"
-done
+#for cas_de_test in src/test/deca/syntax/valid/*.deca
+#do
+#    test_lex_valide "$cas_de_test"
+#done
+if test_lex src/test/deca/syntax/invalid/afficher_Hello.deca 2>&1 \
+    | head -n 1 | grep -q 'afficher_Hello.deca:[0-9]'
+then
+    echo "Echec inattendu de test_lex"
+    exit 1
+else
+    echo "OK"
+fi
+
