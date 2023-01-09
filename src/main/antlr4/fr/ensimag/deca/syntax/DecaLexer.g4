@@ -33,6 +33,9 @@ TRUE: 'true';
 FALSE: 'false';
 THIS: 'this';
 WHILE: 'while';
+IF: 'if';
+ELSE: 'else';
+
 
 
 
