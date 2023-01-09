@@ -56,8 +56,11 @@ IDENT: ( LETTER
 FLOAT: DIGIT+ '.' (DIGIT)+;
 INT: DIGIT+;
 
+NEQ: '!=';
+GEQ: '>=';
+LEQ: '<=';
+EQEQ: '==';
 EQUALS: '=';
-
 STRING: '"' .*? '"' {setText(getText().substring(getText().indexOf('"')+1, getText().lastIndexOf('"')));};
 
 WS  :   ( ' '

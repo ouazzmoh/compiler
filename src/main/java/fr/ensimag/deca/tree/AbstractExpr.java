@@ -117,6 +117,7 @@ public abstract class AbstractExpr extends AbstractInst {
     	if (!t.isBoolean()) {
     		throw new ContextualError("not boolean", this.getLocation());
     	}
+    	this.setType(t);
     }
 
     /**
