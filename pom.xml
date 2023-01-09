@@ -260,6 +260,36 @@
                         </goals>
                     </execution>
                     <execution>
+                        <id>self_lex</id>
+                        <configuration>
+                            <executable>./src/test/script/self_lex.sh</executable>
+                        </configuration>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>self_synt</id>
+                        <configuration>
+                        <executable>./src/test/script/self_synt.sh</executable>
+                        </configuration>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>self_context</id>
+                        <configuration>
+                        <executable>./src/test/script/self_context.sh</executable>
+                        </configuration>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                    <execution>                    
                         <id>common-tests</id>
                         <configuration>
                             <executable>./src/test/script/common-tests.sh</executable>
