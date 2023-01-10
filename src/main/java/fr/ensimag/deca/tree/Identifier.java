@@ -242,6 +242,7 @@ public class Identifier extends AbstractIdentifier {
             compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
             compiler.addInstruction(new WFLOAT());
         }
+        //TODO: Check if we can print booleans
         else{
             throw new UnsupportedOperationException("not yet implemented");
         }
