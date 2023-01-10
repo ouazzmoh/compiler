@@ -181,11 +181,13 @@ if_then_else returns[IfThenElse tree]
         assert($condition.tree != null);
         assert($li_if.tree != null);
         $tree = new IfThenElse($condition.tree, $li_if.tree, instructions_else);
+        setLocation($tree, $if1);
         }
       (ELSE elsif=IF OPARENT elsif_cond=expr CPARENT OBRACE elsif_li=list_inst CBRACE {
         assert($elsif_cond.tree != null);
         assert($elsif_li.tree != null);
         IfThenElse t = new IfThenElse($elsif_cond.tree, $elsif_li.tree, tousLesinstructions);
+        setLocation(t, $elsif);
         instructions_else.add(t);
         }
       )*
@@ -194,6 +196,7 @@ if_then_else returns[IfThenElse tree]
         for(AbstractInst i : $li_else.tree.getList()){
             instructions_else.add(i);
         }
+        setLocation(instructions_else, $ELSE);
         }
       )?
     ;
