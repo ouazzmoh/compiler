@@ -29,8 +29,8 @@ public abstract class AbstractUnaryExpr extends AbstractExpr {
         //throw new UnsupportedOperationException("not yet implemented");
         if(getOperatorName()!= "/* conv float */"){
             s.print(getOperatorName());
-            getOperand().decompile(s);
         }
+        getOperand().decompile(s);
     }
 
     @Override
