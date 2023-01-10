@@ -8,11 +8,9 @@
 //    cree le 08/01/2023
 
 {
-    boolean a=true; int b=5; float c=3.0; String s="GL24";
+    boolean a=true; int b=5; float c=3.0;;
     b=a+c;
     b=a/c;
     b=a%c;
     b= c+b;
-    a=(s!=b);
-
 }

@@ -44,7 +44,7 @@ public class DeclVar extends AbstractDeclVar {
             EnvironmentExp localEnv, ClassDefinition currentClass)
             throws ContextualError {
     	//throw new UnsupportedOperationException("verifyDeclVar not yet implemented");
-    	if (type.getName().equals("void")) {
+    	if (type.getName().getName().equals("void")) {
     		throw new ContextualError("type = void impossible", this.getLocation());
     	}
     	else if (type == null) {

@@ -18,10 +18,10 @@ test_synt_valide () {
     # $1 = premier argument.
     if test_synt "$1" 2>&1 | grep -q -e "$1:[0-9][0-9]*:"
     then
-        echo "Succes attendu pour test_synt sur $1."
-    else
         echo "Echec inattendu de test_synt sur $1."
         exit 1
+    else
+    	echo "Succes attendu pour test_synt sur $1."
     fi
 }    
 
