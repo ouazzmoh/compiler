@@ -22,6 +22,11 @@ import fr.ensimag.ima.pseudocode.instructions.LOAD;
 import fr.ensimag.ima.pseudocode.instructions.WINT;
 import fr.ensimag.ima.pseudocode.instructions.WFLOAT;
 import fr.ensimag.ima.pseudocode.instructions.WSTR;
+import fr.ensimag.ima.pseudocode.ImmediateInteger;
+import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.instructions.BEQ;
+import fr.ensimag.ima.pseudocode.instructions.CMP;
+
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
 
@@ -251,5 +256,14 @@ public class Identifier extends AbstractIdentifier {
         }
 
     }
+
+    @Override
+    public void codeGenInstWhile(DecacCompiler compiler,Label endWhile){
+        //TODO: Automate register choice
+        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.getR(5)));
+        compiler.addInstruction(new CMP(new ImmediateInteger(0) , Register.getR(5)));
+        compiler.addInstruction(new BEQ(endWhile));
+    }
+
 
 }

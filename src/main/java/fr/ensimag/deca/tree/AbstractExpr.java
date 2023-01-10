@@ -7,6 +7,7 @@ import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.Label;
 
 import java.io.PrintStream;
 
@@ -143,6 +144,11 @@ public abstract class AbstractExpr extends AbstractInst {
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
         //TODO: Possibly make it abstract
     }
+
+    protected void codeGenInstWhile(DecacCompiler compiler,Label endWhile){
+        //TODO: Possibly make it abstract
+    }
+
 
     @Override
     protected void decompileInst(IndentPrintStream s) {
