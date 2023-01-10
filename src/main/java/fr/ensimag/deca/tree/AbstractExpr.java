@@ -145,23 +145,29 @@ public abstract class AbstractExpr extends AbstractInst {
      */
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
         //TODO: Possibly make it abstract
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     protected void codeGenInstWhile(DecacCompiler compiler,Label endWhile){
         //TODO: Possibly make it abstract
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     protected void codeGenAssign(DecacCompiler compiler, Identifier identifier){
         //TODO : Make it abstract
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
 //    protected void codeGenSum(DecacCompiler compiler){};
 
     protected DVal codeGenSum(DecacCompiler compiler){
-
-        return new NullOperand();
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
+    protected DVal codeGenMul(DecacCompiler compiler){
+        throw new UnsupportedOperationException("not yet implemented");
+//        return new NullOperand();
+    }
 
 
     @Override
