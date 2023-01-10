@@ -6,6 +6,10 @@ import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.*;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.STORE;
+
 import java.io.PrintStream;
 
 /**
@@ -28,7 +32,9 @@ public class BooleanLiteral extends AbstractExpr {
     @Override
     public Type verifyExpr(DecacCompiler compiler, EnvironmentExp localEnv,
             ClassDefinition currentClass) throws ContextualError {
-        throw new UnsupportedOperationException("not yet implemented");
+        //throw new UnsupportedOperationException("not yet implemented");
+    	this.setType(compiler.environmentType.BOOLEAN);
+    	return this.getType();
     }
 
 
@@ -50,6 +56,35 @@ public class BooleanLiteral extends AbstractExpr {
     @Override
     String prettyPrintNode() {
         return "BooleanLiteral (" + value + ")";
+    }
+
+    /**
+     * Generate instruction for boolean initialization
+     * @param compiler
+     * @param adr
+     */
+    @Override
+    protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+        // LOAD #value, R2
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        //true is #1 false is #0
+        int valueToAdd;
+        if (value){
+            valueToAdd = 1;
+        }
+        else{
+            valueToAdd = 0;
+        }
+
+        //TODO: Problem that in this case true(#1) is defined as the same immediate #1
+        //TODO: Which means we need to know the type to understand what we refer to
+        //TODO: Just like C
+        compiler.addInstruction(new LOAD(1, registerToUse));
+        //update register descriptor
+        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(valueToAdd));
+
+        compiler.addInstruction(new STORE(registerToUse, adr));
+        compiler.getRegisterDescriptor().freeRegister(registerToUse);
     }
 
 }

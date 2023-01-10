@@ -18,6 +18,11 @@ fragment DIGIT : '0' .. '9';
 
 INCLUDE: '#include' .* ';' { doInclude(getText()); };
 
+
+READINT: 'ReadInt';
+READFLOAT: 'ReadFloat';
+
+
 COMMENTMONO: '//' (~('\n'))* { skip(); };
 COMMENT: '/*' .*? '*/' { skip(); };
 
@@ -28,10 +33,20 @@ CPARENT: ')' ;
 SEMI: ';' ;
 COMMA: ',' ;
 
+PRINTLNX: 'printlnx';
 PRINTLN: 'println';
+PRINTX: 'printx';
+PRINT: 'print';
+
 TRUE: 'true';
 FALSE: 'false';
 THIS: 'this';
+WHILE: 'while';
+IF: 'if';
+ELSE: 'else';
+
+
+
 
 IDENT: ( LETTER
 		| '$'
@@ -46,9 +61,29 @@ IDENT: ( LETTER
 FLOAT: DIGIT+ '.' (DIGIT)+;
 INT: DIGIT+;
 
+NEQ: '!=';
+GEQ: '>=';
+LEQ: '<=';
+EQEQ: '==';
 EQUALS: '=';
+GT: '>';
+LT: '<';
 
-STRING: '"' .*? '"' ;
+
+PLUS: '+';
+MINUS: '-';
+TIMES: '*';
+SLASH: '/';
+PERCENT: '%';
+
+AND: '&&';
+OR: '||';
+
+EXCLAM: '!';
+
+
+
+STRING: '"' (~('\n'))*? '"' {setText(getText().substring(getText().indexOf('"')+1, getText().lastIndexOf('"')));};
 
 WS  :   ( ' '
         | '\t'
@@ -59,7 +94,6 @@ WS  :   ( ' '
           }
     ;
 
-DUMMY_TOKEN: .;
 
  // A FAIRE : Règle bidon qui reconnait tous les caractères.
                 // A FAIRE : Il faut la supprimer et la remplacer par les vraies règles.

@@ -5,15 +5,12 @@ import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
-import fr.ensimag.deca.context.EnvironmentType;
-import fr.ensimag.deca.context.FloatType;
-import fr.ensimag.deca.context.IntType;
-import fr.ensimag.deca.context.StringType;
 import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
-import fr.ensimag.deca.tools.SymbolTable.Symbol;
-import fr.ensimag.ima.pseudocode.Label;
+
 import java.io.PrintStream;
+
+import fr.ensimag.ima.pseudocode.DAddr;
 import org.apache.commons.lang.Validate;
 
 /**
@@ -87,7 +84,12 @@ public abstract class AbstractExpr extends AbstractInst {
             EnvironmentExp localEnv, ClassDefinition currentClass, 
             Type expectedType)
             throws ContextualError {
-        throw new UnsupportedOperationException("not yet implemented");
+        //throw new UnsupportedOperationException("not yet implemented");
+    	Type t = this.verifyExpr(compiler, localEnv, currentClass);
+    	if (t.sameType(expectedType)) {
+    		return this;
+    	}
+    	throw new ContextualError("Assignment Error", this.getLocation());
     }
     
     
@@ -95,7 +97,9 @@ public abstract class AbstractExpr extends AbstractInst {
     protected void verifyInst(DecacCompiler compiler, EnvironmentExp localEnv,
             ClassDefinition currentClass, Type returnType)
             throws ContextualError {
-        throw new UnsupportedOperationException("not yet implemented");
+        //throw new UnsupportedOperationException("not yet implemented");
+    	this.verifyExpr(compiler, localEnv, currentClass);
+    	
     }
 
     /**
@@ -110,7 +114,12 @@ public abstract class AbstractExpr extends AbstractInst {
      */
     void verifyCondition(DecacCompiler compiler, EnvironmentExp localEnv,
             ClassDefinition currentClass) throws ContextualError {
-        throw new UnsupportedOperationException("not yet implemented");
+        //throw new UnsupportedOperationException("not yet implemented");
+    	Type t = this.verifyExpr(compiler, localEnv, currentClass);
+    	if (!t.isBoolean()) {
+    		throw new ContextualError("not boolean", this.getLocation());
+    	}
+    	this.setType(t);
     }
 
     /**
@@ -126,7 +135,14 @@ public abstract class AbstractExpr extends AbstractInst {
     protected void codeGenInst(DecacCompiler compiler) {
         throw new UnsupportedOperationException("not yet implemented");
     }
-    
+
+    /**
+     * Generate assembly code for the expression
+     * @param compiler
+     */
+    protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+        //TODO: Possibly make it abstract
+    }
 
     @Override
     protected void decompileInst(IndentPrintStream s) {
