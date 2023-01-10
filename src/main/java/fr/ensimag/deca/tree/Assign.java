@@ -22,7 +22,7 @@ public class Assign extends AbstractBinaryExpr {
         return (AbstractLValue)super.getLeftOperand();
     }
 
-    public Assign(AbstractExpr tree, AbstractExpr rightOperand) {
+    public Assign(AbstractLValue tree, AbstractExpr rightOperand) {
         super(tree, rightOperand);
     }
 
