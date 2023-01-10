@@ -119,6 +119,9 @@ list_inst returns[ListInst tree]
     ;
 
 inst returns[AbstractInst tree]
+@init {
+	ListExpr liste = new ListExpr();
+}
     : e1=expr SEMI {
             assert($e1.tree != null);
             $tree = $e1.tree;
@@ -129,31 +132,38 @@ inst returns[AbstractInst tree]
     		$tree = new NoOperation();
     		setLocation($tree, $SEMI);
         }
-    | PRINT OPARENT list_expr CPARENT SEMI {
-            assert($list_expr.tree != null);
-            $tree = new Print(false, $list_expr.tree);
-            setLocation($tree, $list_expr.start);
-        }
+    | PRINT OPARENT list_expr CPARENT SEMI
+            /* condition: list_expr is null initialisation de la list */ {
+    		if ($list_expr.tree != null) {
+                liste = $list_expr.tree;
+    		}
+    		$tree = new Print(false, liste);
+    		setLocation($tree, $PRINT);
+    		}
     | PRINTLN OPARENT list_expr CPARENT SEMI
             /* condition: list_expr is null initialisation de la list */ {
-    	    $tree = new Println(false, new ListExpr());
     		if ($list_expr.tree != null) {
-                $tree = new Println(false, $list_expr.tree);
+                liste = $list_expr.tree;
     		}
+    		$tree = new Println(false, liste);
     		setLocation($tree, $PRINTLN);
     		}
-    | PRINTX OPARENT list_expr CPARENT SEMI {
-            assert($list_expr.tree != null);
-            $tree = new Print(true, $list_expr.tree);
-            setLocation($tree, $PRINTX);
-            
-        }
-    | PRINTLNX OPARENT list_expr CPARENT SEMI {
-            assert($list_expr.tree != null);
-            $tree = new Println(true, $list_expr.tree);
-            setLocation($tree, $PRINTLNX);
-            
-        }
+    | PRINTX OPARENT list_expr CPARENT SEMI
+            /* condition: list_expr is null initialisation de la list */ {
+    		if ($list_expr.tree != null) {
+                liste = $list_expr.tree;
+    		}
+    		$tree = new Print(false, liste);
+    		setLocation($tree, $PRINTX);
+    		}
+    | PRINTLNX OPARENT list_expr CPARENT SEMI
+            /* condition: list_expr is null initialisation de la list */ {
+    		if ($list_expr.tree != null) {
+                liste = $list_expr.tree;
+    		}
+    		$tree = new Println(false, liste);
+    		setLocation($tree, $PRINTLNX);
+    		}
     | if_then_else {
 		    assert($if_then_else.tree != null);
 		    $tree = $if_then_else.tree;
