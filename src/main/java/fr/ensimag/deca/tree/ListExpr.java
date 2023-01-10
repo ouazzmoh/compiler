@@ -25,6 +25,7 @@ public class ListExpr extends TreeList<AbstractExpr> {
                 s.print(",");
             }
             i.decompile(s);
+            s.println();
         }
     }
 }
