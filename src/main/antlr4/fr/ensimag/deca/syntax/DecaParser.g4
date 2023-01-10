@@ -243,7 +243,7 @@ assign_expr returns[AbstractExpr tree]
         EQUALS e2=assign_expr {
             assert($e.tree != null);
             assert($e2.tree != null);
-            Assign equals = new Assign($tree, $e2.tree);
+            Assign equals = new Assign((AbstractLValue)$tree, $e2.tree);
             setLocation(equals, $EQUALS);
             $tree = equals;
         }

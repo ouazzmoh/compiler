@@ -9,6 +9,7 @@ import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
 import fr.ensimag.ima.pseudocode.instructions.STORE;
+import fr.ensimag.ima.pseudocode.instructions.BRA;
 
 import java.io.PrintStream;
 
@@ -86,5 +87,13 @@ public class BooleanLiteral extends AbstractExpr {
         compiler.addInstruction(new STORE(registerToUse, adr));
         compiler.getRegisterDescriptor().freeRegister(registerToUse);
     }
+
+    @Override
+    protected void codeGenInstWhile(DecacCompiler compiler,Label endWhile){
+        if(!this.value){
+            compiler.addInstruction(new BRA(endWhile));
+        }
+    }
+
 
 }

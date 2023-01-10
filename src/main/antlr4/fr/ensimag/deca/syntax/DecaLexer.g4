@@ -83,7 +83,7 @@ EXCLAM: '!';
 
 
 
-STRING: '"' .*? '"' {setText(getText().substring(getText().indexOf('"')+1, getText().lastIndexOf('"')));};
+STRING: '"' (~('\n'))*? '"' {setText(getText().substring(getText().indexOf('"')+1, getText().lastIndexOf('"')));};
 
 WS  :   ( ' '
         | '\t'
@@ -94,7 +94,6 @@ WS  :   ( ' '
           }
     ;
 
-DUMMY_TOKEN: .;
 
  // A FAIRE : Règle bidon qui reconnait tous les caractères.
                 // A FAIRE : Il faut la supprimer et la remplacer par les vraies règles.
