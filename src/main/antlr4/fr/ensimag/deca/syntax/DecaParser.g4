@@ -99,6 +99,7 @@ decl_var[AbstractIdentifier t] returns[AbstractDeclVar tree]
         }
       (EQUALS e=expr {
       	  init = new Initialization($e.tree);
+      	  setLocation(init, $e.start);
       	  $tree = new DeclVar(t, varName, init);
       	  setLocation($tree, $EQUALS);
         }
@@ -143,25 +144,26 @@ inst returns[AbstractInst tree]
     | PRINTX OPARENT list_expr CPARENT SEMI {
             assert($list_expr.tree != null);
             $tree = new Print(true, $list_expr.tree);
-            setLocation($tree, $list_expr.start);
+            setLocation($tree, $PRINTX);
             
         }
     | PRINTLNX OPARENT list_expr CPARENT SEMI {
             assert($list_expr.tree != null);
             $tree = new Println(true, $list_expr.tree);
-            setLocation($tree, $list_expr.start);
+            setLocation($tree, $PRINTLNX);
             
         }
     | if_then_else {
-    assert($if_then_else.tree != null);
-    $tree = $if_then_else.tree;
+		    assert($if_then_else.tree != null);
+		    $tree = $if_then_else.tree;
+    		setLocation($tree, $if_then_else.start);
+		    
         } 
     | WHILE OPARENT condition=expr CPARENT OBRACE body=list_inst CBRACE {
             assert($condition.tree != null);
             assert($body.tree != null);
             $tree = new While($condition.tree, $body.tree);
-            setLocation($tree, $condition.start);
-            setLocation($tree, $body.start);
+            setLocation($tree, $WHILE);
         }
 
     | RETURN expr SEMI {
@@ -300,10 +302,14 @@ inequality_expr returns[AbstractExpr tree]
     | e1=inequality_expr GT e2=sum_expr {
             assert($e1.tree != null);
             assert($e2.tree != null);
+            $tree = new Greater($e1.tree, $e2.tree);
+            setLocation($tree, $GT);            
         }
     | e1=inequality_expr LT e2=sum_expr {
             assert($e1.tree != null);
             assert($e2.tree != null);
+            $tree = new Lower($e1.tree, $e2.tree);
+            setLocation($tree, $LT);   
         }
     | e1=inequality_expr INSTANCEOF type {
             assert($e1.tree != null);
@@ -409,6 +415,7 @@ primary_expr returns[AbstractExpr tree]
     | literal {
             assert($literal.tree != null);
             $tree = $literal.tree;
+            setLocation($tree, $literal.start);
         }
     ;
 

@@ -61,6 +61,11 @@ GEQ: '>=';
 LEQ: '<=';
 EQEQ: '==';
 EQUALS: '=';
+GT: '>';
+LT: '<';
+
+
+
 STRING: '"' .*? '"' {setText(getText().substring(getText().indexOf('"')+1, getText().lastIndexOf('"')));};
 
 WS  :   ( ' '
