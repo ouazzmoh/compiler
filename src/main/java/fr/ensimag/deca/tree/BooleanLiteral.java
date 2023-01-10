@@ -80,7 +80,7 @@ public class BooleanLiteral extends AbstractExpr {
         //TODO: Problem that in this case true(#1) is defined as the same immediate #1
         //TODO: Which means we need to know the type to understand what we refer to
         //TODO: Just like C
-        compiler.addInstruction(new LOAD(1, registerToUse));
+        compiler.addInstruction(new LOAD(valueToAdd, registerToUse));
         //update register descriptor
         compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(valueToAdd));
 

@@ -7,11 +7,13 @@ import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.DVal;
 import fr.ensimag.ima.pseudocode.Label;
 
 import java.io.PrintStream;
 
 import fr.ensimag.ima.pseudocode.DAddr;
+import fr.ensimag.ima.pseudocode.NullOperand;
 import org.apache.commons.lang.Validate;
 
 /**
@@ -148,6 +150,18 @@ public abstract class AbstractExpr extends AbstractInst {
     protected void codeGenInstWhile(DecacCompiler compiler,Label endWhile){
         //TODO: Possibly make it abstract
     }
+
+    protected void codeGenAssign(DecacCompiler compiler, Identifier identifier){
+        //TODO : Make it abstract
+    }
+
+//    protected void codeGenSum(DecacCompiler compiler){};
+
+    protected DVal codeGenSum(DecacCompiler compiler){
+
+        return new NullOperand();
+    }
+
 
 
     @Override
