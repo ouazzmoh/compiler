@@ -19,14 +19,11 @@ import fr.ensimag.deca.tools.SymbolTable.Symbol;
 import fr.ensimag.deca.codegen.RegisterDescriptor;
 import java.io.PrintStream;
 
-import fr.ensimag.ima.pseudocode.GPRegister;
-import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
 import fr.ensimag.ima.pseudocode.instructions.WINT;
 import fr.ensimag.ima.pseudocode.instructions.WFLOAT;
 import fr.ensimag.ima.pseudocode.instructions.WSTR;
-import fr.ensimag.ima.pseudocode.ImmediateInteger;
-import fr.ensimag.ima.pseudocode.Label;
 import fr.ensimag.ima.pseudocode.instructions.BEQ;
 import fr.ensimag.ima.pseudocode.instructions.CMP;
 
@@ -268,6 +265,14 @@ public class Identifier extends AbstractIdentifier {
         compiler.addInstruction(new CMP(new ImmediateInteger(0) , registerToUse));
         compiler.addInstruction(new BEQ(endWhile));
         //TODO: Free the register after use
+    }
+
+    @Override
+    protected DVal codeGenSum(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
+        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
+        return registerToUse;
     }
 
 
