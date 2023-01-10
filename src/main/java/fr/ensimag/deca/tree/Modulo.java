@@ -20,7 +20,15 @@ public class Modulo extends AbstractOpArith {
     @Override
     public Type verifyExpr(DecacCompiler compiler, EnvironmentExp localEnv,
             ClassDefinition currentClass) throws ContextualError {
-        throw new UnsupportedOperationException("not yet implemented");
+        //throw new UnsupportedOperationException("not yet implemented");
+    	Type t1 = this.getLeftOperand().verifyExpr(compiler, localEnv, currentClass);
+    	Type t2 = this.getRightOperand().verifyExpr(compiler, localEnv, currentClass);
+    	if (t1.sameType(t2) && t1.isInt()) {
+    		this.setType(t2);
+    		return this.getType();
+    	}
+    	throw new ContextualError("erreur dans la condition" + this.getOperatorName() + "operands's type not permetted", this.getLocation());
+    	
     }
 
 

@@ -1,15 +1,14 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.deca.DecacMain;
+import fr.ensimag.deca.codegen.RegisterDescriptor;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.IndentPrintStream;
-import fr.ensimag.ima.pseudocode.DAddr;
-import fr.ensimag.ima.pseudocode.GPRegister;
-import fr.ensimag.ima.pseudocode.Register;
-import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
 import fr.ensimag.ima.pseudocode.instructions.STORE;
 
@@ -64,14 +63,19 @@ public class IntLiteral extends AbstractExpr {
     /**
      * Generate initialization code for a integer variable
      * @param compiler
+     * @param adr
      */
     @Override
-    protected void codeGenInit(DecacCompiler compiler){
+    protected void codeGenInit(DecacCompiler compiler, DAddr adr){
 
         // LOAD #value, R2
-        compiler.addInstruction(new LOAD(value, Register.getR(2)));
-//        //STORE R2, 1(GB)
-//        compiler.addInstruction(new STORE(Register.getR(2), this.);
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        compiler.addInstruction(new LOAD(value, registerToUse));
+        //update register descriptor
+        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(value));
+
+        compiler.addInstruction(new STORE(registerToUse, adr));
+        compiler.getRegisterDescriptor().freeRegister(registerToUse);
 
     }
 
