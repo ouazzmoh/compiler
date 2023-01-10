@@ -25,18 +25,27 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
     	Type t1 = this.getLeftOperand().verifyExpr(compiler, localEnv, currentClass);
     	Type t2 = this.getRightOperand().verifyExpr(compiler, localEnv, currentClass);
     	if (this.getOperatorName().equals("==") | this.getOperatorName().equals("!=") | this.getOperatorName().equals("<=")
-    			| this.getOperatorName().equals(">=")) {
+    			| this.getOperatorName().equals(">=") | this.getOperatorName().equals(">")
+    			| this.getOperatorName().equals("<")) {
     			if (t1.sameType(t2) && (t1.isInt() | t1.isFloat())) {
-    				return compiler.environmentType.BOOLEAN;
+    				this.setType(compiler.environmentType.BOOLEAN);
+    				return this.getType();
     			}
     			if (t1.isInt() && t2.isFloat()) {
-    				return compiler.environmentType.BOOLEAN;
-    			}
+    				this.setType(compiler.environmentType.BOOLEAN);
+    				return this.getType();
+    				}
     			if (t1.isFloat() && t2.isInt()) {
-    				return compiler.environmentType.BOOLEAN;
-    			}
+    				this.setType(compiler.environmentType.BOOLEAN);
+    				return this.getType();    			}
     		}
-    	throw new ContextualError("erreur dans la condition", this.getLocation());
+    	if (this.getOperatorName().equals("==") | this.getOperatorName().equals("!=")){
+    		if (t1.sameType(t2) && (t1.isBoolean())) {
+				this.setType(compiler.environmentType.BOOLEAN);
+				return this.getType();    			
+    		}
+    	}
+    	throw new ContextualError("erreur dans la condition" + this.getOperatorName() + "operands not permetted", this.getLocation());
     	}
     	
     }

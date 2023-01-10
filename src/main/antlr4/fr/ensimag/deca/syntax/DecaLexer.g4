@@ -18,6 +18,11 @@ fragment DIGIT : '0' .. '9';
 
 INCLUDE: '#include' .* ';' { doInclude(getText()); };
 
+
+READINT: 'ReadInt';
+READFLOAT: 'ReadFloat';
+
+
 COMMENTMONO: '//' (~('\n'))* { skip(); };
 COMMENT: '/*' .*? '*/' { skip(); };
 
@@ -61,6 +66,23 @@ GEQ: '>=';
 LEQ: '<=';
 EQEQ: '==';
 EQUALS: '=';
+GT: '>';
+LT: '<';
+
+
+PLUS: '+';
+MINUS: '-';
+TIMES: '*';
+SLASH: '/';
+PERCENT: '%';
+
+AND: '&&';
+OR: '||';
+
+EXCLAM: '!';
+
+
+
 STRING: '"' .*? '"' {setText(getText().substring(getText().indexOf('"')+1, getText().lastIndexOf('"')));};
 
 WS  :   ( ' '

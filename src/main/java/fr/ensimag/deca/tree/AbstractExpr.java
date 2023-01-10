@@ -9,6 +9,8 @@ import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
 
 import java.io.PrintStream;
+
+import fr.ensimag.ima.pseudocode.DAddr;
 import org.apache.commons.lang.Validate;
 
 /**
@@ -138,7 +140,7 @@ public abstract class AbstractExpr extends AbstractInst {
      * Generate assembly code for the expression
      * @param compiler
      */
-    protected void codeGenInit(DecacCompiler compiler){
+    protected void codeGenInit(DecacCompiler compiler, DAddr adr){
         //TODO: Possibly make it abstract
     }
 

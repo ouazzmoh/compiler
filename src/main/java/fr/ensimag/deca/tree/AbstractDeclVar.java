@@ -31,7 +31,7 @@ public abstract class AbstractDeclVar extends Tree {
             throws ContextualError;
 
 
-    protected abstract void codeGenDeclVariable(DecacCompiler compiler);
+    protected abstract void codeGenDeclVariable(DecacCompiler compiler, int varOffset);
 
 }
 

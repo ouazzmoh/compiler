@@ -176,6 +176,9 @@ public class Identifier extends AbstractIdentifier {
             ClassDefinition currentClass) throws ContextualError {
         //throw new UnsupportedOperationException("not yet implemented");
     	ExpDefinition def = localEnv.get(name);
+    	if (def == null) {
+    		throw new ContextualError("le type de la variable n'est pas déclaré", this.getLocation());
+    	}
     	this.setDefinition(def);
     	this.setType(def.getType());
     	return this.getType();
@@ -242,7 +245,7 @@ public class Identifier extends AbstractIdentifier {
             compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
             compiler.addInstruction(new WFLOAT());
         }
-        //TODO: solve the case for strings
+        //TODO: Check if we can print booleans
         else{
             throw new UnsupportedOperationException("not yet implemented");
         }

@@ -47,6 +47,9 @@ public class DeclVar extends AbstractDeclVar {
     	if (type.getName().equals("void")) {
     		throw new ContextualError("type = void impossible", this.getLocation());
     	}
+    	else if (type == null) {
+    		throw new ContextualError("le type de la variable n'est pas déclaré", this.getLocation());    		
+    	}
     	Type t1 = this.type.verifyType(compiler);
     	this.type.setDefinition(compiler.environmentType.defOfType(type.getName()));
 
@@ -54,7 +57,7 @@ public class DeclVar extends AbstractDeclVar {
     	
     	initialization.verifyInitialization(compiler, t1, localEnv, currentClass);    
     	try {
-    		ExpDefinition def =  new VariableDefinition(t1, this.getLocation());
+    		ExpDefinition def =  new VariableDefinition(t1, varName.getLocation());
     		localEnv.declare(name,def);
     		varName.setDefinition(def);
     		varName.setType(t1);
@@ -90,13 +93,16 @@ public class DeclVar extends AbstractDeclVar {
     }
 
     @Override
-    protected void codeGenDeclVariable(DecacCompiler compiler){
+    protected void codeGenDeclVariable(DecacCompiler compiler, int varOffset){
             //TODO: If there is an initialization, initialize
 
-            //TODO: set adress for the variable
+
         //Setting the adress
-        varName.getExpDefinition().setOperand(new RegisterOffset(1, Register.GB));
-        initialization.codeGenInit(compiler);
-        compiler.addInstruction(new STORE(Register.getR(2), varName.getExpDefinition().getOperand()));
+        //TODO: put it in the correpondant memory adresse(LIFO)
+        varName.getExpDefinition().setOperand(new RegisterOffset(varOffset, Register.GB));
+        initialization.codeGenInit(compiler, varName.getExpDefinition().getOperand());
+        //TODO: get a free register
+//        compiler.addInstruction(new STORE(Register.getR(2), varName.getExpDefinition().getOperand()));
+//        compiler.getRegisterDescriptor().freeRegister();
     }
 }

@@ -9,6 +9,14 @@ import fr.ensimag.deca.context.FloatType;
 import fr.ensimag.deca.context.StringType;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import java.io.PrintStream;
+
+import fr.ensimag.ima.pseudocode.DAddr;
+import fr.ensimag.ima.pseudocode.DVal;
+import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.ImmediateFloat;
+import fr.ensimag.ima.pseudocode.ImmediateInteger;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.STORE;
 import org.apache.commons.lang.Validate;
 
 /**
@@ -60,6 +68,26 @@ public class FloatLiteral extends AbstractExpr {
     @Override
     protected void prettyPrintChildren(PrintStream s, String prefix) {
         // leaf node => nothing to do
+    }
+
+    /**
+     * Generate initialization code for a float variable
+     * @param compiler
+     * @param adr
+     */
+    @Override
+    protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+
+        // LOAD #value, R2
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        DVal valueToAdd = new ImmediateFloat(value);
+        compiler.addInstruction(new LOAD(valueToAdd, registerToUse));
+        //update register descriptor
+        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateFloat(value));
+
+        compiler.addInstruction(new STORE(registerToUse, adr));
+        compiler.getRegisterDescriptor().freeRegister(registerToUse);
+
     }
 
 }
