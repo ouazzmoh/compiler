@@ -58,6 +58,38 @@
         while (a >= 3) {
         println("ooo");
         }
+        
+        if ( a == 3) {
+        println(a);
+        }
+        else if (a > 3) {
+        println(a);
+        }
+        else {
+        println("ok");}
+        
+        if ( b != 3) {
+        println("oooo");
+        }
+        
+        if ( cc < 3) {
+        println("tit");
+        }
+        else {
+        println(cc);}
+        
+        if ( a == 3) {
+        println(a);
+        }
+        else if (a > 3) {
+        println(a);
+        }
+        else if (!aaa) {
+        println("true");
+        }
+        else {
+        println("ok");}        
+        
         ;
         
 }
