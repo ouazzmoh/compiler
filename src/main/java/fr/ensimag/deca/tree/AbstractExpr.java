@@ -164,7 +164,16 @@ public abstract class AbstractExpr extends AbstractInst {
         throw new UnsupportedOperationException("not yet implemented");
     }
 
+    protected DVal codeGenSub(DecacCompiler compiler){
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+
     protected DVal codeGenMul(DecacCompiler compiler){
+        throw new UnsupportedOperationException("not yet implemented");
+//        return new NullOperand();
+    }
+
+    protected DVal codeGenDiv(DecacCompiler compiler){
         throw new UnsupportedOperationException("not yet implemented");
 //        return new NullOperand();
     }
