@@ -176,6 +176,9 @@ public class Identifier extends AbstractIdentifier {
             ClassDefinition currentClass) throws ContextualError {
         //throw new UnsupportedOperationException("not yet implemented");
     	ExpDefinition def = localEnv.get(name);
+    	if (def == null) {
+    		throw new ContextualError("le type de la variable n'est pas déclaré", this.getLocation());
+    	}
     	this.setDefinition(def);
     	this.setType(def.getType());
     	return this.getType();

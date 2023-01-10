@@ -8,5 +8,56 @@
 //    cree le 01/01/2023
 
 {
-        println("Hello, world!");
+		int c = ReadInt();
+		float cc = ReadFloat();
+		
+        int a;
+        int b = 3;
+        
+        float aa;
+        float bb = 3.0;
+        
+        boolean aaa;
+        boolean bbb = true;
+        
+        string s;
+        string ss = "ok";
+        
+        int d = a+b;
+        int dd = a-b;
+        int ddd = a*b;
+        int dddd = a/b;
+        int ddddd = a%b;
+        
+       	int k = -a;
+       	float kk = -aa;
+        
+        boolean test = aaa && bbb;
+        boolean tee = aaa || bbb;
+        boolean te = !aaa;
+                
+        a = 5;
+        aa = 5.0;
+        aaa = false;
+        
+        
+        println(a,b,aa,bb,s,ss);
+        
+        while (a<=3) {
+        println("ooo");
+        }
+        
+        while (a < 3) {
+        println("ooo");
+        }
+        
+        while (a > 3) {
+        println("ooo");
+        }
+        
+        while (a >= 3) {
+        println("ooo");
+        }
+        ;
+        
 }

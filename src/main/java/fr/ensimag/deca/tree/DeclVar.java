@@ -47,6 +47,9 @@ public class DeclVar extends AbstractDeclVar {
     	if (type.getName().equals("void")) {
     		throw new ContextualError("type = void impossible", this.getLocation());
     	}
+    	else if (type == null) {
+    		throw new ContextualError("le type de la variable n'est pas déclaré", this.getLocation());    		
+    	}
     	Type t1 = this.type.verifyType(compiler);
     	this.type.setDefinition(compiler.environmentType.defOfType(type.getName()));
 
@@ -54,7 +57,7 @@ public class DeclVar extends AbstractDeclVar {
     	
     	initialization.verifyInitialization(compiler, t1, localEnv, currentClass);    
     	try {
-    		ExpDefinition def =  new VariableDefinition(t1, this.getLocation());
+    		ExpDefinition def =  new VariableDefinition(t1, varName.getLocation());
     		localEnv.declare(name,def);
     		varName.setDefinition(def);
     		varName.setType(t1);
