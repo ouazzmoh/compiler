@@ -38,10 +38,16 @@ public class Initialization extends AbstractInitialization {
             EnvironmentExp localEnv, ClassDefinition currentClass)
             throws ContextualError {
         //throw new UnsupportedOperationException("not yet implemented");
+    	
+    	AbstractExpr exp = expression.verifyRValue(compiler, localEnv, currentClass, t);
+    	exp.verifyExpr(compiler, localEnv, currentClass);
+    	this.setExpression(exp);
+    	
+    	/*
     	Type var = expression.verifyExpr(compiler, localEnv, currentClass);
     	if (!var.sameType(t)) {
     		throw new ContextualError("la variable et la valeur n'ont pas le meme type", this.expression.getLocation());
-    	}
+    	}*/
     	
     }
 

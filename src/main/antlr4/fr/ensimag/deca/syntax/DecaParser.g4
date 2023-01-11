@@ -435,6 +435,8 @@ primary_expr returns[AbstractExpr tree]
         }
     | OPARENT expr CPARENT {
             assert($expr.tree != null);
+            $tree = $expr.tree;
+            setLocation($tree, $expr.start);
         }
     | READINT OPARENT CPARENT {
             $tree = new ReadInt();
@@ -468,14 +470,24 @@ type returns[AbstractIdentifier tree]
 
 literal returns[AbstractExpr tree]
     : INT {
-   		 $tree = new IntLiteral(Integer.parseInt($INT.text));
+    	 try {
+    	 	$tree = new IntLiteral(Integer.parseInt($INT.text));
+    	 } catch (NumberFormatException e) {
+    	 	throw new InvalidLitteralInt(this, $ctx);
+    	 }
    		 setLocation($tree, $INT);
    		 
         }
     | fd=FLOAT {
-    	 $tree = new FloatLiteral(Float.parseFloat($fd.text));
+    	 try {
+    	 	$tree = new FloatLiteral(Float.parseFloat($fd.text));
+    	 	if ( !($fd.text.equals("0.0")) && ((FloatLiteral) $tree).getValue() == 0) {
+    	 		throw new InvalidLitteralFloat(this, $ctx);
+    	 	}
+		 } catch (IllegalArgumentException e) {
+		 	throw new InvalidLitteralFloat(this, $ctx);
+		 }
     	 setLocation($tree, $fd);
-    	 
         }
     | STRING {
     	$tree = new StringLiteral($STRING.text);

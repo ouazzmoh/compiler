@@ -32,6 +32,8 @@ public class Assign extends AbstractBinaryExpr {
         //throw new UnsupportedOperationException("not yet implemented");
     	Type t1 = this.getLeftOperand().verifyExpr(compiler, localEnv, currentClass);
     	AbstractExpr exp = this.getRightOperand().verifyRValue(compiler, localEnv, currentClass, t1);
+    	exp.verifyExpr(compiler, localEnv, currentClass);
+    	this.setRightOperand(exp);
     	this.setType(t1);
     	return t1;
     }
