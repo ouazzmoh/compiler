@@ -38,8 +38,36 @@ public class Divide extends AbstractOpArith {
 
     @Override
     protected DVal codeGenDiv(DecacCompiler compiler){
+        DVal value = getRightOperand().codeGenDiv(compiler);
+        DVal register = getLeftOperand().codeGenDiv(compiler);
+        //TODO: Remove Ugly Cast
+        compiler.addInstruction(new QUO(value, (GPRegister) register));
+        return register;
+    }
+
+    //TODO: Prune some functions here
+    @Override
+    protected DVal codeGenMul(DecacCompiler compiler){
         DVal value = getRightOperand().codeGenMul(compiler);
         DVal register = getLeftOperand().codeGenMul(compiler);
+        //TODO: Remove Ugly Cast
+        compiler.addInstruction(new QUO(value, (GPRegister) register));
+        return register;
+    }
+
+    @Override
+    protected DVal codeGenSum(DecacCompiler compiler){
+        DVal value = getRightOperand().codeGenSum(compiler);
+        DVal register = getLeftOperand().codeGenSum(compiler);
+        //TODO: Remove Ugly Cast
+        compiler.addInstruction(new QUO(value, (GPRegister) register));
+        return register;
+    }
+
+    @Override
+    protected DVal codeGenSub(DecacCompiler compiler){
+        DVal value = getRightOperand().codeGenSub(compiler);
+        DVal register = getLeftOperand().codeGenSub(compiler);
         //TODO: Remove Ugly Cast
         compiler.addInstruction(new QUO(value, (GPRegister) register));
         return register;

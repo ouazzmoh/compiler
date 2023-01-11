@@ -38,8 +38,8 @@ public class Minus extends AbstractOpArith {
 
     @Override
     protected DVal codeGenSub(DecacCompiler compiler){
-        DVal value = getLeftOperand().codeGenSub(compiler);
-        DVal register = getRightOperand().codeGenSub(compiler);
+        DVal value = getRightOperand().codeGenSub(compiler);
+        DVal register = getLeftOperand().codeGenSub(compiler);
         //TODO: Remove Ugly Cast
         compiler.addInstruction(new SUB(value, (GPRegister) register));
         return register;
@@ -49,6 +49,24 @@ public class Minus extends AbstractOpArith {
     protected DVal codeGenSum(DecacCompiler compiler){
         DVal value = getRightOperand().codeGenSum(compiler);
         DVal register = getLeftOperand().codeGenSum(compiler);
+        //TODO: Remove Ugly Cast
+        compiler.addInstruction(new SUB(value, (GPRegister) register));
+        return register;
+    }
+
+    @Override
+    protected DVal codeGenMul(DecacCompiler compiler){
+        DVal value = getRightOperand().codeGenMul(compiler);
+        DVal register = getLeftOperand().codeGenMul(compiler);
+        //TODO: Remove Ugly Cast
+        compiler.addInstruction(new SUB(value, (GPRegister) register));
+        return register;
+    }
+
+    @Override
+    protected DVal codeGenDiv(DecacCompiler compiler){
+        DVal value = getRightOperand().codeGenDiv(compiler);
+        DVal register = getLeftOperand().codeGenDiv(compiler);
         //TODO: Remove Ugly Cast
         compiler.addInstruction(new SUB(value, (GPRegister) register));
         return register;

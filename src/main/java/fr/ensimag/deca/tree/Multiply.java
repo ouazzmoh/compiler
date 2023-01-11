@@ -43,10 +43,28 @@ public class Multiply extends AbstractOpArith {
         compiler.addInstruction(new MUL(value, (GPRegister) register));
         return register;
     }
+
+    @Override
+    protected DVal codeGenSub(DecacCompiler compiler){
+        DVal value = getRightOperand().codeGenSub(compiler);
+        DVal register = getLeftOperand().codeGenSub(compiler);
+        //TODO: Remove Ugly Cast
+        compiler.addInstruction(new MUL(value, (GPRegister) register));
+        return register;
+    }
     @Override
     protected DVal codeGenMul(DecacCompiler compiler){
         DVal value = getLeftOperand().codeGenMul(compiler);
         DVal register = getRightOperand().codeGenMul(compiler);
+        //TODO: Remove Ugly Cast
+        compiler.addInstruction(new MUL(value, (GPRegister) register));
+        return register;
+    }
+
+    @Override
+    protected DVal codeGenDiv(DecacCompiler compiler){
+        DVal value = getLeftOperand().codeGenDiv(compiler);
+        DVal register = getRightOperand().codeGenDiv(compiler);
         //TODO: Remove Ugly Cast
         compiler.addInstruction(new MUL(value, (GPRegister) register));
         return register;
