@@ -31,12 +31,15 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
     				return t1;
     			}
     			if (t1.isInt() && t2.isFloat()) {
-    				this.setLeftOperand(this.getLeftOperand().verifyRValue(compiler, localEnv, currentClass, t2));
+    				this.setLeftOperand(new ConvFloat(this.getLeftOperand()));
+    				//this.setLeftOperand(this.getLeftOperand().verifyRValue(compiler, localEnv, currentClass, t2));
     				this.setType(t2);
     				return t2;
     			}
     			if (t1.isFloat() && t2.isInt()) {
-    				this.setRightOperand(this.getRightOperand().verifyRValue(compiler, localEnv, currentClass, t1));
+    				this.setRightOperand(new ConvFloat(this.getRightOperand()));
+   				
+    				//this.setRightOperand(this.getRightOperand().verifyRValue(compiler, localEnv, currentClass, t1));
     				this.setType(t1);
     				return t1;
     			}

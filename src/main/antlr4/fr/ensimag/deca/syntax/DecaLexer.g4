@@ -16,6 +16,18 @@ options {
 fragment LETTER : 'a' .. 'z' | 'A' .. 'Z';
 fragment DIGIT : '0' .. '9';
 
+fragment NUM : DIGIT+;
+fragment SIGN: '+' | '-' ;
+fragment EXP: ( 'E' | 'e' ) SIGN? NUM;
+fragment DEC: NUM '.' NUM;
+fragment FI: ('F' | 'f');
+fragment FLOATDEC: (DEC | DEC EXP) FI?;
+fragment DIGITHEX: DIGIT | 'A'  ..  'F' | 'a'  ..  'f';
+fragment NUMHEX: DIGITHEX+;
+fragment FLOATHEX: ('0x' | '0X') NUMHEX '.' NUMHEX ('P' | 'p') SIGN? NUM FI?;
+
+
+
 INCLUDE: '#include' .* ';' { doInclude(getText()); };
 
 
@@ -58,7 +70,7 @@ IDENT: ( LETTER
 		| '_'
 		)*;
 
-FLOAT: DIGIT+ '.' (DIGIT)+;
+FLOAT: FLOATHEX | FLOATDEC;
 INT: DIGIT+;
 
 NEQ: '!=';
