@@ -8,5 +8,5 @@
 //    cree le 04/01/2023
 
 {
-    int a = 2147483650;             //2147483648 == 2^31 qui est le nombre max autorisé
+    int a = 2147483650;             //2147483647 == 2^31 qui est le nombre max autorisé
 }

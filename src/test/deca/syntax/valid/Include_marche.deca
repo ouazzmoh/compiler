@@ -1,4 +1,2 @@
-#include "Math.decah";
-{
-    
-}
+#include "hello.decah"
+#include "world.decah"

@@ -36,3 +36,15 @@ do
     test_synt_valide "$cas_de_test"
 done
 
+
+
+for cas_de_test in src/test/deca/syntax/invalid/provided/*.deca
+do
+    test_synt_invalide "$cas_de_test"
+done
+
+for cas_de_test in src/test/deca/syntax/valid/provided/*.deca
+do
+    test_synt_valide "$cas_de_test"
+done
+

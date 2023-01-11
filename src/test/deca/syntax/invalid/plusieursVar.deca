@@ -1,0 +1,13 @@
+// Description:
+//    attribuer plusieurs types à une varialbe
+//
+// Resultats:
+//    Erreur compilation
+//
+// Historique:
+//    cree le 04/01/2023
+
+class test1
+{
+    public int float a;        
+}

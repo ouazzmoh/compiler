@@ -1,0 +1,13 @@
+// Description:
+//    double inclusion
+//
+// Resultats:
+//    Une erreur de compilation
+//
+// Historique:
+//    cree le 04/01/2023
+#include "unknown_file.decah"
+#include "unknown_file.decah"
+{
+    println("Hello");          
+}

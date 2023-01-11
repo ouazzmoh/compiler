@@ -1,5 +1,5 @@
 // Description:
-//    Une boucle for qui a une condition manquante
+//    Une boucle while incomplete
 //
 // Resultats:
 //    Erreur
@@ -9,5 +9,5 @@
 
 {
     int i = 5;
-    for(i>)
+    while(i=5)
 }
