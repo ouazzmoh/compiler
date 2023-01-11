@@ -1,0 +1,12 @@
+// Description:
+//    condition valide
+//
+// Resultats:
+//    aucune erreur
+//
+// Historique:
+//    cree le 08/01/2023
+
+{
+    print(true);
+}
