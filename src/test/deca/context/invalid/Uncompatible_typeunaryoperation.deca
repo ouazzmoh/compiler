@@ -8,10 +8,10 @@
 //    cree le 08/01/2023
 
 {
-    int i= 2; int r; String s; float f=1.0; boolean b =true;
-    r=-s;
+    int i= 2; int r; float f=1.0; boolean b =true;
+
     r=-b;
-    r=!s;
+
     r=!i;
     r=!f;
     r=!b;

@@ -9,9 +9,9 @@
 
 {
     int i= 2; int r; float f=1.0; boolean b =true;
-//    r=-i;
-    println(r);
-//    r=-f;
-    println(r);
+    println(f);
+    f=-i;
+    println(f);
+
     b=!b;
 }
