@@ -275,5 +275,30 @@ public class Identifier extends AbstractIdentifier {
         return registerToUse;
     }
 
+    @Override
+    protected DVal codeGenSub(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
+        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
+        return registerToUse;
+    }
+
+    @Override
+    protected DVal codeGenMul(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
+        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
+        return registerToUse;
+    }
+
+    //TODO: Factoriser le code plus
+    @Override
+    protected DVal codeGenDiv(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
+        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
+        return registerToUse;
+    }
+
 
 }

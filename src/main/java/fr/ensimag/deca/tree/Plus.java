@@ -8,6 +8,7 @@ import fr.ensimag.ima.pseudocode.GPRegister;
 import fr.ensimag.ima.pseudocode.ImmediateInteger;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
 import fr.ensimag.ima.pseudocode.instructions.ADD;
+import fr.ensimag.ima.pseudocode.instructions.MUL;
 import fr.ensimag.ima.pseudocode.instructions.STORE;
 
 /**
@@ -71,5 +72,15 @@ public class Plus extends AbstractOpArith {
         //TODO: Remove Ugly Cast
         compiler.addInstruction(new ADD(value, (GPRegister) register));
         return register;
+    }
+
+    @Override
+    protected void codeGenAssign(DecacCompiler compiler, Identifier identifier){
+        DVal value = getLeftOperand().codeGenMul(compiler);
+        DVal register = getRightOperand().codeGenMul(compiler);
+        compiler.addInstruction(new ADD(value, (GPRegister) register));
+        compiler.addInstruction(new STORE((GPRegister)register, identifier.getExpDefinition().getOperand()));
+        compiler.getRegisterDescriptor().freeRegister((GPRegister)register);
+
     }
 }

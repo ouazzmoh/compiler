@@ -5,7 +5,6 @@ import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.ima.pseudocode.DAddr;
 import fr.ensimag.ima.pseudocode.DVal;
 import fr.ensimag.ima.pseudocode.GPRegister;
-import fr.ensimag.ima.pseudocode.instructions.MUL;
 import fr.ensimag.ima.pseudocode.instructions.QUO;
 import fr.ensimag.ima.pseudocode.instructions.STORE;
 
@@ -71,6 +70,16 @@ public class Divide extends AbstractOpArith {
         //TODO: Remove Ugly Cast
         compiler.addInstruction(new QUO(value, (GPRegister) register));
         return register;
+    }
+
+    @Override
+    protected void codeGenAssign(DecacCompiler compiler, Identifier identifier){
+        DVal value = getRightOperand().codeGenMul(compiler);
+        DVal register = getLeftOperand().codeGenMul(compiler);
+        compiler.addInstruction(new QUO(value, (GPRegister) register));
+        compiler.addInstruction(new STORE((GPRegister)register, identifier.getExpDefinition().getOperand()));
+        compiler.getRegisterDescriptor().freeRegister((GPRegister)register);
+
     }
 
 }

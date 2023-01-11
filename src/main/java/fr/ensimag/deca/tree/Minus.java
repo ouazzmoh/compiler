@@ -6,6 +6,7 @@ import fr.ensimag.ima.pseudocode.DAddr;
 import fr.ensimag.ima.pseudocode.DVal;
 import fr.ensimag.ima.pseudocode.GPRegister;
 import fr.ensimag.ima.pseudocode.instructions.ADD;
+import fr.ensimag.ima.pseudocode.instructions.MUL;
 import fr.ensimag.ima.pseudocode.instructions.SUB;
 import fr.ensimag.ima.pseudocode.instructions.STORE;
 
@@ -33,6 +34,7 @@ public class Minus extends AbstractOpArith {
         compiler.addInstruction(new SUB(value, (GPRegister) register));
         //TODO: The register cast is ugly
         compiler.addInstruction(new STORE((GPRegister)register, adr));
+        compiler.getRegisterDescriptor().freeRegister((GPRegister) register);
     }
 
 
@@ -70,6 +72,16 @@ public class Minus extends AbstractOpArith {
         //TODO: Remove Ugly Cast
         compiler.addInstruction(new SUB(value, (GPRegister) register));
         return register;
+    }
+
+    @Override
+    protected void codeGenAssign(DecacCompiler compiler, Identifier identifier){
+        DVal value = getRightOperand().codeGenMul(compiler);
+        DVal register = getLeftOperand().codeGenMul(compiler);
+        compiler.addInstruction(new SUB(value, (GPRegister) register));
+        compiler.addInstruction(new STORE((GPRegister)register, identifier.getExpDefinition().getOperand()));
+        compiler.getRegisterDescriptor().freeRegister((GPRegister)register);
+
     }
 
 }

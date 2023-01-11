@@ -33,6 +33,17 @@ public class Multiply extends AbstractOpArith {
         compiler.addInstruction(new MUL(value, (GPRegister) register));
         //TODO: The register cast is ugly
         compiler.addInstruction(new STORE((GPRegister)register, adr));
+        compiler.getRegisterDescriptor().freeRegister((GPRegister)register);
+    }
+
+    @Override
+    protected void codeGenAssign(DecacCompiler compiler, Identifier identifier){
+        DVal value = getLeftOperand().codeGenMul(compiler);
+        DVal register = getRightOperand().codeGenMul(compiler);
+        compiler.addInstruction(new MUL(value, (GPRegister) register));
+        compiler.addInstruction(new STORE((GPRegister)register, identifier.getExpDefinition().getOperand()));
+        compiler.getRegisterDescriptor().freeRegister((GPRegister)register);
+
     }
 
     @Override
