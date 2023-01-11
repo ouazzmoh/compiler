@@ -16,6 +16,12 @@ options {
 fragment LETTER : 'a' .. 'z' | 'A' .. 'Z';
 fragment DIGIT : '0' .. '9';
 
+fragment SLAS: '\\"';
+fragment SLASS: '\\\\';
+
+fragment FILENAME: (LETTER | DIGIT | '.' | '-' | '_')+;
+fragment STRING_CAR: (~('\n' | '\\'));
+
 fragment NUM : DIGIT+;
 fragment SIGN: '+' | '-' ;
 fragment EXP: ( 'E' | 'e' ) SIGN? NUM;
@@ -28,7 +34,7 @@ fragment FLOATHEX: ('0x' | '0X') NUMHEX '.' NUMHEX ('P' | 'p') SIGN? NUM FI?;
 
 
 
-INCLUDE: '#include' .* ';' { doInclude(getText()); };
+INCLUDE: '#include' (' ')* '"' FILENAME '"' { doInclude(getText()); };
 
 
 READINT: 'ReadInt';
@@ -95,7 +101,7 @@ EXCLAM: '!';
 
 
 
-STRING: '"' (~('\n'))*? '"' {setText(getText().substring(getText().indexOf('"')+1, getText().lastIndexOf('"')));};
+STRING: '"' (STRING_CAR | SLAS | SLASS)* '"' {setText(getText().substring(getText().indexOf('"')+1, getText().lastIndexOf('"')));};
 
 WS  :   ( ' '
         | '\t'
