@@ -10,13 +10,10 @@ import fr.ensimag.deca.context.StringType;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import java.io.PrintStream;
 
-import fr.ensimag.ima.pseudocode.DAddr;
-import fr.ensimag.ima.pseudocode.DVal;
-import fr.ensimag.ima.pseudocode.GPRegister;
-import fr.ensimag.ima.pseudocode.ImmediateFloat;
-import fr.ensimag.ima.pseudocode.ImmediateInteger;
+import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
 import fr.ensimag.ima.pseudocode.instructions.STORE;
+import fr.ensimag.ima.pseudocode.instructions.WFLOAT;
 import org.apache.commons.lang.Validate;
 
 /**
@@ -88,6 +85,12 @@ public class FloatLiteral extends AbstractExpr {
         compiler.addInstruction(new STORE(registerToUse, adr));
         compiler.getRegisterDescriptor().freeRegister(registerToUse);
 
+    }
+
+    @Override
+    protected void codeGenPrint(DecacCompiler compiler){
+        compiler.addInstruction(new LOAD(new ImmediateFloat(value), Register.R1));
+        compiler.addInstruction(new WFLOAT());
     }
 
 }

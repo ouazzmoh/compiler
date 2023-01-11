@@ -9,6 +9,7 @@ import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
 import fr.ensimag.ima.pseudocode.instructions.STORE;
+import fr.ensimag.ima.pseudocode.instructions.BRA;
 
 import java.io.PrintStream;
 
@@ -79,12 +80,20 @@ public class BooleanLiteral extends AbstractExpr {
         //TODO: Problem that in this case true(#1) is defined as the same immediate #1
         //TODO: Which means we need to know the type to understand what we refer to
         //TODO: Just like C
-        compiler.addInstruction(new LOAD(1, registerToUse));
+        compiler.addInstruction(new LOAD(valueToAdd, registerToUse));
         //update register descriptor
         compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(valueToAdd));
 
         compiler.addInstruction(new STORE(registerToUse, adr));
         compiler.getRegisterDescriptor().freeRegister(registerToUse);
     }
+
+    @Override
+    protected void codeGenInstWhile(DecacCompiler compiler,Label endWhile){
+        if(!this.value){
+            compiler.addInstruction(new BRA(endWhile));
+        }
+    }
+
 
 }

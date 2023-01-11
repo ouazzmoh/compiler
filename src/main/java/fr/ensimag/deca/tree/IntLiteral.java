@@ -11,6 +11,7 @@ import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
 import fr.ensimag.ima.pseudocode.instructions.STORE;
+import fr.ensimag.ima.pseudocode.instructions.ADD;
 
 import java.io.PrintStream;
 
@@ -77,6 +78,48 @@ public class IntLiteral extends AbstractExpr {
         compiler.addInstruction(new STORE(registerToUse, adr));
         compiler.getRegisterDescriptor().freeRegister(registerToUse);
 
+    }
+
+    @Override
+    protected void codeGenAssign(DecacCompiler compiler, Identifier identifer){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        compiler.addInstruction(new LOAD(value, registerToUse));
+        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(value));
+        compiler.addInstruction(new STORE(registerToUse, identifer.getExpDefinition().getOperand()));
+        compiler.getRegisterDescriptor().freeRegister(registerToUse);
+    }
+
+    @Override
+    protected DVal codeGenSum(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        compiler.addInstruction(new LOAD(value, registerToUse));
+        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(value));
+        return registerToUse;
+    }
+
+    @Override
+    protected DVal codeGenSub(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        compiler.addInstruction(new LOAD(value, registerToUse));
+        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(value));
+        return registerToUse;
+    }
+
+    @Override
+    protected DVal codeGenMul(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        compiler.addInstruction(new LOAD(value, registerToUse));
+        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(value));
+        return registerToUse;
+    }
+
+
+    @Override
+    protected DVal codeGenDiv(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        compiler.addInstruction(new LOAD(value, registerToUse));
+        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(value));
+        return registerToUse;
     }
 
 }

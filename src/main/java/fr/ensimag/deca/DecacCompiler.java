@@ -216,8 +216,7 @@ public class DecacCompiler {
         assert(prog.checkAllDecorations());
 
         addComment("start main program");
-        LOG.trace("Codegen is skipped");
-        //prog.codeGenProgram(this);
+        prog.codeGenProgram(this);
         addComment("end main program");
         LOG.debug("Generated assembly code:" + nl + program.display());
         LOG.info("Output file assembly file is: " + destName);

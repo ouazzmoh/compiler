@@ -42,4 +42,11 @@ public class Assign extends AbstractBinaryExpr {
         return "=";
     }
 
+    @Override
+    protected void codeGenInst(DecacCompiler compiler){
+            //Load right_operand(expr), left_operand(lvalue)
+        compiler.addComment("Assigning a variable");
+        this.getRightOperand().codeGenAssign(compiler, (Identifier) this.getLeftOperand());
+    }
+
 }
