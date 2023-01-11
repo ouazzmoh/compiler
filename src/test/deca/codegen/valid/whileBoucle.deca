@@ -1,0 +1,17 @@
+// Description:
+//    tests boucle while
+//
+// Resultats:
+//    ok
+// 
+// Historique:
+//    cree le 01/01/2023
+
+{
+    int i=3;
+    while(i){
+        println("ça marche");
+        i--;
+    }
+}
+

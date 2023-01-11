@@ -37,8 +37,8 @@ fragment FLOATHEX: ('0x' | '0X') NUMHEX '.' NUMHEX ('P' | 'p') SIGN? NUM FI?;
 INCLUDE: '#include' (' ')* '"' FILENAME '"' { doInclude(getText()); };
 
 
-READINT: 'ReadInt';
-READFLOAT: 'ReadFloat';
+READINT: 'readInt';
+READFLOAT: 'readFloat';
 
 
 COMMENTMONO: '//' (~('\n'))* { skip(); };
