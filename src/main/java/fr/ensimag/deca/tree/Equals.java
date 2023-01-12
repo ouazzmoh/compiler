@@ -3,11 +3,7 @@ package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.ima.pseudocode.*;
-import fr.ensimag.ima.pseudocode.instructions.CMP;
-import fr.ensimag.ima.pseudocode.instructions.BNE;
-import fr.ensimag.ima.pseudocode.instructions.LOAD;
-import fr.ensimag.ima.pseudocode.instructions.STORE;
-import fr.ensimag.ima.pseudocode.instructions.BRA;
+import fr.ensimag.ima.pseudocode.instructions.*;
 
 /**
  *
@@ -34,7 +30,7 @@ public class Equals extends AbstractOpExactCmp {
         compiler.addInstruction(new CMP(opLeft, opRight));// load left, r2
         Label falseComp = new Label("falseComp");
         Label end = new Label("end");
-        compiler.addInstruction(new BNE(falseComp)); // bne neq
+        compiler.addInstruction(new BEQ(falseComp)); // bne neq
 
         GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
         compiler.addInstruction(new LOAD(1, registerToUse)); // load 1, r
@@ -44,6 +40,27 @@ public class Equals extends AbstractOpExactCmp {
         compiler.addLabel(falseComp); // neq :
         compiler.addInstruction(new LOAD(0, registerToUse)); // load 0, r
         compiler.addInstruction(new STORE(registerToUse, adr)); // store r, adr
+        compiler.addLabel(end); // end:
+    }
+
+    @Override
+    protected void codeGenAssign(DecacCompiler compiler, Identifier identifier){
+        DVal opLeft = getLeftOperand().codeGenLoad(compiler);
+        //TODO: Add a try catch for GPRegister
+        GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler); //load right, r1
+        compiler.addInstruction(new CMP(opLeft, opRight));// load left, r2
+        Label falseComp = new Label("falseComp");
+        Label end = new Label("end");
+        compiler.addInstruction(new BEQ(falseComp)); // bne neq
+
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        compiler.addInstruction(new LOAD(1, registerToUse)); // load 1, r
+        compiler.addInstruction(new STORE(registerToUse, identifier.getExpDefinition().getOperand())); // store r, adr
+        //No need to update registerDescriptor because we load and store
+        compiler.addInstruction(new BRA(end)); // bra end
+        compiler.addLabel(falseComp); // neq :
+        compiler.addInstruction(new LOAD(0, registerToUse)); // load 0, r
+        compiler.addInstruction(new STORE(registerToUse, identifier.getExpDefinition().getOperand())); // store r, adr
         compiler.addLabel(end); // end:
     }
     
