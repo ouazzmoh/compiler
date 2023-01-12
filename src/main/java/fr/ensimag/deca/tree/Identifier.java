@@ -300,5 +300,13 @@ public class Identifier extends AbstractIdentifier {
         return registerToUse;
     }
 
+    @Override
+    protected DVal codeGenLoad(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        DVal toLoad = getExpDefinition().getOperand();
+        compiler.addInstruction(new LOAD(toLoad, registerToUse));
+        compiler.getRegisterDescriptor().useRegister(registerToUse, toLoad);
+        return registerToUse;
+    }
 
 }

@@ -122,4 +122,15 @@ public class IntLiteral extends AbstractExpr {
         return registerToUse;
     }
 
+    @Override
+    protected DVal codeGenLoad(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        compiler.addInstruction(new LOAD(value, registerToUse));
+        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(value));
+        return registerToUse;
+    }
+
+
+
+
 }

@@ -7,13 +7,10 @@ import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
-import fr.ensimag.ima.pseudocode.DVal;
-import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.*;
 
 import java.io.PrintStream;
 
-import fr.ensimag.ima.pseudocode.DAddr;
-import fr.ensimag.ima.pseudocode.NullOperand;
 import org.apache.commons.lang.Validate;
 
 /**
@@ -179,6 +176,10 @@ public abstract class AbstractExpr extends AbstractInst {
     protected DVal codeGenDiv(DecacCompiler compiler){
         throw new UnsupportedOperationException("not yet implemented");
 //        return new NullOperand();
+    }
+
+    protected DVal codeGenLoad(DecacCompiler compiler){
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
 

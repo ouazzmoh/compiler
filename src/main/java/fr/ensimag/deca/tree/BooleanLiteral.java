@@ -110,5 +110,21 @@ public class BooleanLiteral extends AbstractExpr {
         compiler.getRegisterDescriptor().freeRegister(registerToUse);
     }
 
+    @Override
+    protected DVal codeGenLoad(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        int toLoad = 0;
+        if(value){
+            toLoad = 1;
+        }
+        compiler.addInstruction(new LOAD(toLoad, registerToUse));
+        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(toLoad));
+        return registerToUse;
+    }
+
+
+
 
 }
+
+
