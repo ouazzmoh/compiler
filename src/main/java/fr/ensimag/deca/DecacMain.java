@@ -30,7 +30,7 @@ public class DecacMain {
         if (options.getPrintBanner()) {
 //            throw new UnsupportedOperationException("decac -b not yet implemented");
             System.out.print("***** team gl24 *****\n");
-            System.exit(1);
+            System.exit(0);
         }
         if (options.getSourceFiles().isEmpty()) {
 //            throw new UnsupportedOperationException("decac without argument not yet implemented");

@@ -206,7 +206,7 @@ public class DecacCompiler {
             throws DecacFatalError, LocationException {
         AbstractProgram prog = doLexingAndParsing(sourceName, err);
         if (compilerOptions.getOptionp()) {
-        	prog.decompile();
+        	prog.decompile(out);
         	return false;
         }
         if (prog == null) {
@@ -221,9 +221,6 @@ public class DecacCompiler {
         	return false;
         }
         assert(prog.checkAllDecorations());
-
-        //TODO: MAKE IT ONLY WHEN THE OPTION IS PASSED TO THE COMMENT
-        prog.decompile(out);
         //
 
         addComment("start main program");
