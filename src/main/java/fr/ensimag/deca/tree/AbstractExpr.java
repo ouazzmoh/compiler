@@ -10,6 +10,7 @@ import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.*;
 
 import java.io.PrintStream;
+import java.io.UncheckedIOException;
 
 import org.apache.commons.lang.Validate;
 
@@ -144,12 +145,10 @@ public abstract class AbstractExpr extends AbstractInst {
      * @param compiler
      */
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-        //TODO: Possibly make it abstract
         throw new UnsupportedOperationException("not yet implemented");
     }
 
     protected void codeGenInstWhile(DecacCompiler compiler,Label endWhile){
-        //TODO: Possibly make it abstract
         throw new UnsupportedOperationException("not yet implemented");
     }
 
@@ -181,6 +180,7 @@ public abstract class AbstractExpr extends AbstractInst {
         throw new UnsupportedOperationException("not yet implemented");
     }
 
+
     protected void codeGenAnd(DecacCompiler compiler, Label l){
         throw new UnsupportedOperationException("not yet implemented");
     }
@@ -188,6 +188,7 @@ public abstract class AbstractExpr extends AbstractInst {
     protected void codeGenIf(DecacCompiler compiler, Label label){
         throw new UnsupportedOperationException("not yet implemented");
     }
+
 
     @Override
     protected void decompileInst(IndentPrintStream s) {
