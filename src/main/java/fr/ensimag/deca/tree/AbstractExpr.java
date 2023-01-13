@@ -182,6 +182,13 @@ public abstract class AbstractExpr extends AbstractInst {
         throw new UnsupportedOperationException("not yet implemented");
     }
 
+    protected void codeGenAnd(DecacCompiler compiler, Label l){
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+
+    protected void codeGenIf(DecacCompiler compiler, Label label){
+        throw new UnsupportedOperationException("not yet implemented");
+    }
 
     @Override
     protected void decompileInst(IndentPrintStream s) {

@@ -7,9 +7,7 @@ import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.*;
-import fr.ensimag.ima.pseudocode.instructions.LOAD;
-import fr.ensimag.ima.pseudocode.instructions.STORE;
-import fr.ensimag.ima.pseudocode.instructions.BRA;
+import fr.ensimag.ima.pseudocode.instructions.*;
 
 import java.io.PrintStream;
 
@@ -120,6 +118,34 @@ public class BooleanLiteral extends AbstractExpr {
         compiler.addInstruction(new LOAD(toLoad, registerToUse));
         compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(toLoad));
         return registerToUse;
+    }
+
+    @Override
+    protected void codeGenAnd(DecacCompiler compiler, Label label){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        if (value){
+            compiler.addInstruction(new LOAD(1, registerToUse));
+        }
+        else{
+            compiler.addInstruction(new LOAD(0, registerToUse));
+        }
+
+        compiler.addInstruction(new CMP(0, registerToUse));
+        compiler.addInstruction(new BEQ(label));
+    }
+
+    @Override
+    protected void codeGenIf(DecacCompiler compiler, Label label){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        if (value){
+            compiler.addInstruction(new LOAD(1, registerToUse));
+        }
+        else{
+            compiler.addInstruction(new LOAD(0, registerToUse));
+        }
+
+        compiler.addInstruction(new CMP(0, registerToUse));
+        compiler.addInstruction(new BEQ(label));
     }
 
 

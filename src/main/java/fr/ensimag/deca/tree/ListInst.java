@@ -45,4 +45,9 @@ public class ListInst extends TreeList<AbstractInst> {
             s.println();
         }
     }
+
+    public String uniqueNum(){
+        String[] parts = this.toString().split("@");
+        return parts[1];
+    }
 }

@@ -7,6 +7,8 @@ import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import java.io.PrintStream;
+
+import fr.ensimag.ima.pseudocode.Label;
 import org.apache.commons.lang.Validate;
 
 /**
@@ -41,7 +43,38 @@ public class IfThenElse extends AbstractInst {
 
     @Override
     protected void codeGenInst(DecacCompiler compiler) {
-        throw new UnsupportedOperationException("not yet implemented");
+        Label endIf = new Label("endIf.l" + getLocation().getLine() + ".c" + getLocation().getPositionInLine());
+//        Label elseIf = new Label("elseIf.l" + elseBranch.uniqueNum());
+//        condition.codeGenIf(compiler, elseIf);
+//        for (AbstractInst i : thenBranch.getList()){
+//            i.codeGenInstIf(compiler, endIf);
+//        }
+//        compiler.addLabel(elseIf);
+//        for (AbstractInst i : elseBranch.getList()){
+//            i.codeGenInstIf(compiler, endIf);
+//        }
+        this.codeGenInstIfRec(compiler, endIf);
+        compiler.addLabel(endIf);
+    }
+
+
+    @Override
+    protected void codeGenInstIfRec(DecacCompiler compiler, Label endIf) {
+        Label elseIf = new Label("elseIf.l" + elseBranch.uniqueNum());
+        condition.codeGenIf(compiler, elseIf);
+        for (AbstractInst i : thenBranch.getList()){
+            i.codeGenInstIfRec(compiler, endIf);
+        }
+        compiler.addLabel(elseIf);
+        for (AbstractInst i : elseBranch.getList()){
+            i.codeGenInstIfRec(compiler, endIf);
+        }
+    }
+
+    @Override
+    protected void codeGenInstIf(DecacCompiler compiler, Label endIf){
+        this.codeGenInstIfRec(compiler, endIf);
+
     }
 
     @Override
