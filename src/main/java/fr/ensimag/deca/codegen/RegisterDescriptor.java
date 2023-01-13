@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class RegisterDescriptor {
 
-    private Map<Operand, GPRegister> usedRegisterMap = new HashMap<Operand, GPRegister>();
+    private Map<Operand, Operand> usedRegisterMap = new HashMap<Operand, Operand>();
     private LinkedList<GPRegister> freeRegisterList = new LinkedList<GPRegister>();
 
     /**
@@ -27,12 +27,12 @@ public class RegisterDescriptor {
         }
     }
 
-    public void setUsedRegisterMap(Map<Operand, GPRegister> usedRegisterMap) {
+    public void setUsedRegisterMap(Map<Operand, Operand> usedRegisterMap) {
         this.usedRegisterMap = usedRegisterMap;
     }
 
 
-    public Map<Operand, GPRegister> getUsedRegisterMap() {
+    public Map<Operand, Operand> getUsedRegisterMap() {
         return usedRegisterMap;
     }
 
@@ -58,7 +58,7 @@ public class RegisterDescriptor {
      */
     public void useRegister(GPRegister register, Operand op){
         freeRegisterList.remove(register);
-        usedRegisterMap.put(op, register);
+        usedRegisterMap.put(register, op);
     }
 
 
@@ -67,9 +67,11 @@ public class RegisterDescriptor {
         return freeRegisterList.get(0);
     }
 
-    public GPRegister getRegForVal(Operand op){
+    public Operand getValForReg(Operand op){
         return usedRegisterMap.get(op);
     }
+
+
 
 
 }
