@@ -101,7 +101,7 @@ EXCLAM: '!';
 
 
 
-STRING: '"' (STRING_CAR | SLAS | SLASS)* '"' {setText(getText().substring(getText().indexOf('"')+1, getText().lastIndexOf('"')));};
+STRING: '"' (STRING_CAR | SLAS | SLASS)*? '"' {setText(getText().substring(getText().indexOf('"')+1, getText().lastIndexOf('"')));};
 
 WS  :   ( ' '
         | '\t'

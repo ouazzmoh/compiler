@@ -8,6 +8,6 @@
 //    cree le 08/01/2023
 
 {
-    boolean a=true; int b=5;
-    a+b;
+    boolean a=true;float c=3.0;
+    a%c;
 }

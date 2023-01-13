@@ -8,8 +8,8 @@
 //    cree le 01/01/2023
 
 {
-		int c = ReadInt();
-		float cc = ReadFloat();
+	int c = readInt();
+	float cc = readFloat();
 		
         int a;
         int b = 3;

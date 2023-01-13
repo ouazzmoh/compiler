@@ -83,6 +83,7 @@ public abstract class AbstractDecaLexer extends Lexer {
             }
             return true;
         } catch (DecaRecognitionException e) {
+        	LOG.debug(e.getLocation().getFilename());
             new LocationException(e.getMessage(), e.getLocation()).display(System.err);
             return true;
         }
@@ -206,10 +207,11 @@ public abstract class AbstractDecaLexer extends Lexer {
             newInput = findFile(name);
         } catch (IOException e1) {
             // The file is probably there but not readable.
-            throw new IncludeFileNotFound(name, this, getInputStream());
+                throw new IncludeFileNotFound(name, this, getInputStream());
         }
         for (IncludeSaveStruct s : includes) {
             if (newInput.getSourceName().equals(s.input.getSourceName())) {
+            	LOG.debug(name);
                 throw new CircularInclude(name, this, this.getInputStream());
             }
         }

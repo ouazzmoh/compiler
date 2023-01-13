@@ -82,6 +82,7 @@ list_decl_var[ListDeclVar l, AbstractIdentifier t]
     : dv1=decl_var[$t] {
         $l.add($dv1.tree);
         } (COMMA dv2=decl_var[$t] {
+        	$l.add($dv2.tree);
         }
       )*
     ;
@@ -185,7 +186,6 @@ inst returns[AbstractInst tree]
 if_then_else returns[IfThenElse tree]
 @init {
     ListInst instructions_else = new ListInst();
-    ListInst tousLesinstructions = new ListInst();
 }
     : if1=IF OPARENT condition=expr CPARENT OBRACE li_if=list_inst CBRACE {
         assert($condition.tree != null);
@@ -196,7 +196,7 @@ if_then_else returns[IfThenElse tree]
       (ELSE elsif=IF OPARENT elsif_cond=expr CPARENT OBRACE elsif_li=list_inst CBRACE {
         assert($elsif_cond.tree != null);
         assert($elsif_li.tree != null);
-        IfThenElse t = new IfThenElse($elsif_cond.tree, $elsif_li.tree, tousLesinstructions);
+        IfThenElse t = new IfThenElse($elsif_cond.tree, $elsif_li.tree, new ListInst());
         setLocation(t, $elsif);
         instructions_else.add(t);
         }
@@ -212,8 +212,10 @@ if_then_else returns[IfThenElse tree]
     ;
 
 list_expr returns[ListExpr tree]
+@init {
+	$tree = new ListExpr();
+}
     : (e1=expr {
-    		$tree = new ListExpr();
     		$tree.add($e1.tree);
     		setLocation($tree, $e1.start);
         }
@@ -432,6 +434,7 @@ primary_expr returns[AbstractExpr tree]
     | m=ident OPARENT args=list_expr CPARENT {
             assert($args.tree != null);
             assert($m.tree != null);
+            $tree = new Methode($m.tree, $args.tree);
         }
     | OPARENT expr CPARENT {
             assert($expr.tree != null);

@@ -8,5 +8,69 @@
 //    cree le 04/01/2023
 
 {
-    println("Hello world!");        
+
+    float c;
+    int b, a = 5;
+
+    boolean a = false;
+    boolean b = true;
+    
+    boolean c = false;
+    
+    if (c && b || a) {
+    	println("c bon");
+    }
+    
+    else {
+    	println("no");
+    }
+    
+    if (c || b && a || a) {
+    	println("c bon");
+    }
+    
+    else {
+    	println("no");
+    }
+    
+    
+    if (a == 5) {
+    	println("ok");
+    }
+    
+    if ( a!= 0) {
+    	println("ok");
+    
+    }
+    
+    while (a <= 0) {
+    	a = a-2;
+    }
+    
+    while (a < 0) {
+    	a = 0;
+    }
+    
+    while ( a >= 0 && a <= 6) {
+    	a = a +1;
+    	a = a*1;
+    	a = a/1;
+    }
+    
+    a = a%5;
+    
+    b = readInt();
+    c = readFloat();
+    
+    
+    println("Hello world!");      
+    printx("hhhhhhh");
+    println();
+    printx();
+    print();
+    println();
+    
+    println("hello", "", "world");
+    
+
 }

@@ -1,0 +1,12 @@
+// Description:
+//    printlnx boolean ;
+//
+// Resultats:
+//    Erreur
+//
+// Historique:
+//    cree le 04/01/2023
+
+{
+    printlnx(true);
+}
