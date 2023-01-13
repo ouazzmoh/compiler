@@ -36,7 +36,7 @@ public class And extends AbstractOpBool {
         compiler.addLabel(new Label("line" + getRightOperand().getLocation().getLine() +
                 "col"+getRightOperand().getLocation().getPositionInLine()));
         getRightOperand().codeGenAnd(compiler, falseLab);
-
+        compiler.addLabel(falseLab);
     }
 
     @Override
