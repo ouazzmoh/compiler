@@ -154,29 +154,28 @@ public abstract class AbstractExpr extends AbstractInst {
     }
 
     protected void codeGenAssign(DecacCompiler compiler, Identifier identifier){
-        //TODO : Make it abstract
-        throw new UnsupportedOperationException("not yet implemented");
+        this.codeGenInit(compiler, identifier.getExpDefinition().getOperand());
     }
 
 //    protected void codeGenSum(DecacCompiler compiler){};
 
-    protected DVal codeGenSum(DecacCompiler compiler){
-        throw new UnsupportedOperationException("not yet implemented");
-    }
+//    protected DVal codeGenSum(DecacCompiler compiler){
+//        throw new UnsupportedOperationException("not yet implemented");
+//    }
+//
+//    protected DVal codeGenSub(DecacCompiler compiler){
+//        throw new UnsupportedOperationException("not yet implemented");
+//    }
+//
+//    protected DVal codeGenMul(DecacCompiler compiler){
+//        throw new UnsupportedOperationException("not yet implemented");
+////        return new NullOperand();
+//    }
 
-    protected DVal codeGenSub(DecacCompiler compiler){
-        throw new UnsupportedOperationException("not yet implemented");
-    }
-
-    protected DVal codeGenMul(DecacCompiler compiler){
-        throw new UnsupportedOperationException("not yet implemented");
-//        return new NullOperand();
-    }
-
-    protected DVal codeGenDiv(DecacCompiler compiler){
-        throw new UnsupportedOperationException("not yet implemented");
-//        return new NullOperand();
-    }
+//    protected DVal codeGenDiv(DecacCompiler compiler){
+//        throw new UnsupportedOperationException("not yet implemented");
+////        return new NullOperand();
+//    }
 
     protected DVal codeGenLoad(DecacCompiler compiler){
         throw new UnsupportedOperationException("not yet implemented");
