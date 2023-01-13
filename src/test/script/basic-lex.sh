@@ -31,12 +31,13 @@ else
 fi
 
 # Ligne 10 codée en dur. Il faudrait stocker ça quelque part ...
-if test_lex src/test/deca/syntax/invalid/provided/chaine_incomplete.deca 2>&1
-
+if test_lex src/test/deca/syntax/invalid/provided/chaine_incomplete.deca 2>&1 \
+    | grep -q -e 'chaine_incomplete.deca:10:'
 then
     echo "Echec attendu pour test_lex"
 else
     echo "Erreur non detectee par test_lex pour chaine_incomplete.deca"
     exit 1
 fi
+
 
