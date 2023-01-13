@@ -8,7 +8,7 @@
 //    cree le 08/01/2023
 
 {
-    print(1);
-    print(1.0);
-    print("Hi GL24");
+    println("ok");
+//    print(1.0);
+//    print("Hi GL24");
 }

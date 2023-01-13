@@ -158,7 +158,7 @@ public class DecacCompiler {
      */
     public boolean compile() {
         String sourceFile = source.getAbsolutePath();
-        String destFile = "test.ass";
+        String destFile = sourceFile.substring(0, sourceFile.lastIndexOf('.')) + ".ass";
         // A FAIRE: calculer le nom du fichier .ass à partir du nom du
         // A FAIRE: fichier .deca.
         PrintStream err = System.err;
@@ -204,7 +204,10 @@ public class DecacCompiler {
             PrintStream out, PrintStream err)
             throws DecacFatalError, LocationException {
         AbstractProgram prog = doLexingAndParsing(sourceName, err);
-
+        if (compilerOptions.getOptionp()) {
+        	prog.decompile();
+        	return false;
+        }
         if (prog == null) {
             LOG.info("Parsing failed");
             return true;
@@ -213,6 +216,9 @@ public class DecacCompiler {
 
 
         prog.verifyProgram(this);
+        if (compilerOptions.getOptionv()) {
+        	return false;
+        }
         assert(prog.checkAllDecorations());
 
         addComment("start main program");
