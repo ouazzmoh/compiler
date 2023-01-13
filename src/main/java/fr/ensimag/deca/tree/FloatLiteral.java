@@ -93,4 +93,13 @@ public class FloatLiteral extends AbstractExpr {
         compiler.addInstruction(new WFLOAT());
     }
 
+    @Override
+    protected DVal codeGenLoad(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        ImmediateFloat toLoad = new ImmediateFloat(value);
+        compiler.addInstruction(new LOAD(toLoad, registerToUse));
+        compiler.getRegisterDescriptor().useRegister(registerToUse, toLoad);
+        return registerToUse;
+    }
+
 }

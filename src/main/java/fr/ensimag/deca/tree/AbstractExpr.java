@@ -7,13 +7,10 @@ import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
-import fr.ensimag.ima.pseudocode.DVal;
-import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.*;
 
 import java.io.PrintStream;
 
-import fr.ensimag.ima.pseudocode.DAddr;
-import fr.ensimag.ima.pseudocode.NullOperand;
 import org.apache.commons.lang.Validate;
 
 /**
@@ -157,30 +154,40 @@ public abstract class AbstractExpr extends AbstractInst {
     }
 
     protected void codeGenAssign(DecacCompiler compiler, Identifier identifier){
-        //TODO : Make it abstract
-        throw new UnsupportedOperationException("not yet implemented");
+        this.codeGenInit(compiler, identifier.getExpDefinition().getOperand());
     }
 
 //    protected void codeGenSum(DecacCompiler compiler){};
 
-    protected DVal codeGenSum(DecacCompiler compiler){
+//    protected DVal codeGenSum(DecacCompiler compiler){
+//        throw new UnsupportedOperationException("not yet implemented");
+//    }
+//
+//    protected DVal codeGenSub(DecacCompiler compiler){
+//        throw new UnsupportedOperationException("not yet implemented");
+//    }
+//
+//    protected DVal codeGenMul(DecacCompiler compiler){
+//        throw new UnsupportedOperationException("not yet implemented");
+////        return new NullOperand();
+//    }
+
+//    protected DVal codeGenDiv(DecacCompiler compiler){
+//        throw new UnsupportedOperationException("not yet implemented");
+////        return new NullOperand();
+//    }
+
+    protected DVal codeGenLoad(DecacCompiler compiler){
         throw new UnsupportedOperationException("not yet implemented");
     }
 
-    protected DVal codeGenSub(DecacCompiler compiler){
+    protected void codeGenAnd(DecacCompiler compiler, Label l){
         throw new UnsupportedOperationException("not yet implemented");
     }
 
-    protected DVal codeGenMul(DecacCompiler compiler){
+    protected void codeGenIf(DecacCompiler compiler, Label label){
         throw new UnsupportedOperationException("not yet implemented");
-//        return new NullOperand();
     }
-
-    protected DVal codeGenDiv(DecacCompiler compiler){
-        throw new UnsupportedOperationException("not yet implemented");
-//        return new NullOperand();
-    }
-
 
     @Override
     protected void decompileInst(IndentPrintStream s) {
