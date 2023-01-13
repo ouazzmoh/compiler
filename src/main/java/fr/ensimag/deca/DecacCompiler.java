@@ -9,6 +9,7 @@ import fr.ensimag.deca.tools.SymbolTable;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
 import fr.ensimag.deca.tree.AbstractProgram;
 import fr.ensimag.deca.tree.LocationException;
+import fr.ensimag.deca.tree.Print;
 import fr.ensimag.ima.pseudocode.AbstractLine;
 import fr.ensimag.ima.pseudocode.IMAProgram;
 import fr.ensimag.ima.pseudocode.Instruction;
@@ -220,6 +221,10 @@ public class DecacCompiler {
         	return false;
         }
         assert(prog.checkAllDecorations());
+
+        //TODO: MAKE IT ONLY WHEN THE OPTION IS PASSED TO THE COMMENT
+        prog.decompile(out);
+        //
 
         addComment("start main program");
         prog.codeGenProgram(this);
