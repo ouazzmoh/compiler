@@ -7,6 +7,7 @@ import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.DAddr;
+import fr.ensimag.ima.pseudocode.DVal;
 import fr.ensimag.ima.pseudocode.instructions.RFLOAT;
 import fr.ensimag.ima.pseudocode.instructions.RINT;
 import fr.ensimag.ima.pseudocode.instructions.WFLOAT;
@@ -49,6 +50,12 @@ public class ReadFloat extends AbstractReadExpr {
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
         compiler.addInstruction(new RFLOAT());
         super.codeGenInit(compiler, adr);
+    }
+
+    @Override
+    protected DVal codeGenLoad(DecacCompiler compiler){
+        compiler.addInstruction(new RFLOAT());
+        return super.codeGenLoad(compiler);
     }
 
     @Override

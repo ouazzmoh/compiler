@@ -212,9 +212,9 @@ public abstract class AbstractExpr extends AbstractInst {
 //        throw new UnsupportedOperationException("not yet implemented");
 //    }
 //
-//    protected void codeGenOr(DecacCompiler compiler, Label l){
-//        throw new UnsupportedOperationException("not yet implemented");
-//    }
+    protected void codeGenBeq(DecacCompiler compiler, Label l1, Label l2){
+        throw new UnsupportedOperationException("not yet implemented");
+    }
 
 //    protected void codeGenIf(DecacCompiler compiler, Label label){
 //        throw new UnsupportedOperationException("not yet implemented");

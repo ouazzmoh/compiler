@@ -2,9 +2,7 @@ package fr.ensimag.deca.tree;
 
 
 import fr.ensimag.deca.DecacCompiler;
-import fr.ensimag.ima.pseudocode.DAddr;
-import fr.ensimag.ima.pseudocode.GPRegister;
-import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.BRA;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
 import fr.ensimag.ima.pseudocode.instructions.STORE;
@@ -29,31 +27,45 @@ public class Or extends AbstractOpBool {
     @Override
     protected int getP(){return 1;}
 
-//    @Override
-//    protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-//        Label falseLeft = new Label("lab1");
-//        Label falseRight = new Label("lab2");
-//        Label end = new Label("end");
-//        GPRegister reg =  compiler.getRegisterDescriptor().getFreeReg();
-//        int p = this.getP(); //return 0 for AND; 1 for OR
-//        getLeftOperand().codeGenOr(compiler, falseLeft);
-//        compiler.addInstruction(new LOAD(1, reg));
-//        compiler.addInstruction(new STORE(reg, adr));
-//        compiler.addInstruction(new BRA(end));
-//        compiler.addLabel(falseLeft);
-//        //LOAD 1 TO ADR AND BRA TO END
-//        //LABEL FALSE AND.1
-//        getRightOperand().codeGenOr(compiler, falseRight);
-//        compiler.addInstruction(new LOAD(1, reg));
-//        compiler.addInstruction(new STORE(reg, adr));
-//        compiler.addInstruction(new BRA(end));
-//        compiler.addLabel(falseRight);
-//        //LOAD 1 TO ADR AND BRA TO END
-//        // LABEL FALSE AND.2
-//        compiler.addInstruction(new LOAD(0,reg));
-//        compiler.addInstruction(new STORE(reg, adr));
-//        compiler.addInstruction(new BRA(end));
-//        compiler.addLabel(end);
-//    }
+    protected DVal codeGenLoad(DecacCompiler compiler, Label label){
+        GPRegister register = (GPRegister) compiler.getRegisterDescriptor().getFreeReg(); // reg where value is returned
+        Label checkOrLeft = new Label("or.left.l" + getLocation().getLine() + ".c" +
+                getLocation().getPositionInLine());
+        Label checkOrRight = new Label("or.right.l" + getLocation().getLine() + ".c" +
+                getLocation().getPositionInLine());
+        Label trueOr = new Label("true.or.l" + getLocation().getLine() + ".c" +
+                getLocation().getPositionInLine());
+        Label falseOr = new Label("false.or.l" + getLocation().getLine() + ".c" +
+                getLocation().getPositionInLine());
+
+        compiler.addLabel(checkOrLeft);
+
+        getLeftOperand().codeGenBeq(compiler, trueOr, checkOrRight);
+
+        compiler.addLabel(checkOrRight);
+
+        getRightOperand().codeGenBeq(compiler, trueOr, falseOr);
+
+        compiler.addLabel(trueOr);
+        compiler.addInstruction(new LOAD(1, register));
+        compiler.addInstruction(new BRA(label));
+        compiler.addLabel(falseOr);
+        compiler.addInstruction(new LOAD(0, register));
+        compiler.addInstruction(new BRA(label));
+
+        compiler.getRegisterDescriptor().useRegister(register, new ImmediateInteger(1)); //TODO remove value from reg
+
+        compiler.addLabel(label);
+        return register;
+    }
+//TODO: Remove the value of the register from the reg descriptor
+
+    //TODO: Empty main init
+    @Override
+    protected DVal codeGenLoad(DecacCompiler compiler){
+        Label endOr = new Label("end.or.l" + getLocation().getLine() + ".c" +
+                getLocation().getPositionInLine());
+        return codeGenLoad(compiler, endOr);
+    }
 
 }

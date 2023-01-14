@@ -310,6 +310,8 @@ public class Identifier extends AbstractIdentifier {
 //
 //    }
 
+    //TODO: Turn getExpDefinition to getVarDefinition
+
     @Override
     protected void codeGenBeq(DecacCompiler compiler, Label label, int p){
         GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();

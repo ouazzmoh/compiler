@@ -38,34 +38,18 @@ public abstract class AbstractOpBool extends AbstractBinaryExpr {
     	throw new ContextualError("types not permetted for" + this.getOperatorName(), this.getLocation());
     }
 
-//	@Override
-//	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-//		Label lab1 = new Label("lab1");
-//		Label lab2 = new Label("lab2");
-//		Label end = new Label("end");
-//		int p = this.getP(); //return 0 for AND; 1 for OR
-//		getLeftOperand().codeGenBeq(compiler, lab1, p);
-//		//LOAD 1 TO ADR AND BRA TO END
-//		//LABEL FALSE AND.1
-//		getRightOperand().codeGenBeq(compiler, lab1, p);
-//		//LOAD 1 TO ADR AND BRA TO END
-//		// LABEL FALSE AND.2
-//		compiler.addInstruction(new BRA(lab2));
-//		compiler.addLabel(lab1);
-//		GPRegister reg =  compiler.getRegisterDescriptor().getFreeReg();
-//		compiler.addInstruction(new LOAD(p,reg));
-//		compiler.addInstruction(new STORE(reg, adr));
-//		compiler.addInstruction(new BRA(end));
-//		compiler.addLabel(lab2);
-//		compiler.addInstruction(new LOAD(1-p,reg));
-//		compiler.addInstruction(new STORE(reg, adr));
-//		compiler.addLabel(end);
-//	}
 
 	@Override
 	protected void codeGenBeq(DecacCompiler compiler, Label label, int p){
 		getLeftOperand().codeGenBeq(compiler, label, p);
 		getRightOperand().codeGenBeq(compiler, label, p);
+	}
+
+	@Override
+	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+		GPRegister result = (GPRegister) codeGenLoad(compiler);
+		compiler.addInstruction(new STORE(result, adr));
+		compiler.getRegisterDescriptor().freeRegister(result);
 	}
 
 	protected abstract int getP();
