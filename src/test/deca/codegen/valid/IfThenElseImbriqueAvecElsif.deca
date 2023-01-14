@@ -8,7 +8,7 @@
 //    cree le 13/01/2023
 
 {
-    boolean a = false;
+    boolean a = true;
     boolean b = false;
     boolean c = true;
     if(a){
