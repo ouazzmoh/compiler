@@ -1,7 +1,12 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import java.io.PrintStream;
+
+import fr.ensimag.ima.pseudocode.DAddr;
+import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.instructions.STORE;
 import org.apache.commons.lang.Validate;
 
 /**
@@ -41,6 +46,13 @@ public abstract class AbstractUnaryExpr extends AbstractExpr {
     @Override
     protected void prettyPrintChildren(PrintStream s, String prefix) {
         operand.prettyPrint(s, prefix, true);
+    }
+
+    @Override
+    protected void codeGenInit(DecacCompiler compiler, DAddr adr) {
+        GPRegister valueReg = (GPRegister) codeGenLoad(compiler);
+        compiler.addInstruction(new STORE(valueReg, adr));
+        compiler.getRegisterDescriptor().freeRegister(valueReg);
     }
 
 }

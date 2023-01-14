@@ -1,6 +1,13 @@
 package fr.ensimag.deca.tree;
 
 
+import fr.ensimag.deca.DecacCompiler;
+import fr.ensimag.ima.pseudocode.DAddr;
+import fr.ensimag.ima.pseudocode.DVal;
+import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.instructions.*;
+
 /**
  * Operator "x >= y"
  * 
@@ -18,5 +25,15 @@ public class GreaterOrEqual extends AbstractOpIneq {
     protected String getOperatorName() {
         return ">=";
     }
+
+
+    protected void codeGenMnem(DecacCompiler compiler, Label label){
+        compiler.addInstruction(new BGE(label));
+    }
+
+    protected void codeGenMnemOpp(DecacCompiler compiler, Label label){
+        compiler.addInstruction(new BLT(label));
+    }
+
 
 }

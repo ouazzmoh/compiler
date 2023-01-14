@@ -6,6 +6,7 @@ import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.Label;
 
 /**
  * Instruction
@@ -42,5 +43,13 @@ public abstract class AbstractInst extends Tree {
      */
     protected void decompileInst(IndentPrintStream s) {
         decompile(s);
+    }
+
+    protected void codeGenInstIf(DecacCompiler compiler, Label label){
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    protected void codeGenInstIfRec(DecacCompiler compiler, Label endIf) {
+        throw new UnsupportedOperationException("not implemented yet");
     }
 }

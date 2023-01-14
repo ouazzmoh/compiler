@@ -5,6 +5,12 @@ import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.ima.pseudocode.DAddr;
+import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.instructions.BRA;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.STORE;
 
 /**
  *
@@ -31,5 +37,21 @@ public abstract class AbstractOpBool extends AbstractBinaryExpr {
     	}
     	throw new ContextualError("types not permetted for" + this.getOperatorName(), this.getLocation());
     }
+
+
+	@Override
+	protected void codeGenBeq(DecacCompiler compiler, Label label, int p){
+		getLeftOperand().codeGenBeq(compiler, label, p);
+		getRightOperand().codeGenBeq(compiler, label, p);
+	}
+
+	@Override
+	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+		GPRegister result = (GPRegister) codeGenLoad(compiler);
+		compiler.addInstruction(new STORE(result, adr));
+		compiler.getRegisterDescriptor().freeRegister(result);
+	}
+
+	protected abstract int getP();
 
 }

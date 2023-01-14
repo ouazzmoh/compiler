@@ -20,12 +20,7 @@ import fr.ensimag.deca.codegen.RegisterDescriptor;
 import java.io.PrintStream;
 
 import fr.ensimag.ima.pseudocode.*;
-import fr.ensimag.ima.pseudocode.instructions.LOAD;
-import fr.ensimag.ima.pseudocode.instructions.WINT;
-import fr.ensimag.ima.pseudocode.instructions.WFLOAT;
-import fr.ensimag.ima.pseudocode.instructions.WSTR;
-import fr.ensimag.ima.pseudocode.instructions.BEQ;
-import fr.ensimag.ima.pseudocode.instructions.CMP;
+import fr.ensimag.ima.pseudocode.instructions.*;
 
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
@@ -241,8 +236,6 @@ public class Identifier extends AbstractIdentifier {
 
     @Override
     protected void codeGenPrint(DecacCompiler compiler){
-
-        //TODO : put the register R1 to its init state
         if (this.getType().isInt()) {
             compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
             compiler.addInstruction(new WINT());
@@ -250,55 +243,88 @@ public class Identifier extends AbstractIdentifier {
             compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
             compiler.addInstruction(new WFLOAT());
         }
-        //TODO: Check if we can print booleans
         else{
-            throw new UnsupportedOperationException("not yet implemented");
+            throw new DecacInternalError("Cannot print expression");
         }
 
     }
 
-    @Override
-    public void codeGenInstWhile(DecacCompiler compiler,Label endWhile){
-        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg(); //returns a free register
-        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
-        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
-        compiler.addInstruction(new CMP(new ImmediateInteger(0) , registerToUse));
-        compiler.addInstruction(new BEQ(endWhile));
-        //TODO: Free the register after use
-    }
+//    @Override
+//    public void codeGenInstWhile(DecacCompiler compiler,Label endWhile){
+//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg(); //returns a free register
+//        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
+//        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
+//        compiler.addInstruction(new CMP(new ImmediateInteger(0) , registerToUse));
+//        compiler.addInstruction(new BEQ(endWhile));
+//        //TODO: Free the register after use
+//    }
+
+//    @Override
+//    protected DVal codeGenSum(DecacCompiler compiler){
+//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+//        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
+//        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
+//        return registerToUse;
+//    }
+//
+//    @Override
+//    protected DVal codeGenSub(DecacCompiler compiler){
+//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+//        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
+//        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
+//        return registerToUse;
+//    }
+//
+//    @Override
+//    protected DVal codeGenMul(DecacCompiler compiler){
+//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+//        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
+//        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
+//        return registerToUse;
+//    }
+//
+//    //TODO: Factoriser le code plus
+//    @Override
+//    protected DVal codeGenDiv(DecacCompiler compiler){
+//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+//        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
+//        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
+//        return registerToUse;
+//    }
 
     @Override
-    protected DVal codeGenSum(DecacCompiler compiler){
+    protected DVal codeGenLoad(DecacCompiler compiler){
         GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
-        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
+        DVal toLoad = getExpDefinition().getOperand();
+        compiler.addInstruction(new LOAD(toLoad, registerToUse));
+        compiler.getRegisterDescriptor().useRegister(registerToUse, toLoad);
         return registerToUse;
     }
 
+//    @Override
+//    protected void codeGenIf(DecacCompiler compiler, Label label){
+//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+//        compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), registerToUse));
+//        compiler.addInstruction(new CMP(0, registerToUse));
+//        compiler.addInstruction(new BEQ(label));
+//
+//    }
+
+    //TODO: Turn getExpDefinition to getVarDefinition
+
     @Override
-    protected DVal codeGenSub(DecacCompiler compiler){
+    protected void codeGenBeq(DecacCompiler compiler, Label label, int p){
         GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
-        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
-        return registerToUse;
+        compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), registerToUse));
+        compiler.addInstruction(new CMP(p, registerToUse));
+        compiler.addInstruction(new BEQ(label));
     }
 
     @Override
-    protected DVal codeGenMul(DecacCompiler compiler){
+    protected void codeGenInit(DecacCompiler compiler, DAddr adr){
         GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
-        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
-        return registerToUse;
+        compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), registerToUse));
+        compiler.addInstruction(new STORE(registerToUse, adr));
     }
-
-    //TODO: Factoriser le code plus
-    @Override
-    protected DVal codeGenDiv(DecacCompiler compiler){
-        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
-        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
-        return registerToUse;
-    }
-
 
 }

@@ -1,6 +1,10 @@
 package fr.ensimag.deca.tree;
 
 
+import fr.ensimag.deca.DecacCompiler;
+import fr.ensimag.ima.pseudocode.*;
+import fr.ensimag.ima.pseudocode.instructions.*;
+
 /**
  *
  * @author gl24
@@ -16,6 +20,14 @@ public class Equals extends AbstractOpExactCmp {
     @Override
     protected String getOperatorName() {
         return "==";
-    }    
+    }
+
+    protected void codeGenMnem(DecacCompiler compiler, Label label){
+        compiler.addInstruction(new BEQ(label));
+    }
+
+    protected void codeGenMnemOpp(DecacCompiler compiler, Label label){
+        compiler.addInstruction(new BNE(label));
+    }
     
 }

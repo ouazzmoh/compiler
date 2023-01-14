@@ -7,9 +7,7 @@ import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.*;
-import fr.ensimag.ima.pseudocode.instructions.LOAD;
-import fr.ensimag.ima.pseudocode.instructions.STORE;
-import fr.ensimag.ima.pseudocode.instructions.BRA;
+import fr.ensimag.ima.pseudocode.instructions.*;
 
 import java.io.PrintStream;
 
@@ -76,10 +74,6 @@ public class BooleanLiteral extends AbstractExpr {
         else{
             valueToAdd = 0;
         }
-
-        //TODO: Problem that in this case true(#1) is defined as the same immediate #1
-        //TODO: Which means we need to know the type to understand what we refer to
-        //TODO: Just like C
         compiler.addInstruction(new LOAD(valueToAdd, registerToUse));
         //update register descriptor
         compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(valueToAdd));
@@ -88,27 +82,85 @@ public class BooleanLiteral extends AbstractExpr {
         compiler.getRegisterDescriptor().freeRegister(registerToUse);
     }
 
+//    @Override
+//    protected void codeGenInstWhile(DecacCompiler compiler,Label endWhile){
+//        if(!this.value){
+//            compiler.addInstruction(new BRA(endWhile));
+//        }
+//    }
+
+//    @Override
+//    protected void codeGenAssign(DecacCompiler compiler, Identifier identifer){
+//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+//        int valueToAdd;
+//        if (value){
+//            valueToAdd = 1;
+//        }else{
+//            valueToAdd = 0;
+//        }
+//        compiler.addInstruction(new LOAD(valueToAdd, registerToUse));
+//        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(valueToAdd));
+//        compiler.addInstruction(new STORE(registerToUse, identifer.getExpDefinition().getOperand()));
+//        compiler.getRegisterDescriptor().freeRegister(registerToUse);
+//    }
+
     @Override
-    protected void codeGenInstWhile(DecacCompiler compiler,Label endWhile){
-        if(!this.value){
-            compiler.addInstruction(new BRA(endWhile));
+    protected DVal codeGenLoad(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        int toLoad = 0;
+        if(value){
+            toLoad = 1;
         }
+        compiler.addInstruction(new LOAD(toLoad, registerToUse));
+        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(toLoad));
+        return registerToUse;
     }
 
     @Override
-    protected void codeGenAssign(DecacCompiler compiler, Identifier identifer){
-        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-        int valueToAdd;
-        if (value){
-            valueToAdd = 1;
-        }else{
-            valueToAdd = 0;
-        }
-        compiler.addInstruction(new LOAD(valueToAdd, registerToUse));
-        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(valueToAdd));
-        compiler.addInstruction(new STORE(registerToUse, identifer.getExpDefinition().getOperand()));
-        compiler.getRegisterDescriptor().freeRegister(registerToUse);
+    protected void codeGenBeq(DecacCompiler compiler, Label label, int p){
+        GPRegister registerToUse = (GPRegister) codeGenLoad(compiler);
+//        if (value){
+//            compiler.addInstruction(new LOAD(1, registerToUse));
+//        }
+//        else{
+//            compiler.addInstruction(new LOAD(0, registerToUse));
+//        }
+
+        compiler.addInstruction(new CMP(p, registerToUse));
+        compiler.addInstruction(new BEQ(label));
     }
+
+//    @Override
+//    protected void codeGenIf(DecacCompiler compiler, Label label){
+//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+//        if (value){
+//            compiler.addInstruction(new LOAD(1, registerToUse));
+//        }
+//        else{
+//            compiler.addInstruction(new LOAD(0, registerToUse));
+//        }
+//
+//        compiler.addInstruction(new CMP(0, registerToUse));
+//        compiler.addInstruction(new BEQ(label));
+//    }
+
+//    @Override
+//    protected void codeGenOr(DecacCompiler compiler, Label label){
+//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+//        if (value){
+//            compiler.addInstruction(new LOAD(1, registerToUse));
+//        }
+//        else{
+//            compiler.addInstruction(new LOAD(0, registerToUse));
+//        }
+//
+//        compiler.addInstruction(new CMP(0, registerToUse));
+//        compiler.addInstruction(new BEQ(label));
+//    }
+
+
 
 
 }
+
+

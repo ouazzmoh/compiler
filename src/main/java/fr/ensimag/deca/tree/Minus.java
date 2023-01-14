@@ -25,63 +25,72 @@ public class Minus extends AbstractOpArith {
         return "-";
     }
 
-    @Override
-    protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-
-        DVal value = getRightOperand().codeGenSub(compiler);
-        DVal register = getLeftOperand().codeGenSub(compiler);
-
-        compiler.addInstruction(new SUB(value, (GPRegister) register));
-        //TODO: The register cast is ugly
-        compiler.addInstruction(new STORE((GPRegister)register, adr));
-        compiler.getRegisterDescriptor().freeRegister((GPRegister) register);
-    }
-
 
     @Override
-    protected DVal codeGenSub(DecacCompiler compiler){
-        DVal value = getRightOperand().codeGenSub(compiler);
-        DVal register = getLeftOperand().codeGenSub(compiler);
-        //TODO: Remove Ugly Cast
-        compiler.addInstruction(new SUB(value, (GPRegister) register));
-        return register;
+    protected DVal codeGenLoad(DecacCompiler compiler, DVal opLeft, DVal opRight){
+        compiler.addInstruction(new SUB(opRight, (GPRegister) opLeft));
+        compiler.getRegisterDescriptor().freeRegister((GPRegister) opRight);
+        return opLeft;
     }
 
-    @Override
-    protected DVal codeGenSum(DecacCompiler compiler){
-        DVal value = getRightOperand().codeGenSum(compiler);
-        DVal register = getLeftOperand().codeGenSum(compiler);
-        //TODO: Remove Ugly Cast
-        compiler.addInstruction(new SUB(value, (GPRegister) register));
-        return register;
-    }
+//    @Override
+//    protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+//
+//        DVal opLeft = getLeftOperand().codeGenLoad(compiler);
+//        DVal opRight = getRightOperand().codeGenLoad(compiler);
+//
+//        compiler.addInstruction(new SUB(opRight, (GPRegister) opLeft));
+//        compiler.getRegisterDescriptor().freeRegister((GPRegister) opRight);
+//        //TODO: The register cast is ugly
+//        compiler.addInstruction(new STORE((GPRegister)opLeft, adr));
+//        compiler.getRegisterDescriptor().freeRegister((GPRegister) opLeft);
+//    }
+//
+//    @Override
+//    protected DVal codeGenLoad(DecacCompiler compiler){
+//        DVal opLeft = getLeftOperand().codeGenLoad(compiler);
+//        DVal opRight = getRightOperand().codeGenLoad(compiler);
+//        //TODO: Remove Ugly Cast
+//        compiler.addInstruction(new SUB(opRight, (GPRegister) opLeft));
+//        compiler.getRegisterDescriptor().freeRegister((GPRegister) opRight);
+//        return (GPRegister) opLeft;
+//    }
 
-    @Override
-    protected DVal codeGenMul(DecacCompiler compiler){
-        DVal value = getRightOperand().codeGenMul(compiler);
-        DVal register = getLeftOperand().codeGenMul(compiler);
-        //TODO: Remove Ugly Cast
-        compiler.addInstruction(new SUB(value, (GPRegister) register));
-        return register;
-    }
 
-    @Override
-    protected DVal codeGenDiv(DecacCompiler compiler){
-        DVal value = getRightOperand().codeGenDiv(compiler);
-        DVal register = getLeftOperand().codeGenDiv(compiler);
-        //TODO: Remove Ugly Cast
-        compiler.addInstruction(new SUB(value, (GPRegister) register));
-        return register;
-    }
-
-    @Override
-    protected void codeGenAssign(DecacCompiler compiler, Identifier identifier){
-        DVal value = getRightOperand().codeGenMul(compiler);
-        DVal register = getLeftOperand().codeGenMul(compiler);
-        compiler.addInstruction(new SUB(value, (GPRegister) register));
-        compiler.addInstruction(new STORE((GPRegister)register, identifier.getExpDefinition().getOperand()));
-        compiler.getRegisterDescriptor().freeRegister((GPRegister)register);
-
-    }
+//    @Override
+//    protected DVal codeGenSub(DecacCompiler compiler){
+//        DVal value = getRightOperand().codeGenSub(compiler);
+//        DVal register = getLeftOperand().codeGenSub(compiler);
+//        //TODO: Remove Ugly Cast
+//        compiler.addInstruction(new SUB(value, (GPRegister) register));
+//        return register;
+//    }
+//
+//    @Override
+//    protected DVal codeGenSum(DecacCompiler compiler){
+//        DVal value = getRightOperand().codeGenSum(compiler);
+//        DVal register = getLeftOperand().codeGenSum(compiler);
+//        //TODO: Remove Ugly Cast
+//        compiler.addInstruction(new SUB(value, (GPRegister) register));
+//        return register;
+//    }
+//
+//    @Override
+//    protected DVal codeGenMul(DecacCompiler compiler){
+//        DVal value = getRightOperand().codeGenMul(compiler);
+//        DVal register = getLeftOperand().codeGenMul(compiler);
+//        //TODO: Remove Ugly Cast
+//        compiler.addInstruction(new SUB(value, (GPRegister) register));
+//        return register;
+//    }
+//
+//    @Override
+//    protected DVal codeGenDiv(DecacCompiler compiler){
+//        DVal value = getRightOperand().codeGenDiv(compiler);
+//        DVal register = getLeftOperand().codeGenDiv(compiler);
+//        //TODO: Remove Ugly Cast
+//        compiler.addInstruction(new SUB(value, (GPRegister) register));
+//        return register;
+//    }
 
 }

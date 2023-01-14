@@ -5,6 +5,11 @@ import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.ima.pseudocode.DAddr;
+import fr.ensimag.ima.pseudocode.DVal;
+import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.instructions.MUL;
+import fr.ensimag.ima.pseudocode.instructions.STORE;
 
 /**
  * Arithmetic binary operations (+, -, /, ...)
@@ -46,4 +51,57 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
     		}
     	throw new ContextualError("erreur dans la condition" + this.getOperatorName() + "operands's type not permetted", this.getLocation());
     	}
-    }
+
+
+	/**
+	 * Initialization of a variable via an arithmetic operation
+	 * @param compiler
+	 * @param adr
+	 */
+	@Override
+	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+		//Todo: optimize with loading the left directly in some cases
+		//Loads the result of the left operand
+		DVal opLeft = getLeftOperand().codeGenLoad(compiler);
+		//Loads the result of the right operand (must be a register)
+		DVal opRight = getRightOperand().codeGenLoad(compiler);
+
+		//Loads the result of the operation in the toStore (must be a register) (Used because we can store different
+		// operands)
+		DVal toStore = this.codeGenLoad(compiler, opLeft, opRight);
+
+		//Storing the value of the operation in the memory
+		compiler.addInstruction(new STORE((GPRegister) toStore, adr));
+		//Updating the register descriptor
+		compiler.getRegisterDescriptor().freeRegister((GPRegister) toStore);
+	}
+
+
+	/**
+	 * Loads the result of the operations and returns it in a register (Useful for the recursive
+	 * implementation of the operations
+	 * @param compiler
+	 * @param opLeft
+	 * @param opRight
+	 * @return
+	 */
+	protected abstract DVal codeGenLoad(DecacCompiler compiler, DVal opLeft, DVal opRight);
+
+
+	/**
+	 * Does the operation between the two operands and returns the result in a register
+	 * @param compiler
+	 * @return register with the value of the operation
+	 */
+	@Override
+	protected DVal codeGenLoad(DecacCompiler compiler){
+		//Loads the result of left operand
+		DVal opLeft = getLeftOperand().codeGenLoad(compiler);
+		//Loads the result of the right operand
+		DVal opRight = getRightOperand().codeGenLoad(compiler);
+		//Returns the register with the result
+		return this.codeGenLoad(compiler, opLeft, opRight);
+	}
+
+
+}
