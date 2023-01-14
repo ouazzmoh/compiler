@@ -9,9 +9,7 @@ import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.*;
-import fr.ensimag.ima.pseudocode.instructions.LOAD;
-import fr.ensimag.ima.pseudocode.instructions.STORE;
-import fr.ensimag.ima.pseudocode.instructions.ADD;
+import fr.ensimag.ima.pseudocode.instructions.*;
 
 import java.io.PrintStream;
 
@@ -81,12 +79,19 @@ public class IntLiteral extends AbstractExpr {
     }
 
     @Override
-    protected DVal codeGenLoad(DecacCompiler compiler){
+    protected DVal codeGenLoad(DecacCompiler compiler) {
         GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
         compiler.addInstruction(new LOAD(value, registerToUse));
         compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(value));
         return registerToUse;
     }
+
+    protected void codeGenPush(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        compiler.addInstruction(new LOAD(value, registerToUse));
+        compiler.addInstruction(new PUSH(registerToUse));
+    }
+
 
 //    @Override
 //    protected void codeGenAssign(DecacCompiler compiler, Identifier identifer){

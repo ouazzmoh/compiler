@@ -40,11 +40,11 @@ public class Modulo extends AbstractOpArith {
         return "%";
     }
 
-    @Override
-    protected DVal codeGenLoad(DecacCompiler compiler, DVal opLeft, DVal opRight){
-        compiler.addInstruction(new REM(opRight, (GPRegister) opLeft));
-        compiler.getRegisterDescriptor().freeRegister((GPRegister) opRight);
-        return opLeft;
-    }
+//    @Override
+//    protected DVal codeGenLoad(DecacCompiler compiler, DVal opLeft, DVal opRight){
+//        compiler.addInstruction(new REM(opRight, (GPRegister) opLeft));
+//        compiler.getRegisterDescriptor().freeRegister((GPRegister) opRight);
+//        return opLeft;
+//    }
 
 }

@@ -181,6 +181,11 @@ public abstract class AbstractExpr extends AbstractInst {
     }
 
 
+    protected void codeGenPush(DecacCompiler compiler){
+        throw new DecacInternalError("Cannot load the expression");
+    }
+
+
     //    protected void codeGenInstWhile(DecacCompiler compiler,Label endWhile){
 //        throw new UnsupportedOperationException("not yet implemented");
 //    }
