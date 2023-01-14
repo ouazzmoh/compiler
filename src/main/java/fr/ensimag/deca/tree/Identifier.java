@@ -301,6 +301,13 @@ public class Identifier extends AbstractIdentifier {
         return registerToUse;
     }
 
+    @Override
+    protected void codeGenPush(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), registerToUse)); //No need to use and free
+        compiler.addInstruction(new PUSH(registerToUse));
+    }
+
 //    @Override
 //    protected void codeGenIf(DecacCompiler compiler, Label label){
 //        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
