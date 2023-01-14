@@ -2,6 +2,7 @@ package fr.ensimag.deca.context;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -19,6 +20,7 @@ public class TestCompile {
     DecacCompiler compiler;
     PrintStream out = System.out;
     CompilerOptions options = new CompilerOptions();
+    boolean b = false;
 
     
     
@@ -33,8 +35,33 @@ public class TestCompile {
     @Test
     public void testoptionp() throws ContextualError, CLIException {
         // check the result
-        //options.Settings("-p", 0);
-        compiler.compile();
+        options.Settings("-p", 0);
+        assertTrue(!compiler.compile());
+    }
+    
+    @Test
+    public void testoptionvp() throws ContextualError, CLIException {
+        // check the result
+        options.Settings("-p", 0);
+        options.Settings("-v", 0);
+        assertTrue(compiler.compile());
+    }
+    
+    @Test
+    public void testoptionv() throws ContextualError, CLIException {
+        // check the result
+        options.Settings("-v", 0);
+        assertTrue(!compiler.compile());
+    }
+    
+    @Test
+    public void testoptionb() throws ContextualError, CLIException {
+        // check the result
+    	try {
+        options.Settings("-b", 2);}
+    	catch (Exception e) {
+    		assertTrue(compiler.compile());
+    	}
     }
 
 }
