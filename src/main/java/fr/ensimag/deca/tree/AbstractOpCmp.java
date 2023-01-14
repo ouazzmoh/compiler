@@ -91,7 +91,41 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 	protected abstract void codeGenMnem(DecacCompiler compiler, Label label);
 
 
+	/**
+	 * Generates the opposing mnemonic of the class
+	 * e.g: for EQUALS generates BNE
+	 * @param compiler
+	 * @param label
+	 */
+	protected abstract void codeGenMnemOpp(DecacCompiler compiler, Label label);
+
+	/**
+	 * Generates the mnemonic to be used in the branching
+	 * For EQUALS, Not Equals : it generates the opposite (BNE, BEQ)
+	 * For inequality operations : it generates the corresponding to the class
+	 * @param compiler
+	 * @param label
+	 */
+	protected abstract void codeGenBranchMnem(DecacCompiler compiler, Label label);
 
 
+	@Override
+	protected void codeGenBeq(DecacCompiler compiler, Label label, int p){
+		codeGenBranchOpp(compiler, label);
+	}
 
-    }
+
+	/**
+	 * Branch to the label if the comparison between the operands
+	 * is not true-->useful for if statements
+	 * @param compiler
+	 * @param label
+	 */
+	protected void codeGenBranchOpp(DecacCompiler compiler, Label label){
+		DVal opLeft = getLeftOperand().codeGenLoad(compiler);
+		GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler);
+		compiler.addInstruction(new CMP(opLeft, opRight));
+		this.codeGenBranchMnem(compiler, label);
+	}
+
+}

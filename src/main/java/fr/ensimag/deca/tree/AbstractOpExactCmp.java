@@ -1,6 +1,9 @@
 package fr.ensimag.deca.tree;
 
 
+import fr.ensimag.deca.DecacCompiler;
+import fr.ensimag.ima.pseudocode.Label;
+
 /**
  *
  * @author gl24
@@ -12,5 +15,8 @@ public abstract class AbstractOpExactCmp extends AbstractOpCmp {
         super(leftOperand, rightOperand);
     }
 
-
+    @Override
+    protected void codeGenBranchMnem(DecacCompiler compiler, Label label){
+        codeGenMnemOpp(compiler, label);
+    }
 }

@@ -29,5 +29,9 @@ public class LowerOrEqual extends AbstractOpIneq {
         compiler.addInstruction(new BLE(label));
     }
 
+    protected void codeGenMnemOpp(DecacCompiler compiler, Label label){
+        compiler.addInstruction(new BGT(label));
+    }
+
 
 }

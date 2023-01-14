@@ -29,4 +29,8 @@ public class Lower extends AbstractOpIneq {
         compiler.addInstruction(new BLT(label));
     }
 
+    protected void codeGenMnemOpp(DecacCompiler compiler, Label label){
+        compiler.addInstruction(new BGE(label));
+    }
+
 }

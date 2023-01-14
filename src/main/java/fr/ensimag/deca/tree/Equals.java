@@ -26,5 +26,8 @@ public class Equals extends AbstractOpExactCmp {
         compiler.addInstruction(new BEQ(label));
     }
 
+    protected void codeGenMnemOpp(DecacCompiler compiler, Label label){
+        compiler.addInstruction(new BNE(label));
+    }
     
 }

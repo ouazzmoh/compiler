@@ -29,5 +29,9 @@ public class Greater extends AbstractOpIneq {
         compiler.addInstruction(new BGT(label));
     }
 
+    protected void codeGenMnemOpp(DecacCompiler compiler, Label label){
+        compiler.addInstruction(new BLE(label));
+    }
+
 
 }
