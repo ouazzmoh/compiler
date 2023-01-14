@@ -12,6 +12,7 @@ import java.io.PrintStream;
 
 import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.PUSH;
 import fr.ensimag.ima.pseudocode.instructions.STORE;
 import fr.ensimag.ima.pseudocode.instructions.WFLOAT;
 import org.apache.commons.lang.Validate;
@@ -93,6 +94,14 @@ public class FloatLiteral extends AbstractExpr {
         compiler.addInstruction(new LOAD(toLoad, registerToUse));
         compiler.getRegisterDescriptor().useRegister(registerToUse, toLoad);
         return registerToUse;
+    }
+
+    @Override
+    protected void codeGenPush(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        ImmediateFloat toLoad = new ImmediateFloat(value);
+        compiler.addInstruction(new LOAD(toLoad, registerToUse)); //No need to use and free
+        compiler.addInstruction(new PUSH(registerToUse));
     }
 
 }

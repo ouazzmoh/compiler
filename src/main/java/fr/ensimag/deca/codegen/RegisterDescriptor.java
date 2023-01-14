@@ -72,6 +72,16 @@ public class RegisterDescriptor {
     }
 
 
+//    public boolean useLoad(){
+//        return !(freeRegisterList.isEmpty());
+//    }
+
+    //TODO: make value check register descriptor
+    public boolean useLoad(){
+        return false;
+    }
+
+
 
 
 }

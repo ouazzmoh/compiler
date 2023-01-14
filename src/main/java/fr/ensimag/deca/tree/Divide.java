@@ -25,22 +25,22 @@ public class Divide extends AbstractOpArith {
     }
 
 
-    @Override
-    protected DVal codeGenLoad(DecacCompiler compiler, DVal opLeft, DVal opRight){
-
-        Type typeLeft = this.getLeftOperand().getType();
-        Type typeRight = this.getRightOperand().getType();
-
-        if (typeLeft.isFloat() || typeRight.isFloat()){
-            compiler.addInstruction(new DIV(opRight, (GPRegister) opLeft));
-        } else if (typeLeft.isInt() && typeRight.isInt()) {
-            compiler.addInstruction(new QUO(opRight, (GPRegister) opLeft));
-        } else {
-            throw new DecacInternalError("Operandes pour la division non valide");
-        }
-        compiler.getRegisterDescriptor().freeRegister((GPRegister) opRight);
-        return opLeft;
-    }
+//    @Override
+//    protected DVal codeGenLoad(DecacCompiler compiler, DVal opLeft, DVal opRight){
+//
+//        Type typeLeft = this.getLeftOperand().getType();
+//        Type typeRight = this.getRightOperand().getType();
+//
+//        if (typeLeft.isFloat() || typeRight.isFloat()){
+//            compiler.addInstruction(new DIV(opRight, (GPRegister) opLeft));
+//        } else if (typeLeft.isInt() && typeRight.isInt()) {
+//            compiler.addInstruction(new QUO(opRight, (GPRegister) opLeft));
+//        } else {
+//            throw new DecacInternalError("Operandes pour la division non valide");
+//        }
+//        compiler.getRegisterDescriptor().freeRegister((GPRegister) opRight);
+//        return opLeft;
+//    }
 
 //    @Override
 //    protected void codeGenInit(DecacCompiler compiler, DAddr adr){

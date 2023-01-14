@@ -181,6 +181,16 @@ public abstract class AbstractExpr extends AbstractInst {
     }
 
 
+    /**
+     * Push the value of the expression in the temporary memory
+     * Use POP(Rm) later to retrieve the value in the Rm register
+     * @param compiler
+     */
+    protected void codeGenPush(DecacCompiler compiler){
+        throw new DecacInternalError("Cannot load the expression");
+    }
+
+
     //    protected void codeGenInstWhile(DecacCompiler compiler,Label endWhile){
 //        throw new UnsupportedOperationException("not yet implemented");
 //    }

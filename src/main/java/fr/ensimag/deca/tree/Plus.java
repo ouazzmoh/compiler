@@ -22,12 +22,12 @@ public class Plus extends AbstractOpArith {
         return "+";
     }
 
-    @Override
-    protected DVal codeGenLoad(DecacCompiler compiler, DVal opLeft, DVal opRight){
-        compiler.addInstruction(new ADD(opLeft, (GPRegister) opRight));
-        compiler.getRegisterDescriptor().freeRegister((GPRegister) opLeft);
-        return opRight;
-    }
+//    @Override
+//    protected DVal codeGenLoad(DecacCompiler compiler, DVal opLeft, DVal opRight){
+//        compiler.addInstruction(new ADD(opLeft, (GPRegister) opRight));
+//        compiler.getRegisterDescriptor().freeRegister((GPRegister) opLeft);
+//        return opRight;
+//    }
 
 //    @Override
 //    protected void codeGenInit(DecacCompiler compiler, DAddr adr){

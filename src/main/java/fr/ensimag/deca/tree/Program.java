@@ -3,9 +3,16 @@ package fr.ensimag.deca.tree;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.instructions.ERROR;
 import fr.ensimag.ima.pseudocode.instructions.HALT;
 
 import java.io.PrintStream;
+import java.util.Iterator;
+import java.util.Map;
+
+import fr.ensimag.ima.pseudocode.instructions.WNL;
+import fr.ensimag.ima.pseudocode.instructions.WSTR;
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
 
@@ -47,15 +54,26 @@ public class Program extends AbstractProgram {
         //passe3 herite l'attribut synthetisé de 2
         classes.verifyListClassMembers(compiler);
         main.verifyMain(compiler);
-        LOG.debug("mATNSSACH TZIID F VERIF DECLVAR DIKCHI NTAR ENVIRONMENT EXPR");
     }
 
     @Override
     public void codeGenProgram(DecacCompiler compiler) {
-        // A FAIRE: compléter ce squelette très rudimentaire de code
         compiler.addComment("Main program");
+        compiler.getErrorsLab().put(new Label("err_stack_overflow"), "Erreur: la pile est pleine");
         main.codeGenMain(compiler);
         compiler.addInstruction(new HALT());
+        compiler.addComment("Generating code for errors");
+        Iterator<Map.Entry<Label, String>> it = compiler.getErrorsLab().entrySet().iterator();
+        while(it.hasNext()){
+            Map.Entry<Label, String> couple = it.next();
+            compiler.addLabel(couple.getKey());
+            compiler.addInstruction(new WSTR(couple.getValue()));
+            compiler.addInstruction(new WNL());
+            compiler.addInstruction(new ERROR());
+            it.remove();
+        }
+
+
     }
 
     @Override

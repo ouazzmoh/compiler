@@ -117,6 +117,17 @@ public class BooleanLiteral extends AbstractExpr {
     }
 
     @Override
+    protected void codeGenPush(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        int toLoad = 0;
+        if(value){
+            toLoad = 1;
+        }
+        compiler.addInstruction(new LOAD(toLoad, registerToUse)); //No need to use and free
+        compiler.addInstruction(new PUSH(registerToUse));
+    }
+
+    @Override
     protected void codeGenBeq(DecacCompiler compiler, Label label, int p){
         GPRegister registerToUse = (GPRegister) codeGenLoad(compiler);
 //        if (value){

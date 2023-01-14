@@ -4,6 +4,7 @@ package fr.ensimag.deca.tree;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.PUSH;
 import fr.ensimag.ima.pseudocode.instructions.RINT;
 import fr.ensimag.ima.pseudocode.instructions.STORE;
 
@@ -23,6 +24,11 @@ public abstract class AbstractReadExpr extends AbstractExpr {
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
         compiler.addInstruction(new STORE(Register.R1, adr));
+    }
+
+    @Override
+    protected void codeGenPush(DecacCompiler compiler){
+        compiler.addInstruction(new PUSH(Register.R1));
     }
 
     @Override

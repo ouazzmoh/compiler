@@ -25,12 +25,12 @@ public class Multiply extends AbstractOpArith {
     }
 
 
-    @Override
-    protected DVal codeGenLoad(DecacCompiler compiler, DVal opLeft, DVal opRight){
-        compiler.addInstruction(new MUL(opLeft, (GPRegister) opRight));
-        compiler.getRegisterDescriptor().freeRegister((GPRegister) opLeft);
-        return opRight;
-    }
+//    @Override
+//    protected DVal codeGenLoad(DecacCompiler compiler, DVal opLeft, DVal opRight){
+//        compiler.addInstruction(new MUL(opLeft, (GPRegister) opRight));
+//        compiler.getRegisterDescriptor().freeRegister((GPRegister) opLeft);
+//        return opRight;
+//    }
 
     //    @Override
 //    protected void codeGenInit(DecacCompiler compiler, DAddr adr){

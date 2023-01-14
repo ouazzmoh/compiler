@@ -26,12 +26,12 @@ public class Minus extends AbstractOpArith {
     }
 
 
-    @Override
-    protected DVal codeGenLoad(DecacCompiler compiler, DVal opLeft, DVal opRight){
-        compiler.addInstruction(new SUB(opRight, (GPRegister) opLeft));
-        compiler.getRegisterDescriptor().freeRegister((GPRegister) opRight);
-        return opLeft;
-    }
+//    @Override
+//    protected DVal codeGenLoad(DecacCompiler compiler, DVal opLeft, DVal opRight){
+//        compiler.addInstruction(new SUB(opRight, (GPRegister) opLeft));
+//        compiler.getRegisterDescriptor().freeRegister((GPRegister) opRight);
+//        return opLeft;
+//    }
 
 //    @Override
 //    protected void codeGenInit(DecacCompiler compiler, DAddr adr){

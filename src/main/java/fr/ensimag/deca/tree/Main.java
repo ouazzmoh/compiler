@@ -7,6 +7,10 @@ import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.context.VoidType;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import java.io.PrintStream;
+
+import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.instructions.BOV;
+import fr.ensimag.ima.pseudocode.instructions.TSTO;
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
 
@@ -19,12 +23,26 @@ public class Main extends AbstractMain {
     
     private ListDeclVar declVariables;
     private ListInst insts;
+
+    private int stackSize;
+
+    @Override
+    public int getStackSize() {
+        return stackSize;
+    }
+
+    @Override
+    public void setStackSize(int stackSize) {
+        this.stackSize = stackSize;
+    }
+
     public Main(ListDeclVar declVariables,
-            ListInst insts) {
+                ListInst insts) {
         Validate.notNull(declVariables);
         Validate.notNull(insts);
         this.declVariables = declVariables;
         this.insts = insts;
+        this.stackSize = 0;
     }
 
     @Override
@@ -51,6 +69,12 @@ public class Main extends AbstractMain {
         declVariables.codeGenListDeclVariable(compiler);
         compiler.addComment("Generating code for instructions");
         insts.codeGenListInst(compiler);
+        stackSize += declVariables.getList().size();
+        if (stackSize != 0){
+            compiler.addInstructionFirst(new BOV(new Label("err_stack_overflow")));
+            compiler.addInstructionFirst(new TSTO(stackSize));
+        }
+
     }
     
     @Override
