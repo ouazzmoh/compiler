@@ -3,7 +3,8 @@
 cd "$(dirname "$0")"/../../.. || exit 1
 
 PATH=./src/test/script/launchers:./src/main/bin:"$PATH"
-
+target_dir=$(pwd)/src/test/deca/codegen/
+target_dir2=$(pwd)
 test_decac_valid () {
     decac "$1.deca"
     ima "$(basename "$1").ass"  > "$1.res" 2>&1 
@@ -16,7 +17,6 @@ test_decac_valid () {
 
 test_decac_invalid(){
     decac "$1.deca"
-    
     if ima "$(basename "$1").ass" | grep -q -e "$1:[0-9][0-9]*:" ; then
         echo "Echec attendu"
     else
@@ -25,7 +25,7 @@ test_decac_invalid(){
 }
 
 
-for cas_de_test in src/test/deca/codegen/valid/test/*.deca
+for cas_de_test in src/test/deca/codegen/valid/*.deca
 do
 
     direction_fichier_sans_deca="${cas_de_test%.*}"
@@ -39,3 +39,5 @@ do
 done
 # test_decac_valid /src/test/deca/codegen/valid/ifThenElseElsif
 
+find $target_dir -name "*.res" -delete
+find $target_dir2 -name "*.ass" -delete
