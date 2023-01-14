@@ -9,8 +9,12 @@
 
 {
     boolean a=true;
+    boolean b=true;
     while(a){
-        println("ça marche");
+        while(b){
+            println("ça marche");
+            b=false;
+        }
         a=false;
     }
 }
