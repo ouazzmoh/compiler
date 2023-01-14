@@ -1,0 +1,14 @@
+// Description:
+//    tests operations plus
+//
+// Resultats:
+//    
+// 
+// Historique:
+//    cree le 01/01/2023
+
+{
+    int a = 2147483646;
+    a+=1;
+}
+
