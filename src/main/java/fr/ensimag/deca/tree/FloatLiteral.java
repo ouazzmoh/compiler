@@ -74,17 +74,10 @@ public class FloatLiteral extends AbstractExpr {
      */
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-
-        // LOAD #value, R2
         GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
         DVal valueToAdd = new ImmediateFloat(value);
         compiler.addInstruction(new LOAD(valueToAdd, registerToUse));
-        //update register descriptor
-        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateFloat(value));
-
         compiler.addInstruction(new STORE(registerToUse, adr));
-        compiler.getRegisterDescriptor().freeRegister(registerToUse);
-
     }
 
     @Override

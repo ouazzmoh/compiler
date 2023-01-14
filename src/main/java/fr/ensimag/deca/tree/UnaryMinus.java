@@ -5,6 +5,11 @@ import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.ima.pseudocode.DVal;
+import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.ImmediateInteger;
+import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.instructions.*;
 
 /**
  * @author gl24
@@ -32,6 +37,21 @@ public class UnaryMinus extends AbstractUnaryExpr {
     @Override
     protected String getOperatorName() {
         return "-";
+    }
+
+    @Override
+    protected DVal codeGenLoad(DecacCompiler compiler){
+        GPRegister valueReg = (GPRegister) getOperand().codeGenLoad(compiler);
+        compiler.addInstruction(new OPP(valueReg, valueReg));
+        compiler.getRegisterDescriptor().useRegister(valueReg, valueReg);
+        return valueReg;
+    }
+
+    @Override
+    protected void codeGenPrint(DecacCompiler compiler){
+        GPRegister valueReg = (GPRegister) codeGenLoad(compiler);
+        compiler.addInstruction(new LOAD(valueReg, Register.R1));
+        compiler.addInstruction(new WINT());
     }
 
 }

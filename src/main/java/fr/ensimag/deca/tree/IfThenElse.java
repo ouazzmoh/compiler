@@ -43,16 +43,8 @@ public class IfThenElse extends AbstractInst {
 
     @Override
     protected void codeGenInst(DecacCompiler compiler) {
-        Label endIf = new Label("endIf.l" + getLocation().getLine() + ".c" + getLocation().getPositionInLine());
-//        Label elseIf = new Label("elseIf.l" + elseBranch.uniqueNum());
-//        condition.codeGenIf(compiler, elseIf);
-//        for (AbstractInst i : thenBranch.getList()){
-//            i.codeGenInstIf(compiler, endIf);
-//        }
-//        compiler.addLabel(elseIf);
-//        for (AbstractInst i : elseBranch.getList()){
-//            i.codeGenInstIf(compiler, endIf);
-//        }
+        Label endIf = new Label("endIf.l" + getLocation().getLine() +
+                ".c" + getLocation().getPositionInLine());
         this.codeGenInstIfRec(compiler, endIf);
         compiler.addLabel(endIf);
     }
@@ -61,7 +53,7 @@ public class IfThenElse extends AbstractInst {
     @Override
     protected void codeGenInstIfRec(DecacCompiler compiler, Label endIf) {
         Label elseIf = new Label("elseIf.l" + elseBranch.uniqueNum());
-        condition.codeGenIf(compiler, elseIf);
+        condition.codeGenBeq(compiler, elseIf, 0);
         for (AbstractInst i : thenBranch.getList()){
             i.codeGenInstIfRec(compiler, endIf);
         }

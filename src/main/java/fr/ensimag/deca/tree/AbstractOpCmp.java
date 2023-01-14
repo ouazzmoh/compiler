@@ -5,6 +5,11 @@ import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.ima.pseudocode.DAddr;
+import fr.ensimag.ima.pseudocode.DVal;
+import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.instructions.*;
 
 /**
  *
@@ -33,11 +38,14 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
     			}
     			if (t1.isInt() && t2.isFloat()) {
     				this.setType(compiler.environmentType.BOOLEAN);
+					this.setLeftOperand(new ConvFloat(this.getLeftOperand()));
     				return this.getType();
     				}
     			if (t1.isFloat() && t2.isInt()) {
     				this.setType(compiler.environmentType.BOOLEAN);
+					this.setRightOperand(new ConvFloat(this.getRightOperand()));
     				return this.getType();    			}
+
     		}
     	if (this.getOperatorName().equals("==") | this.getOperatorName().equals("!=")){
     		if (t1.sameType(t2) && (t1.isBoolean())) {
@@ -47,6 +55,41 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
     	}
     	throw new ContextualError("erreur dans la condition" + this.getOperatorName() + "operands not permetted", this.getLocation());
     	}
+
+	/**
+	 * Initialize a boolean variable with the value of the operation
+	 * @param compiler
+	 * @param adr: memory adress of the variable
+	 */
+	@Override
+	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+		DVal opLeft = getLeftOperand().codeGenLoad(compiler);
+		//TODO: Add a try catch for GPRegister
+		GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler); //load right, r1
+		compiler.addInstruction(new CMP(opLeft, opRight));// load left, r2
+		Label falseComp = new Label("falseComp");
+		Label end = new Label("end");
+		this.codeGenMnem(compiler, falseComp);
+
+		GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+		compiler.addInstruction(new LOAD(1, registerToUse)); // load 1, r
+		compiler.addInstruction(new STORE(registerToUse, adr)); // store r, adr
+		//No need to update registerDescriptor because we load and store
+		compiler.addInstruction(new BRA(end)); // bra end
+		compiler.addLabel(falseComp); // neq :
+		compiler.addInstruction(new LOAD(0, registerToUse)); // load 0, r
+		compiler.addInstruction(new STORE(registerToUse, adr)); // store r, adr
+		compiler.addLabel(end); // end:
+	}
+
+	/**
+	 * Generates the mnemonic depending on the class
+	 * (BEQ, BLT, BGE, BGT, BLE, BNE)
+	 * @param compiler
+	 * @param label
+	 */
+	protected abstract void codeGenMnem(DecacCompiler compiler, Label label);
+
 
 
 

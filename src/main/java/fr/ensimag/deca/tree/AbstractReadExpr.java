@@ -2,8 +2,8 @@ package fr.ensimag.deca.tree;
 
 
 import fr.ensimag.deca.DecacCompiler;
-import fr.ensimag.ima.pseudocode.DAddr;
-import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.*;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
 import fr.ensimag.ima.pseudocode.instructions.RINT;
 import fr.ensimag.ima.pseudocode.instructions.STORE;
 
@@ -26,7 +26,11 @@ public abstract class AbstractReadExpr extends AbstractExpr {
     }
 
     @Override
-    protected void codeGenAssign(DecacCompiler compiler, Identifier identifier){
-        compiler.addInstruction(new STORE(Register.R1, identifier.getExpDefinition().getOperand()));
+    protected DVal codeGenLoad(DecacCompiler compiler){
+        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        compiler.addInstruction(new LOAD(Register.R1, registerToUse));
+        compiler.getRegisterDescriptor().useRegister(registerToUse, Register.R1);
+        return registerToUse;
     }
+
 }

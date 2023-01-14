@@ -85,9 +85,7 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 	 * @param opRight
 	 * @return
 	 */
-	protected DVal codeGenLoad(DecacCompiler compiler, DVal opLeft, DVal opRight){
-		throw new UnsupportedOperationException("not implemented");
-	}
+	protected abstract DVal codeGenLoad(DecacCompiler compiler, DVal opLeft, DVal opRight);
 
 
 	/**

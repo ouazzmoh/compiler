@@ -4,13 +4,8 @@ import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.EnvironmentExp;
-import fr.ensimag.ima.pseudocode.DAddr;
-import fr.ensimag.ima.pseudocode.DVal;
-import fr.ensimag.ima.pseudocode.GPRegister;
-import fr.ensimag.ima.pseudocode.ImmediateFloat;
-import fr.ensimag.ima.pseudocode.instructions.FLOAT;
-import fr.ensimag.ima.pseudocode.instructions.LOAD;
-import fr.ensimag.ima.pseudocode.instructions.STORE;
+import fr.ensimag.ima.pseudocode.*;
+import fr.ensimag.ima.pseudocode.instructions.*;
 
 /**
  * Conversion of an int into a float. Used for implicit conversions.
@@ -38,27 +33,20 @@ public class ConvFloat extends AbstractUnaryExpr {
     }
 
 
-    /**
-     * Initializes with a conversion to float
-     * @param compiler
-     * @param adr
-     */
-    @Override
-    protected void codeGenInit(DecacCompiler compiler, DAddr adr) {
-
-        GPRegister valueReg = (GPRegister) getOperand().codeGenLoad(compiler);
-        compiler.addInstruction(new FLOAT(valueReg, valueReg));
-        compiler.addInstruction(new STORE(valueReg, adr));
-        compiler.getRegisterDescriptor().freeRegister(valueReg);
-
-    }
-
     @Override
     protected DVal codeGenLoad(DecacCompiler compiler){
         GPRegister valueReg = (GPRegister) getOperand().codeGenLoad(compiler);
         compiler.addInstruction(new FLOAT(valueReg, valueReg));
+        compiler.getRegisterDescriptor().useRegister(valueReg, valueReg);
         return valueReg;
     }
 
+    @Override
+    protected void codeGenPrint(DecacCompiler compiler){
+        GPRegister valueReg = (GPRegister) codeGenLoad(compiler);
+        compiler.addInstruction(new FLOAT(valueReg, Register.R1));
+        compiler.getRegisterDescriptor().freeRegister(valueReg);
+        compiler.addInstruction(new WFLOAT());
+    }
 
 }
