@@ -1,10 +1,12 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.DecacCompiler;
+import fr.ensimag.deca.tree.Main;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.Register;
 import fr.ensimag.ima.pseudocode.instructions.ADDSP;
 import fr.ensimag.ima.pseudocode.instructions.TSTO;
 
@@ -15,6 +17,7 @@ import fr.ensimag.ima.pseudocode.instructions.TSTO;
  * @date 01/01/2023
  */
 public class ListDeclVar extends TreeList<AbstractDeclVar> {
+
 
     @Override
     public void decompile(IndentPrintStream s) {
@@ -35,7 +38,6 @@ public class ListDeclVar extends TreeList<AbstractDeclVar> {
      */    
     void verifyListDeclVariable(DecacCompiler compiler, EnvironmentExp localEnv,
             ClassDefinition currentClass) throws ContextualError {
-        //throw new UnsupportedOperationException("not yet implemented");
         for (AbstractDeclVar i : getList()) {
             i.verifyDeclVar(compiler, localEnv, currentClass);
         }
@@ -43,9 +45,8 @@ public class ListDeclVar extends TreeList<AbstractDeclVar> {
 
     public void codeGenListDeclVariable(DecacCompiler compiler){
         int d1 = getList().size();
-        //TSTO #d1
         compiler.addInstruction(new ADDSP(d1));
-        int varOffset = 1; //Method to increment the address of the variable
+        int varOffset = 1;
         for (AbstractDeclVar d : getList()){
             d.codeGenDeclVariable(compiler, varOffset);
             varOffset++;

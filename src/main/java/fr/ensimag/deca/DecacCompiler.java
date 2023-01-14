@@ -18,6 +18,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.LinkedList;
+
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.apache.log4j.Logger;
@@ -40,10 +43,16 @@ import org.apache.log4j.Logger;
 public class DecacCompiler {
     private static final Logger LOG = Logger.getLogger(DecacCompiler.class);
 
+
     //attribute to hold information about the registers in the compiler
     private RegisterDescriptor registerDescriptor;
 
+    //Holds information about the errors labels and messages
+    private HashMap<Label, String> errorsLab;
 
+    public HashMap<Label, String> getErrorsLab(){
+        return errorsLab;
+    }
 
     /**
      * Portable newline character.
@@ -56,6 +65,8 @@ public class DecacCompiler {
         this.source = source;
         //
         this.registerDescriptor = new RegisterDescriptor();
+
+        this.errorsLab = new HashMap<Label, String>();
     }
 
 
@@ -120,6 +131,23 @@ public class DecacCompiler {
      * java.lang.String)
      */
     public void addInstruction(Instruction instruction, String comment) {
+        program.addFirst(instruction, comment);
+    }
+
+    /**
+     * @see
+     * IMAProgram#addInstruction(Instruction)
+     */
+    public void addInstructionFirst(Instruction instruction) {
+        program.addFirst(instruction);
+    }
+
+    /**
+     * @see
+     * IMAProgram#addInstruction(Instruction,
+     * java.lang.String)
+     */
+    public void addInstructionFirst(Instruction instruction, String comment) {
         program.addInstruction(instruction, comment);
     }
     
@@ -217,6 +245,8 @@ public class DecacCompiler {
         prog.verifyProgram(this);
         assert(prog.checkAllDecorations());
 
+//        prog.decompile(out);
+
         addComment("start main program");
         prog.codeGenProgram(this);
         addComment("end main program");
@@ -264,5 +294,11 @@ public class DecacCompiler {
         parser.setDecacCompiler(this);
         return parser.parseProgramAndManageErrors(err);
     }
+
+    public void addError(Label label, String errMsg){
+        errorsLab.put(label, errMsg);
+    }
+
+
 
 }

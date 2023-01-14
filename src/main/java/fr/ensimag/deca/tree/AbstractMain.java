@@ -11,6 +11,16 @@ import fr.ensimag.deca.context.ContextualError;
  */
 public abstract class AbstractMain extends Tree {
 
+    private int stackSize;
+
+    public void setStackSize(int stackSize) {
+        this.stackSize = stackSize;
+    }
+
+    public int getStackSize() {
+        return stackSize;
+    }
+
     protected abstract void codeGenMain(DecacCompiler compiler);
 
 

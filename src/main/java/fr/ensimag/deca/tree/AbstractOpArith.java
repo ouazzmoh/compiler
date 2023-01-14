@@ -8,6 +8,8 @@ import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.ima.pseudocode.DAddr;
 import fr.ensimag.ima.pseudocode.DVal;
 import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.instructions.BOV;
 import fr.ensimag.ima.pseudocode.instructions.MUL;
 import fr.ensimag.ima.pseudocode.instructions.STORE;
 
@@ -70,10 +72,18 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 		// operands)
 		DVal toStore = this.codeGenLoad(compiler, opLeft, opRight);
 
+		//Check if the operation doesn't cause an overflow
+		Label ovLab = new Label("op.l" + getLocation().getLine() + ".c" +
+				getLocation().getPositionInLine());
+		compiler.addError(ovLab, "Erreur: debordement lors de l'operation arithmetique");
+		compiler.addInstruction(new BOV(ovLab));
+
 		//Storing the value of the operation in the memory
 		compiler.addInstruction(new STORE((GPRegister) toStore, adr));
 		//Updating the register descriptor
 		compiler.getRegisterDescriptor().freeRegister((GPRegister) toStore);
+
+
 	}
 
 
