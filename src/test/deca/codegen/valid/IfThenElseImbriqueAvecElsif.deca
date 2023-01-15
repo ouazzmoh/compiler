@@ -16,7 +16,7 @@
             println("Failed");
         }
         else if(c){
-            println("Success");
+            println("ok");
         }
         else{
             println("Failed");

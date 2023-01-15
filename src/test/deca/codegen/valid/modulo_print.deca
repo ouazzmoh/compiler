@@ -1,0 +1,14 @@
+// Description:
+//    modulo
+//
+// Resultats:
+//
+// Historique:
+//    cree le 01/01/2023
+
+{
+   int a = 15, b = 10, c= 6, d;
+   print(a ,"%", b,"%",c,"=" , d = a%b%c);
+}
+
+
