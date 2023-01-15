@@ -52,4 +52,8 @@ public class Assign extends AbstractBinaryExpr {
         this.getRightOperand().codeGenAssign(compiler, (Identifier) this.getLeftOperand());
     }
 
+    @Override
+    protected void codeGenPrint(DecacCompiler compiler, boolean hex){
+        this.getRightOperand().codeGenPrint(compiler, hex);
+    }
 }

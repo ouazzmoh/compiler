@@ -54,7 +54,12 @@ public class ConvFloat extends AbstractUnaryExpr {
         GPRegister valueReg = (GPRegister) codeGenLoad(compiler);
         compiler.addInstruction(new FLOAT(valueReg, Register.R1));
         compiler.getRegisterDescriptor().freeRegister(valueReg);
-        compiler.addInstruction(new WFLOAT());
+        if (hex){
+            compiler.addInstruction(new WFLOATX());
+        }
+        else {
+            compiler.addInstruction(new WFLOAT());
+        }
     }
 
 

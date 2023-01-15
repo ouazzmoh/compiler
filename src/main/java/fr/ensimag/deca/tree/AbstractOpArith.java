@@ -159,7 +159,7 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 	protected void codeGenOpMnem(DecacCompiler compiler, DVal dval1, DVal dval2){
 		if (getOperatorName().equals("+")){
 			compiler.addInstruction(new ADD(dval1, (GPRegister)dval2));
-			compiler.addInstruction(new BOV(new Label(ovLabelInt)));
+			compiler.addInstruction(new BOV(new Label(ovLabel)));
 		}
 		else if (getOperatorName().equals("-")){
 			compiler.addInstruction(new SUB(dval1, (GPRegister)dval2));
@@ -204,7 +204,7 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 		if (typeLeft.isInt() && typeLeft.isInt()){
 			compiler.addError(ovLabelInt, "Erreur : Division entiere par 0");
 		}
-		compiler.addError(ovLabel, "Erreur : Debordement de pile non codable ou division par 0.0");
+		compiler.addError(ovLabel, "Erreur: debordement arithmetique --> non codable ou division par 0.0");
 	}
 
 
