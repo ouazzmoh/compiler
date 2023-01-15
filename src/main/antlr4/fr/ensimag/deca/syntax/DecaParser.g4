@@ -154,7 +154,7 @@ inst returns[AbstractInst tree]
     		if ($list_expr.tree != null) {
                 liste = $list_expr.tree;
     		}
-    		$tree = new Print(false, liste);
+    		$tree = new Print(true, liste);
     		setLocation($tree, $PRINTX);
     		}
     | PRINTLNX OPARENT list_expr CPARENT SEMI
@@ -162,7 +162,7 @@ inst returns[AbstractInst tree]
     		if ($list_expr.tree != null) {
                 liste = $list_expr.tree;
     		}
-    		$tree = new Println(false, liste);
+    		$tree = new Println(true, liste);
     		setLocation($tree, $PRINTLNX);
     		}
     | if_then_else {

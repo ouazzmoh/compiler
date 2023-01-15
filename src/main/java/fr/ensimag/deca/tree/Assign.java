@@ -1,6 +1,7 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.context.Type;
+import fr.ensimag.ima.pseudocode.Label;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
@@ -45,7 +46,7 @@ public class Assign extends AbstractBinaryExpr {
     }
 
     @Override
-    protected void codeGenInst(DecacCompiler compiler){
+    protected void codeGenInst(DecacCompiler compiler, Label label){
             //Load right_operand(expr), left_operand(lvalue)
         compiler.addComment("Assigning a variable");
         this.getRightOperand().codeGenAssign(compiler, (Identifier) this.getLeftOperand());
