@@ -1,0 +1,12 @@
+
+
+
+{
+
+	float a, b;
+	int c, d;
+
+	a = (float) (c);
+	
+	d = (int) (b);
+}

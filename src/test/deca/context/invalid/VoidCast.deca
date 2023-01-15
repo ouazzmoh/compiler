@@ -1,0 +1,7 @@
+
+
+{
+	float b;
+
+	int a = (void) (b);
+}

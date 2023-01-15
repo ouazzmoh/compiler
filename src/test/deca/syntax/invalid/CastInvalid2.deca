@@ -1,0 +1,9 @@
+
+
+
+{
+	float b;
+
+	int a = (int) b;
+	
+}
