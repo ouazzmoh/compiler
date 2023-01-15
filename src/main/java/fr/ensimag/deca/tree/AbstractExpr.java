@@ -183,6 +183,18 @@ public abstract class AbstractExpr extends AbstractInst {
     }
 
     /**
+     * To generate the code
+     * CMP p, expression
+     * BEQ label
+     * @param compiler
+     * @param label
+     * @param p = 0 (false) or 1 (true)
+     */
+    protected void codeGenBeq(DecacCompiler compiler, Label label, int p){
+        throw new DecacInternalError("expression cannot be compared");
+    }
+
+    /**
      * Loads the value of the expression in a register and removes it
      * We need to update the register descriptor after no longer using it
      * @param compiler

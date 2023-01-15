@@ -14,12 +14,14 @@ import fr.ensimag.ima.pseudocode.AbstractLine;
 import fr.ensimag.ima.pseudocode.IMAProgram;
 import fr.ensimag.ima.pseudocode.Instruction;
 import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.antlr.v4.runtime.CharStreams;
@@ -49,11 +51,12 @@ public class DecacCompiler {
     private RegisterDescriptor registerDescriptor;
 
     //Holds information about the errors labels and messages
-    private HashMap<Label, String> errorsLab;
+    private HashMap<String, String> errorsMap;
 
-    public HashMap<Label, String> getErrorsLab(){
-        return errorsLab;
+    public HashMap<String, String> getErrorsMap(){
+        return errorsMap;
     }
+
 
     /**
      * Portable newline character.
@@ -67,7 +70,7 @@ public class DecacCompiler {
         //
         this.registerDescriptor = new RegisterDescriptor();
 
-        this.errorsLab = new HashMap<Label, String>();
+        this.errorsMap = new HashMap<String, String>();
     }
 
 
@@ -188,8 +191,6 @@ public class DecacCompiler {
     public boolean compile() {
         String sourceFile = source.getAbsolutePath();
         String destFile = sourceFile.substring(0, sourceFile.lastIndexOf('.')) + ".ass";
-        // A FAIRE: calculer le nom du fichier .ass à partir du nom du
-        // A FAIRE: fichier .deca.
         PrintStream err = System.err;
         PrintStream out = System.out;
         LOG.debug("Compiling file " + sourceFile + " to assembly file " + destFile);
@@ -301,8 +302,10 @@ public class DecacCompiler {
         return parser.parseProgramAndManageErrors(err);
     }
 
-    public void addError(Label label, String errMsg){
-        errorsLab.put(label, errMsg);
+    public void addError(String errLab, String errMsg){
+        if (!errorsMap.containsKey(errLab)){
+                errorsMap.put(errLab, errMsg);
+        }
     }
 
 

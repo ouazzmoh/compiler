@@ -78,12 +78,74 @@ public class And extends AbstractOpBool {
         compiler.getRegisterDescriptor().useRegister(register, new ImmediateInteger(1)); //TODO remove value from reg
 
         compiler.addLabel(endAnd);
-    }   
+    }
+
+
+    protected DVal codeGenLoad(DecacCompiler compiler, Label label,Label end, int i){
+
+        Label endAnd = new Label("end.And.l" + getLocation().getLine() + ".c" +
+                getLocation().getPositionInLine());
+
+
+        GPRegister register = (GPRegister) compiler.getRegisterDescriptor().getFreeReg();
+        Label checkAndLeft = new Label("And.left.l" + getLocation().getLine() + ".c" +
+                getLocation().getPositionInLine());
+        Label checkAndRight = new Label("And.right.l" + getLocation().getLine() + ".c" +
+                getLocation().getPositionInLine());
+
+        compiler.addLabel(checkAndLeft);
+
+        Label trueAnd = new Label("true.And.l" + getLocation().getLine() + ".c" +
+                getLocation().getPositionInLine());
+        Label falseAnd = new Label("false.And.l" + getLocation().getLine() + ".c" +
+                getLocation().getPositionInLine());
+
+        getLeftOperand().codeGenBeq(compiler, falseAnd,null, 0);
+
+        compiler.addLabel(checkAndRight);
+
+        getRightOperand().codeGenBeq(compiler, falseAnd,null, 0);
+
+        if (end != null) {
+            compiler.addLabel(trueAnd);
+            compiler.addInstruction(new LOAD(1, register));
+            compiler.addInstruction(new BRA(label));
+
+
+            compiler.addLabel(falseAnd);
+            compiler.addInstruction(new LOAD(0, register));
+            compiler.addInstruction(new BRA(endAnd));
+        }
+
+        else {
+            compiler.addLabel(trueAnd);
+            compiler.addInstruction(new LOAD(1, register));
+            compiler.addInstruction(new BRA(endAnd));
+
+
+            compiler.addLabel(falseAnd);
+            compiler.addInstruction(new LOAD(0, register));
+            compiler.addInstruction(new BRA(label));
+        }
+
+
+        compiler.getRegisterDescriptor().useRegister(register, new ImmediateInteger(1)); //TODO remove value from reg
+
+        compiler.addLabel(endAnd);
+
+        return register;
+    }
+
+    @Override
+    protected DVal codeGenLoad(DecacCompiler compiler) {
+        Label endAnd = new Label("end.and.l" + getLocation().getLine() + ".c" +
+                getLocation().getPositionInLine());
+        return codeGenLoad(compiler, endAnd, null, 0);
+
+    }
     
-    
-    
-    
-    
+
+
     /*
 //    @Override
     protected DVal codeGenLoad(DecacCompiler compiler, Label label){
@@ -111,15 +173,9 @@ public class And extends AbstractOpBool {
         compiler.addLabel(label);
         return register;
     }
-//TODO: Remove the value of the register from the reg descriptor
 
-//TODO: Empty main init
-    @Override
-    protected DVal codeGenLoad(DecacCompiler compiler){
-        Label endAnd = new Label("end.and.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-        return codeGenLoad(compiler, endAnd);
-    }
+
+
 
     @Override
     protected void codeGenBeq(DecacCompiler compiler, Label label, int p){

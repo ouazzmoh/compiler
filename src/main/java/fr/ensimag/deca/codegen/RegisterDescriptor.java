@@ -78,7 +78,7 @@ public class RegisterDescriptor {
 
     //TODO: make value check register descriptor
     public boolean useLoad(){
-        return false;
+        return true;
     }
 
 

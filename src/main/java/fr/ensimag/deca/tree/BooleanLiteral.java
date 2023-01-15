@@ -123,7 +123,7 @@ public class BooleanLiteral extends AbstractExpr {
     
     
     
-    /*
+
     @Override
     protected DVal codeGenLoad(DecacCompiler compiler){
         GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
@@ -136,6 +136,8 @@ public class BooleanLiteral extends AbstractExpr {
         return registerToUse;
     }
 
+
+    /*
     @Override
     protected void codeGenPush(DecacCompiler compiler){
         GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();

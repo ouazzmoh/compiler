@@ -60,5 +60,43 @@ public class Not extends AbstractUnaryExpr {
         compiler.addInstruction(new CMP(new ImmediateInteger(p), valueReg));
         compiler.addInstruction(new BEQ(label));
     }
+    @Override
+    protected void codeGenBeq(DecacCompiler compiler, Label label, Label end, int p){
+//        GPRegister valueReg = (GPRegister) codeGenLoad(compiler);
+
+        Label endNot = new Label("end.Not.l" + getLocation().getLine() + ".c" +
+                getLocation().getPositionInLine());
+        Label checkOp = new Label("op.Not.l" + getLocation().getLine() + ".c" +
+                getLocation().getPositionInLine());
+
+
+        compiler.addLabel(checkOp);
+
+        Label trueNot = new Label("true.Not.l" + getLocation().getLine() + ".c" +
+                getLocation().getPositionInLine());
+        Label falseNot = new Label("false.Not.l" + getLocation().getLine() + ".c" +
+                getLocation().getPositionInLine());
+
+        getOperand().codeGenBeq(compiler, falseNot, trueNot, 1); //iF OPERAND IS TRUE BRANCH TO FalseNot
+
+//        compiler.addInstruction(new CMP(new ImmediateInteger(p), valueReg));
+//        compiler.addInstruction(new BEQ(label));
+
+
+        if (end != null) {
+            compiler.addLabel(trueNot);
+            compiler.addInstruction(new BRA(label));
+            compiler.addLabel(falseNot);
+            compiler.addInstruction(new BRA(endNot));
+        }
+
+        else {
+            compiler.addLabel(trueNot);
+            compiler.addInstruction(new BRA(endNot));
+            compiler.addLabel(falseNot);
+            compiler.addInstruction(new BRA(label));
+        }
+        compiler.addLabel(endNot);
+    }
 
 }

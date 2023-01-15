@@ -57,11 +57,11 @@ public abstract class AbstractPrint extends AbstractInst {
     }
     }
 
-   @Override
-   protected void codeGenInstIfRec(DecacCompiler compiler, Label label) {
-       this.codeGenInst(compiler, label);
-//        compiler.addInstruction(new BRA(label));
-    }
+//   @Override
+//   protected void codeGenInstIfRec(DecacCompiler compiler, Label label) {
+//       this.codeGenInst(compiler, label);
+////        compiler.addInstruction(new BRA(label));
+//    }
 
     private boolean getPrintHex() {
         return printHex;
