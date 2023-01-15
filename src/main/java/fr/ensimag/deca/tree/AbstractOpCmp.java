@@ -37,11 +37,13 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
     			if (t1.isInt() && t2.isFloat()) {
     				this.setType(compiler.environmentType.BOOLEAN);
 					this.setLeftOperand(new ConvFloat(this.getLeftOperand()));
+					this.getLeftOperand().verifyExpr(compiler, localEnv, currentClass);
     				return this.getType();
     				}
     			if (t1.isFloat() && t2.isInt()) {
     				this.setType(compiler.environmentType.BOOLEAN);
 					this.setRightOperand(new ConvFloat(this.getRightOperand()));
+					this.getRightOperand().verifyExpr(compiler, localEnv, currentClass);
     				return this.getType();    			}
 
     		}
