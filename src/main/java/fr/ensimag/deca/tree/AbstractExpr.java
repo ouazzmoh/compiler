@@ -12,6 +12,9 @@ import fr.ensimag.ima.pseudocode.*;
 import java.io.PrintStream;
 import java.io.UncheckedIOException;
 
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.POP;
+import fr.ensimag.ima.pseudocode.instructions.STORE;
 import org.apache.commons.lang.Validate;
 
 /**
@@ -146,7 +149,16 @@ public abstract class AbstractExpr extends AbstractInst {
      * @param adr
      */
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-        throw new DecacInternalError("expression cannot be initialized");
+//        throw new DecacInternalError("expression cannot be initialized");
+        if (compiler.getRegisterDescriptor().useLoad()){
+            GPRegister register = (GPRegister)codeGenLoad(compiler);
+            compiler.addInstruction(new STORE(register, adr));
+        }
+        else {
+            codeGenPush(compiler);
+            compiler.addInstruction(new POP(Register.R0));
+            compiler.addInstruction(new STORE(Register.R0, adr));
+        }
     }
 
     /**

@@ -329,9 +329,14 @@ public class Identifier extends AbstractIdentifier {
 
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-        compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), registerToUse));
-        compiler.addInstruction(new STORE(registerToUse, adr));
+        if (compiler.getRegisterDescriptor().useLoad()) {
+            GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+            compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), registerToUse));
+            compiler.addInstruction(new STORE(registerToUse, adr));
+        }
+        else {
+            codeGenPush(compiler);
+        }
     }
 
 }

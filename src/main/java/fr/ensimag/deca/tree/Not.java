@@ -5,14 +5,8 @@ import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
-import fr.ensimag.ima.pseudocode.DVal;
-import fr.ensimag.ima.pseudocode.GPRegister;
-import fr.ensimag.ima.pseudocode.ImmediateInteger;
-import fr.ensimag.ima.pseudocode.Label;
-import fr.ensimag.ima.pseudocode.instructions.BEQ;
-import fr.ensimag.ima.pseudocode.instructions.CMP;
-import fr.ensimag.ima.pseudocode.instructions.FLOAT;
-import fr.ensimag.ima.pseudocode.instructions.SEQ;
+import fr.ensimag.ima.pseudocode.*;
+import fr.ensimag.ima.pseudocode.instructions.*;
 
 /**
  *
@@ -50,6 +44,14 @@ public class Not extends AbstractUnaryExpr {
         compiler.addInstruction(new SEQ(valueReg));
         compiler.getRegisterDescriptor().useRegister(valueReg, valueReg);
         return valueReg;
+    }
+
+    @Override
+    protected void codeGenPush(DecacCompiler compiler){
+        getOperand().codeGenPush(compiler);
+        compiler.addInstruction(new POP(Register.R0));
+        compiler.addInstruction(new CMP(0, Register.R0));
+        compiler.addInstruction(new SEQ(Register.R0));
     }
 
     @Override

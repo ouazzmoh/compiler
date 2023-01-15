@@ -49,7 +49,4 @@ public abstract class AbstractInst extends Tree {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-    protected void codeGenInstIfRec(DecacCompiler compiler, Label endIf) {
-        throw new UnsupportedOperationException("not implemented yet");
-    }
 }
