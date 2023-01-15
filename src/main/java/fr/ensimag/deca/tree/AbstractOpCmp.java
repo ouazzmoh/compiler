@@ -114,7 +114,11 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 		codeGenBranchOpp(compiler, label);
 	}
 
-
+	@Override
+	protected void codeGenBeq(DecacCompiler compiler, Label label,Label end, int p){
+		codeGenBranchOpp(compiler, label);
+	}
+	
 	/**
 	 * Branch to the label if the comparison between the operands
 	 * is not true-->useful for if statements
