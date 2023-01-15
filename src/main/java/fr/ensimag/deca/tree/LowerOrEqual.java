@@ -24,14 +24,14 @@ public class LowerOrEqual extends AbstractOpIneq {
         return "<=";
     }
 
-    @Override
-    protected void codeGenMnem(DecacCompiler compiler, Label label){
-        compiler.addInstruction(new BLE(label));
-    }
-
-    protected void codeGenMnemOpp(DecacCompiler compiler, Label label){
-        compiler.addInstruction(new BGT(label));
-    }
+//    @Override
+//    protected void codeGenMnem(DecacCompiler compiler, Label label){
+//        compiler.addInstruction(new BLE(label));
+//    }
+//
+//    protected void codeGenMnemOpp(DecacCompiler compiler, Label label){
+//        compiler.addInstruction(new BGT(label));
+//    }
 
 
 }

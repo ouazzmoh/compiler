@@ -5,6 +5,7 @@ import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.ima.pseudocode.DAddr;
 import fr.ensimag.ima.pseudocode.DVal;
 import fr.ensimag.ima.pseudocode.GPRegister;
@@ -63,13 +64,12 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 	 */
 	@Override
 	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-		DVal opLeft = getLeftOperand().codeGenLoad(compiler);
-		//TODO: Add a try catch for GPRegister
-		GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler); //load right, r1
-		compiler.addInstruction(new CMP(opLeft, opRight));// load left, r2
+		GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
+		GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler);
+		compiler.addInstruction(new CMP(opRight, opLeft));
 		Label falseComp = new Label("falseComp");
 		Label end = new Label("end");
-		this.codeGenMnem(compiler, falseComp);
+		codeGenMnem(compiler, falseComp, true);
 
 		GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
 		compiler.addInstruction(new LOAD(1, registerToUse)); // load 1, r
@@ -82,31 +82,31 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 		compiler.addLabel(end); // end:
 	}
 
-	/**
-	 * Generates the mnemonic depending on the class
-	 * (BEQ, BLT, BGE, BGT, BLE, BNE)
-	 * @param compiler
-	 * @param label
-	 */
-	protected abstract void codeGenMnem(DecacCompiler compiler, Label label);
+//	/**
+//	 * Generates the mnemonic depending on the class
+//	 * (BEQ, BLT, BGE, BGT, BLE, BNE)
+//	 * @param compiler
+//	 * @param label
+//	 */
+//	protected abstract void codeGenMnem(DecacCompiler compiler, Label label);
 
 
-	/**
-	 * Generates the opposing mnemonic of the class
-	 * e.g: for EQUALS generates BNE
-	 * @param compiler
-	 * @param label
-	 */
-	protected abstract void codeGenMnemOpp(DecacCompiler compiler, Label label);
+//	/**
+//	 * Generates the opposing mnemonic of the class
+//	 * e.g: for EQUALS generates BNE
+//	 * @param compiler
+//	 * @param label
+//	 */
+//	protected abstract void codeGenMnemOpp(DecacCompiler compiler, Label label);
 
-	/**
-	 * Generates the mnemonic to be used in the branching
-	 * For EQUALS, Not Equals : it generates the opposite (BNE, BEQ)
-	 * For inequality operations : it generates the corresponding to the class
-	 * @param compiler
-	 * @param label
-	 */
-	protected abstract void codeGenBranchMnem(DecacCompiler compiler, Label label);
+//	/**
+//	 * Generates the mnemonic to be used in the branching
+//	 * For EQUALS, Not Equals : it generates the opposite (BNE, BEQ)
+//	 * For inequality operations : it generates the corresponding to the class
+//	 * @param compiler
+//	 * @param label
+//	 */
+//	protected abstract void codeGenBranchMnem(DecacCompiler compiler, Label label);
 
 
 	@Override
@@ -122,10 +122,70 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 	 * @param label
 	 */
 	protected void codeGenBranchOpp(DecacCompiler compiler, Label label){
-		DVal opLeft = getLeftOperand().codeGenLoad(compiler);
+		GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
 		GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler);
-		compiler.addInstruction(new CMP(opLeft, opRight));
-		this.codeGenBranchMnem(compiler, label);
+		compiler.addInstruction(new CMP(opRight, opLeft));
+		codeGenMnem(compiler, label, true);
 	}
+
+	/**
+	 *Generates the mnemonic corresponding to the operation
+	 * if opp is true, it generates the opposite mnemonic
+	 * CMP R2, R3 (if R3 > R2, GT = true)
+	 *
+	 * It is advised to use CMP(rightOperand, leftOperand) to avoid confusion
+	 * @param compiler
+	 * @param label
+	 * @param opp : if true we branch in the case the comparaison is false
+	 *            if not we branch in the case the operation is false
+	 */
+	protected  void codeGenMnem(DecacCompiler compiler, Label label, boolean opp){
+		if (getOperatorName().equals("<")){
+			if (opp){
+				compiler.addInstruction(new BGE(label));
+			}else {
+				compiler.addInstruction(new BLT(label));
+			}
+		}
+		else if (getOperatorName().equals("<=")){
+			if (opp){
+				compiler.addInstruction(new BGT(label));
+			}else {
+				compiler.addInstruction(new BLE(label));
+			}
+		}
+		else if (getOperatorName().equals(">")){
+			if (opp){
+				compiler.addInstruction(new BLE(label));
+			}else {
+				compiler.addInstruction(new BGT(label));
+			}
+		}
+		else if (getOperatorName().equals(">=")){
+			if (opp){
+				compiler.addInstruction(new BLT(label));
+			}else {
+				compiler.addInstruction(new BGE(label));
+			}
+		}
+		else if (getOperatorName().equals("==")){
+			if (opp){
+				compiler.addInstruction(new BNE(label));
+			}else {
+				compiler.addInstruction(new BEQ(label));
+			}
+		}
+		else if (getOperatorName().equals("!=")){
+			if (opp){
+				compiler.addInstruction(new BEQ(label));
+			}else {
+				compiler.addInstruction(new BNE(label));
+			}
+		}
+		else {
+			throw new DecacInternalError("Comparaison operator shouldn't be parsed");
+		}
+	}
+
 
 }

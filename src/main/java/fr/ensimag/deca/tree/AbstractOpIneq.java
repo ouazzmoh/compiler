@@ -15,9 +15,9 @@ public abstract class AbstractOpIneq extends AbstractOpCmp {
         super(leftOperand, rightOperand);
     }
 
-    @Override
-    protected void codeGenBranchMnem(DecacCompiler compiler, Label label){
-        codeGenMnem(compiler, label);
-    }
+//    @Override
+//    protected void codeGenBranchMnem(DecacCompiler compiler, Label label){
+//        codeGenMnem(compiler, label);
+//    }
 
 }

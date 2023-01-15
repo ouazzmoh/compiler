@@ -25,12 +25,12 @@ public class Lower extends AbstractOpIneq {
         return "<";
     }
 
-    protected void codeGenMnem(DecacCompiler compiler, Label label){
-        compiler.addInstruction(new BLT(label));
-    }
-
-    protected void codeGenMnemOpp(DecacCompiler compiler, Label label){
-        compiler.addInstruction(new BGE(label));
-    }
+//    protected void codeGenMnem(DecacCompiler compiler, Label label){
+//        compiler.addInstruction(new BLT(label));
+//    }
+//
+//    protected void codeGenMnemOpp(DecacCompiler compiler, Label label){
+//        compiler.addInstruction(new BGE(label));
+//    }
 
 }

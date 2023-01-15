@@ -25,13 +25,13 @@ public class NotEquals extends AbstractOpExactCmp {
         return "!=";
     }
 
-    @Override
-    protected void codeGenMnem(DecacCompiler compiler, Label label){
-        compiler.addInstruction(new BNE(label));
-    }
-
-    protected void codeGenMnemOpp(DecacCompiler compiler, Label label){
-        compiler.addInstruction(new BEQ(label));
-    }
+//    @Override
+//    protected void codeGenMnem(DecacCompiler compiler, Label label){
+//        compiler.addInstruction(new BNE(label));
+//    }
+//
+//    protected void codeGenMnemOpp(DecacCompiler compiler, Label label){
+//        compiler.addInstruction(new BEQ(label));
+//    }
 
 }
