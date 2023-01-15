@@ -59,14 +59,14 @@ public class Program extends AbstractProgram {
     @Override
     public void codeGenProgram(DecacCompiler compiler) {
         compiler.addComment("Main program");
-        compiler.getErrorsLab().put(new Label("err_stack_overflow"), "Erreur: la pile est pleine");
+        compiler.getErrorsMap().put("err_stack_overflow", "Erreur: la pile est pleine");
         main.codeGenMain(compiler);
         compiler.addInstruction(new HALT());
         compiler.addComment("Generating code for errors");
-        Iterator<Map.Entry<Label, String>> it = compiler.getErrorsLab().entrySet().iterator();
+        Iterator<Map.Entry<String, String>> it = compiler.getErrorsMap().entrySet().iterator();
         while(it.hasNext()){
-            Map.Entry<Label, String> couple = it.next();
-            compiler.addLabel(couple.getKey());
+            Map.Entry<String, String> couple = it.next();
+            compiler.addLabel(new Label(couple.getKey()));
             compiler.addInstruction(new WSTR(couple.getValue()));
             compiler.addInstruction(new WNL());
             compiler.addInstruction(new ERROR());

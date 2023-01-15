@@ -44,7 +44,9 @@ public class ReadInt extends AbstractReadExpr {
 
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+        compiler.addError(readErrInt, "Erreur: valeur entree ne correspond pas à un entier codable");
         compiler.addInstruction(new RINT());
+        compiler.addInstruction(new BOV(new Label(readErrInt)));
         super.codeGenInit(compiler, adr);
     }
 

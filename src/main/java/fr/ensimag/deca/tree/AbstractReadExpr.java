@@ -20,6 +20,9 @@ public abstract class AbstractReadExpr extends AbstractExpr {
         super();
     }
 
+    protected String readErrInt = "err_read_input_int";
+    protected String readErrFloat = "err_read_input_float";
+
 
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){

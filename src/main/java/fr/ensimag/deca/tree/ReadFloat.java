@@ -8,10 +8,8 @@ import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.DAddr;
 import fr.ensimag.ima.pseudocode.DVal;
-import fr.ensimag.ima.pseudocode.instructions.RFLOAT;
-import fr.ensimag.ima.pseudocode.instructions.RINT;
-import fr.ensimag.ima.pseudocode.instructions.WFLOAT;
-import fr.ensimag.ima.pseudocode.instructions.WINT;
+import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.instructions.*;
 
 import java.io.PrintStream;
 
@@ -48,7 +46,9 @@ public class ReadFloat extends AbstractReadExpr {
 
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+        compiler.addError(readErrFloat, "Erreur: valeur entree ne correspond pas à un flottant codable");
         compiler.addInstruction(new RFLOAT());
+        compiler.addInstruction(new BOV(new Label(readErrFloat)));
         super.codeGenInit(compiler, adr);
     }
 
