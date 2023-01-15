@@ -207,4 +207,21 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 		compiler.addError(ovLabel, "Erreur : Debordement de pile non codable ou division par 0.0");
 	}
 
+
+
+	@Override
+	protected void codeGenPrint(DecacCompiler compiler){
+		GPRegister reg = (GPRegister) codeGenLoad(compiler);
+		compiler.addInstruction(new LOAD(reg, Register.R1));
+		Type typeLeft = this.getLeftOperand().getType();
+		Type typeRight = this.getRightOperand().getType();
+		if (typeLeft.isInt() && typeLeft.isInt()){
+			compiler.addInstruction(new WINT());
+		}
+		else {
+			compiler.addInstruction(new WFLOAT());
+		}
+	}
+
+
 }
