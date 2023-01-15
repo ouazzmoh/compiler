@@ -166,7 +166,7 @@ public abstract class AbstractExpr extends AbstractInst {
      * @param label
      * @param p = 0 (false) or 1 (true)
      */
-    protected void codeGenBeq(DecacCompiler compiler, Label label, int p){
+    protected void codeGenBeq(DecacCompiler compiler, Label label,Label end, int p){
         throw new DecacInternalError("expression cannot be compared");
     }
 

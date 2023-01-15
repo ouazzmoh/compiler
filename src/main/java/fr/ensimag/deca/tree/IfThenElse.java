@@ -96,7 +96,7 @@ public class IfThenElse extends AbstractInst {
     @Override
     protected void codeGenInstIfRec(DecacCompiler compiler, Label endIf) {
         Label elseIf = new Label("elseIf.l" + elseBranch.uniqueNum());
-        condition.codeGenBeq(compiler, elseIf, 0);
+        condition.codeGenBeq(compiler, elseIf, null, 0);
         for (AbstractInst i : thenBranch.getList()){
             i.codeGenInst(compiler, null);
         }
