@@ -1,0 +1,8 @@
+
+
+{
+	float b;
+
+	int a = (boolean) (b);
+	
+}

@@ -9,6 +9,7 @@ import fr.ensimag.deca.tools.SymbolTable;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
 import fr.ensimag.deca.tree.AbstractProgram;
 import fr.ensimag.deca.tree.LocationException;
+import fr.ensimag.deca.tree.Print;
 import fr.ensimag.ima.pseudocode.AbstractLine;
 import fr.ensimag.ima.pseudocode.IMAProgram;
 import fr.ensimag.ima.pseudocode.Instruction;
@@ -186,9 +187,7 @@ public class DecacCompiler {
      */
     public boolean compile() {
         String sourceFile = source.getAbsolutePath();
-        String[] parts1 = sourceFile.split("/");
-        String[] parts2 = parts1[parts1.length-1].split("\\.");
-        String destFile = parts2[0] + ".ass";
+        String destFile = sourceFile.substring(0, sourceFile.lastIndexOf('.')) + ".ass";
         // A FAIRE: calculer le nom du fichier .ass à partir du nom du
         // A FAIRE: fichier .deca.
         PrintStream err = System.err;
@@ -234,7 +233,10 @@ public class DecacCompiler {
             PrintStream out, PrintStream err)
             throws DecacFatalError, LocationException {
         AbstractProgram prog = doLexingAndParsing(sourceName, err);
-
+        if (compilerOptions.getOptionp()) {
+        	prog.decompile(out);
+        	return false;
+        }
         if (prog == null) {
             LOG.info("Parsing failed");
             return true;
@@ -243,7 +245,11 @@ public class DecacCompiler {
 
 
         prog.verifyProgram(this);
+        if (compilerOptions.getOptionv()) {
+        	return false;
+        }
         assert(prog.checkAllDecorations());
+        //
 
 //        prog.decompile(out);
 

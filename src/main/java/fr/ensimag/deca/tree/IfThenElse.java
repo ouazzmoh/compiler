@@ -33,6 +33,18 @@ public class IfThenElse extends AbstractInst {
         this.elseBranch = elseBranch;
     }
     
+    public AbstractExpr getCondition() {
+        return condition;
+    }
+
+    public ListInst getThenBranch() {
+        return thenBranch;
+    }
+
+    public ListInst getElseBranch() {
+        return elseBranch;
+    }
+
     @Override
     protected void verifyInst(DecacCompiler compiler, EnvironmentExp localEnv,
             ClassDefinition currentClass, Type returnType)
@@ -68,24 +80,29 @@ public class IfThenElse extends AbstractInst {
 
 
     @Override
-    protected void codeGenInst(DecacCompiler compiler) {
-        Label endIf = new Label("endIf.l" + getLocation().getLine() +
-                ".c" + getLocation().getPositionInLine());
-        this.codeGenInstIfRec(compiler, endIf);
-        compiler.addLabel(endIf);
+    protected void codeGenInst(DecacCompiler compiler, Label label) {
+    	if (label == null) {
+            Label endIf = new Label("endIf.l" + getLocation().getLine() +
+                    ".c" + getLocation().getPositionInLine());
+            this.codeGenInstIfRec(compiler, endIf);
+            compiler.addLabel(endIf);
+    	}
+    	else {
+            this.codeGenInstIfRec(compiler, label);
+    	}
     }
 
 
     protected void codeGenInstIfRec(DecacCompiler compiler, Label endIf) {
         Label elseIf = new Label("elseIf.l" + elseBranch.uniqueNum());
-        condition.codeGenBeq(compiler, elseIf, 0);
+        condition.codeGenBeq(compiler, elseIf, null, 0);
         for (AbstractInst i : thenBranch.getList()){
-            i.codeGenInst(compiler);
+            i.codeGenInst(compiler, null);
         }
         compiler.addInstruction(new BRA(endIf));
         compiler.addLabel(elseIf);
         for (AbstractInst i : elseBranch.getList()){
-            i.codeGenInstIf(compiler, endIf);
+            i.codeGenInst(compiler, endIf);
         }
     }
 
@@ -96,7 +113,18 @@ public class IfThenElse extends AbstractInst {
 
     @Override
     public void decompile(IndentPrintStream s) {
-        throw new UnsupportedOperationException("not yet implemented");
+        //throw new UnsupportedOperationException("not yet implemented");
+        s.print("if (");
+        getCondition().decompile(s);
+        s.println(") {");
+        s.indent();
+        getThenBranch().decompile(s);
+        s.unindent();
+        s.println("} else {");
+        s.indent();
+        getElseBranch().decompile(s);
+        s.unindent();
+        s.print("}");
     }
 
     @Override

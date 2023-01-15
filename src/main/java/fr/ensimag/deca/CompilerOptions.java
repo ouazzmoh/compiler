@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.lang.String;
 
 import org.apache.log4j.Level;
@@ -21,6 +23,9 @@ public class CompilerOptions {
     public static final int INFO  = 1;
     public static final int DEBUG = 2;
     public static final int TRACE = 3;
+    
+    public Set<String> set = new HashSet<String>();
+    
     public int getDebug() {
         return debug;
     }
@@ -33,6 +38,35 @@ public class CompilerOptions {
         return printBanner;
     }
     
+    public boolean getOptionv() {
+        return optionv;
+    }
+    
+    public boolean getOptionp() throws DecacFatalError {
+    	if (optionv && optionp) {
+    		throw new DecacFatalError("L'option -p et -v ne sont pas compatibles");
+    	}
+        return optionp;
+    }
+    
+    public void Settings(String s, int i) throws CLIException {
+    	if (s.equals("-b")) {
+    		if (i > 1) {
+    			throw new CLIException("L'option -b doit etre appeler sans source file et sans options");
+    		}
+    		printBanner = true;
+    	}
+    	else if (s.equals("-v")) {
+    		optionv = true;
+    	}
+    	else if (s.equals("-p")) {
+    		optionp = true;
+    	}
+    }
+    
+    
+    
+    
     public List<File> getSourceFiles() {
         return Collections.unmodifiableList(sourceFiles);
     }
@@ -40,6 +74,8 @@ public class CompilerOptions {
     private int debug = 0;
     private boolean parallel = false;
     private boolean printBanner = false;
+    private boolean optionv = false;
+    private boolean optionp = false;
     private List<File> sourceFiles = new ArrayList<File>();
 
     /**
@@ -50,6 +86,9 @@ public class CompilerOptions {
      */
     public void parseArgs(String[] args) throws CLIException {
         // A FAIRE : parcourir args pour positionner les options correctement.
+    	set.add("-p");
+    	set.add("-v");
+    	set.add("-b");
         Logger logger = Logger.getRootLogger();
         // map command-line debug option to log4j's level.
         switch (getDebug()) {
@@ -79,6 +118,26 @@ public class CompilerOptions {
             //TODO: show all options
             logger.debug("arguments empty");
         }
+        else {
+        	int i = args.length;
+        	int j = 0;
+        	String s;
+        	while (j < i) {
+        		s = args[j];
+        		if (set.contains(s)) {
+        			Settings(s, i);
+        		}
+        		else if (s.contains(".deca")) {
+                    File currSource = new File(s);
+                    sourceFiles.add(currSource);
+        		}
+        		else {
+        			throw new CLIException("L'option" + s+ " is incorrect"); 
+    			}
+    			j++;
+        	}
+        }
+        /*
         else if (args[0].equals("-b")){
             logger.info("Showing the banner for the team");
             printBanner = true;
@@ -88,10 +147,10 @@ public class CompilerOptions {
             //TODO: refine this with all the options
             File currSource = new File(args[0]);
             sourceFiles.add(currSource);
-        }
+        }*/
     }
 
     protected void displayUsage() {
-        throw new UnsupportedOperationException("not yet implemented");
+        System.out.println("decac [[-p | -v] [-n] [-r X] [-d]* [-P] [-w] <fichier deca>...] | [-b]");
     }
 }

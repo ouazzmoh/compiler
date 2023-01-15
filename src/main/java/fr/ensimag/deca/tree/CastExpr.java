@@ -32,11 +32,10 @@ public class CastExpr extends AbstractExpr {
 		else if (t1.isInt() && t2.isFloat()) {
 			return true;
 		}
-		else if (t1.sameType(t2)) {
-			return true;
+		else {
+			return false;
 		}
-		return false;
-	}
+		}
 
 	@Override
 	public Type verifyExpr(DecacCompiler compiler, EnvironmentExp localEnv, ClassDefinition currentClass)
@@ -44,7 +43,6 @@ public class CastExpr extends AbstractExpr {
 		// TODO Auto-generated method stub
 		Type t2 = type.verifyType(compiler);
 		Type t1 = expr.verifyExpr(compiler, localEnv, currentClass);
-		t1 = (Type) (t2);
 		if (!t1.isVoid()) {
 			if (isCompatible(t1, t2)) {
 				this.setType(t2);

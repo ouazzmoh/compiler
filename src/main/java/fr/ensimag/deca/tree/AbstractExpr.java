@@ -139,7 +139,7 @@ public abstract class AbstractExpr extends AbstractInst {
 
 
     @Override
-    protected void codeGenInst(DecacCompiler compiler) {
+    protected void codeGenInst(DecacCompiler compiler, Label label) {
         throw new UnsupportedOperationException("not yet implemented");
     }
 
@@ -178,7 +178,7 @@ public abstract class AbstractExpr extends AbstractInst {
      * @param label
      * @param p = 0 (false) or 1 (true)
      */
-    protected void codeGenBeq(DecacCompiler compiler, Label label, int p){
+    protected void codeGenBeq(DecacCompiler compiler, Label label,Label end, int p){
         throw new DecacInternalError("expression cannot be compared");
     }
 
