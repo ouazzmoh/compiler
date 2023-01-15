@@ -210,7 +210,7 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 
 
 	@Override
-	protected void codeGenPrint(DecacCompiler compiler){
+	protected void codeGenPrint(DecacCompiler compiler, boolean hex){
 		GPRegister reg = (GPRegister) codeGenLoad(compiler);
 		compiler.addInstruction(new LOAD(reg, Register.R1));
 		Type typeLeft = this.getLeftOperand().getType();

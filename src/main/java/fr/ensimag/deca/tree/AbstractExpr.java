@@ -133,7 +133,7 @@ public abstract class AbstractExpr extends AbstractInst {
      * Generate code to print the expression
      * @param compiler
      */
-    protected void codeGenPrint(DecacCompiler compiler) {
+    protected void codeGenPrint(DecacCompiler compiler, boolean hex) {
         throw new DecacInternalError("expression cannot be printed");
     }
 

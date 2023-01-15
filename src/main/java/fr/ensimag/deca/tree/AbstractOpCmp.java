@@ -6,10 +6,7 @@ import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.DecacInternalError;
-import fr.ensimag.ima.pseudocode.DAddr;
-import fr.ensimag.ima.pseudocode.DVal;
-import fr.ensimag.ima.pseudocode.GPRegister;
-import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.*;
 
 /**
@@ -114,6 +111,11 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 		codeGenBranchOpp(compiler, label);
 	}
 
+//	@Override
+//	protected void codeGenBeq(DecacCompiler compiler, Label label,Label end, int p){
+//		codeGenBranchOpp(compiler, label);
+//	}
+
 	@Override
 	protected void codeGenBeq(DecacCompiler compiler, Label label,Label end, int p){
 		codeGenBranchOpp(compiler, label);
@@ -131,6 +133,39 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 		compiler.addInstruction(new CMP(opRight, opLeft));
 		codeGenMnem(compiler, label, true);
 	}
+
+
+	@Override
+	protected DVal codeGenLoad(DecacCompiler compiler){
+		GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
+		GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler);
+		Label falseComp = new Label("falseComp.l" + getLocation().getLine() +
+				".c" + getLocation().getPositionInLine());
+		Label endComp = new Label("endComp.l" + getLocation().getLine() +
+				".c" + getLocation().getPositionInLine());
+		compiler.addInstruction(new CMP(opRight, opLeft));
+		codeGenMnem(compiler,falseComp, true);
+		compiler.addInstruction(new LOAD(1, opRight));
+		compiler.addInstruction(new BRA(endComp));
+		compiler.addLabel(falseComp);
+		compiler.addInstruction(new LOAD(0, opRight));
+		compiler.addLabel(endComp);
+		compiler.getRegisterDescriptor().useRegister(opRight, new ImmediateInteger(1));
+		return opRight;
+	}
+
+//	/**
+//	 * Branch to the label if the comparison between the operands
+//	 * is not true-->useful for if statements
+//	 * @param compiler
+//	 * @param label
+//	 */
+//	protected void codeGenBranchOppBeq(DecacCompiler compiler, Label label){
+//		getLeftOperand().codeGenBeq(compiler);
+//		getRightOperand().codeGenBeq(compiler);
+//		compiler.addInstruction(new CMP(opRight, opLeft));
+//		codeGenMnem(compiler, label, true);
+//	}
 
 	/**
 	 *Generates the mnemonic corresponding to the operation
