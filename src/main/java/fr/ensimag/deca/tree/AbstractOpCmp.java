@@ -131,7 +131,14 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 		GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
 		GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler);
 		compiler.addInstruction(new CMP(opRight, opLeft));
+//		if (getOperatorName().equals("==")||getOperatorName().equals("!=")) {
+//			codeGenMnem(compiler, label, false);
+//		}
+//		else{
 		codeGenMnem(compiler, label, true);
+//		}
+
+
 	}
 
 
