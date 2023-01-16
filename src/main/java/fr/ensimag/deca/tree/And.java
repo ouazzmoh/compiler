@@ -26,16 +26,16 @@ public class And extends AbstractOpBool {
     }
 
     @Override
-    protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label, GPRegister register){
+    protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
         if (!b){
-            getLeftOperand().codeGenBranch(compiler, b, label, register);
-            getRightOperand().codeGenBranch(compiler, b, label, register);
+            getLeftOperand().codeGenBranch(compiler, b, label);
+            getRightOperand().codeGenBranch(compiler, b, label);
         }
         else {
             Label falseAnd = new Label("falseAnd.l" + getLocation().getLine() +
                     ".c" + getLocation().getPositionInLine());
-            getLeftOperand().codeGenBranch(compiler, !b, falseAnd, register);
-            getRightOperand().codeGenBranch(compiler, b, label, register);
+            getLeftOperand().codeGenBranch(compiler, !b, falseAnd);
+            getRightOperand().codeGenBranch(compiler, b, label);
             compiler.addLabel(falseAnd);
         }
     }
@@ -47,21 +47,16 @@ public class And extends AbstractOpBool {
                 ".c" + getLocation().getPositionInLine());
         Label endAnd = new Label("endAnd.l" + getLocation().getLine() +
                 ".c" + getLocation().getPositionInLine());
-        if (compiler.getRegisterDescriptor().useLoad()){
-            GPRegister register = compiler.getRegisterDescriptor().getFreeReg();
-            codeGenBranch(compiler, false, falseAnd, register);
-            //return 1 if true
-            compiler.addInstruction(new LOAD(1, register));
-            compiler.addInstruction(new BRA(endAnd));
-            compiler.addLabel(falseAnd);
-            //return 0 if false
-            compiler.addInstruction(new LOAD(0, register));
-            compiler.addInstruction(new BRA(endAnd));
-            compiler.addLabel(endAnd);
-            compiler.addInstruction(new STORE(register, adr));
-        }
-        else{
-            //TODO: Push Pop
-        }
+
+        codeGenBranch(compiler, false, falseAnd);
+        //return 1 if true
+        compiler.addInstruction(new LOAD(1, Register.R1));
+        compiler.addInstruction(new BRA(endAnd));
+        compiler.addLabel(falseAnd);
+        //return 0 if false
+        compiler.addInstruction(new LOAD(0, Register.R1));
+        compiler.addInstruction(new BRA(endAnd));
+        compiler.addLabel(endAnd);
+        compiler.addInstruction(new STORE(Register.R1, adr));
     }
 }

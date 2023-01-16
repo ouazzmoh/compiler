@@ -1,6 +1,7 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.context.Type;
+import fr.ensimag.ima.pseudocode.GPRegister;
 import fr.ensimag.ima.pseudocode.Label;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
@@ -56,4 +57,10 @@ public class Assign extends AbstractBinaryExpr {
     protected void codeGenPrint(DecacCompiler compiler, boolean hex){
         this.getRightOperand().codeGenPrint(compiler, hex);
     }
+
+//    @Override
+//    protected void codeGenLoad(DecacCompiler compiler){
+//        GPRegister  reg = (GPRegister) getRightOperand().codeGenLoad(compiler);
+////        compiler.getRegisterDescriptor().
+//    }
 }

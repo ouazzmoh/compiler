@@ -1,7 +1,6 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.DecacMain;
-import fr.ensimag.deca.codegen.RegisterDescriptor;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
@@ -66,31 +65,30 @@ public class IntLiteral extends AbstractExpr {
      */
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-
-        // LOAD #value, R2
-        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-        compiler.addInstruction(new LOAD(value, registerToUse));
-        //update register descriptor
-        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(value));
-
-        compiler.addInstruction(new STORE(registerToUse, adr));
-        compiler.getRegisterDescriptor().freeRegister(registerToUse);
+        compiler.addInstruction(new LOAD(value, Register.R1));
+        compiler.addInstruction(new STORE(Register.R1, adr));
 
     }
 
     @Override
     protected DVal codeGenLoad(DecacCompiler compiler) {
-        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        GPRegister registerToUse = compiler.getFreeReg();
         compiler.addInstruction(new LOAD(value, registerToUse));
-        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(value));
+        compiler.useReg();
         return registerToUse;
     }
 
+
+
+
+
+
+
+
     @Override
     protected void codeGenPush(DecacCompiler compiler){
-        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-        compiler.addInstruction(new LOAD(value, registerToUse));
-        compiler.addInstruction(new PUSH(registerToUse));
+        compiler.addInstruction(new LOAD(value, Register.R1));
+        compiler.addInstruction(new PUSH(Register.R1));
     }
 
     @Override
@@ -98,53 +96,5 @@ public class IntLiteral extends AbstractExpr {
         compiler.addInstruction(new LOAD(value, Register.R1));
         compiler.addInstruction(new WINT());
     }
-
-
-//    @Override
-//    protected void codeGenAssign(DecacCompiler compiler, Identifier identifer){
-//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-//        compiler.addInstruction(new LOAD(value, registerToUse));
-//        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(value));
-//        compiler.addInstruction(new STORE(registerToUse, identifer.getExpDefinition().getOperand()));
-//        compiler.getRegisterDescriptor().freeRegister(registerToUse);
-//    }
-
-//    @Override
-//    protected DVal codeGenSum(DecacCompiler compiler){
-//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-//        compiler.addInstruction(new LOAD(value, registerToUse));
-//        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(value));
-//        return registerToUse;
-//    }
-
-//    @Override
-//    protected DVal codeGenSub(DecacCompiler compiler){
-//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-//        compiler.addInstruction(new LOAD(value, registerToUse));
-//        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(value));
-//        return registerToUse;
-//    }
-//
-//    @Override
-//    protected DVal codeGenMul(DecacCompiler compiler){
-//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-//        compiler.addInstruction(new LOAD(value, registerToUse));
-//        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(value));
-//        return registerToUse;
-//    }
-//
-//
-//    @Override
-//    protected DVal codeGenDiv(DecacCompiler compiler){
-//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-//        compiler.addInstruction(new LOAD(value, registerToUse));
-//        compiler.getRegisterDescriptor().useRegister(registerToUse, new ImmediateInteger(value));
-//        return registerToUse;
-//    }
-
-
-
-
-
 
 }

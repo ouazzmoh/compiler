@@ -22,7 +22,6 @@ public class Not extends AbstractUnaryExpr {
     @Override
     public Type verifyExpr(DecacCompiler compiler, EnvironmentExp localEnv,
             ClassDefinition currentClass) throws ContextualError {
-        //throw new UnsupportedOperationException("not yet implemented");
     	Type t = this.getOperand().verifyExpr(compiler, localEnv, currentClass);
     	if (t.isBoolean()) {
     		this.setType(t);
@@ -42,7 +41,6 @@ public class Not extends AbstractUnaryExpr {
         GPRegister valueReg = (GPRegister) getOperand().codeGenLoad(compiler);
         compiler.addInstruction(new CMP(0, valueReg));
         compiler.addInstruction(new SEQ(valueReg));
-        compiler.getRegisterDescriptor().useRegister(valueReg, valueReg);
         return valueReg;
     }
 
@@ -52,11 +50,12 @@ public class Not extends AbstractUnaryExpr {
         compiler.addInstruction(new POP(Register.R0));
         compiler.addInstruction(new CMP(0, Register.R0));
         compiler.addInstruction(new SEQ(Register.R0));
+        compiler.addInstruction(new PUSH(Register.R0));
     }
 
     @Override
-    protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label, GPRegister register){
-        getOperand().codeGenBranch(compiler, !b, label, register);
+    protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
+        getOperand().codeGenBranch(compiler, !b, label);
     }
 
     @Override
@@ -66,22 +65,17 @@ public class Not extends AbstractUnaryExpr {
                 ".c" + getLocation().getPositionInLine());
         Label endNot = new Label("endNot.l" + getLocation().getLine() +
                 ".c" + getLocation().getPositionInLine());
-        if (compiler.getRegisterDescriptor().useLoad()){
-            GPRegister register = compiler.getRegisterDescriptor().getFreeReg();
-            codeGenBranch(compiler, false, falseNot, register);
-            //return 1 if true
-            compiler.addInstruction(new LOAD(1, register));
-            compiler.addInstruction(new BRA(endNot));
-            compiler.addLabel(falseNot);
-            //return 0 if false
-            compiler.addInstruction(new LOAD(0, register));
-            compiler.addInstruction(new BRA(endNot));
-            compiler.addLabel(endNot);
-            compiler.addInstruction(new STORE(register, adr));
-        }
-        else{
-            //TODO: Push Pop
-        }
+
+        codeGenBranch(compiler, false, falseNot);
+        //return 1 if true
+        compiler.addInstruction(new LOAD(1, Register.R1));
+        compiler.addInstruction(new BRA(endNot));
+        compiler.addLabel(falseNot);
+        //return 0 if false
+        compiler.addInstruction(new LOAD(0, Register.R1));
+        compiler.addInstruction(new BRA(endNot));
+        compiler.addLabel(endNot);
+        compiler.addInstruction(new STORE(Register.R1, adr));
     }
 
 }

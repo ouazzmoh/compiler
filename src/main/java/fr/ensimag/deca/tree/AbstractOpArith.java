@@ -54,67 +54,16 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
     	}
 
 
-	/**
-	 * Initialization of a variable via an arithmetic operation
-	 * @param compiler
-	 * @param adr
-	 */
 	@Override
 	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-		//Todo: optimize with loading the left directly in some cases
-		//If the registers are full we use the PUSH POP instructions
+
 		addArithErrors(compiler);
-		if (!compiler.getRegisterDescriptor().useLoad()){codeGenInitPush(compiler, adr);}
-		else{
-			//Loads the result of the left operand
-			DVal opLeft = getLeftOperand().codeGenLoad(compiler);
-
-			//Loads the result of the right operand (must be a register)
-			DVal opRight = getRightOperand().codeGenLoad(compiler);
-			codeGenOpMnem(compiler, opRight, (GPRegister)opLeft);
-
-			//Storing the value of the operation in the memory
-			compiler.addInstruction(new STORE((GPRegister) opLeft, adr));
-			//Updating the register descriptor
-			compiler.getRegisterDescriptor().freeRegister((GPRegister) opLeft);
-		}
-
-
+		//Calculate the result
+		GPRegister result = (GPRegister) codeGenLoad(compiler);
+		//Store result
+		compiler.addInstruction(new STORE(result, adr));
+		compiler.freeReg();
 	}
-
-	protected void codeGenInitPush(DecacCompiler compiler, DAddr adr) {
-			//Loads the result of the left operand
-			getLeftOperand().codeGenPush(compiler);
-			DVal opRight = getRightOperand().codeGenLoad(compiler);
-			//Loads the result of the operation in the toStore (must be a register) (Used because we can store different
-			// operands)
-			compiler.addInstruction(new POP(Register.R0));
-
-			codeGenOpMnem(compiler, opRight, Register.R0);
-			//Storing the value of the operation in the memory
-			compiler.addInstruction(new STORE(Register.R0, adr));
-	}
-
-//	protected void codeGenBov(DecacCompiler compiler){
-//		Type typeLeft = this.getLeftOperand().getType();
-//		Type typeRight = this.getRightOperand().getType();
-//		if (getOperatorName().equals("/") && typeLeft.isInt() && typeRight.isInt()){
-//			compiler.addInstruction(new BOV(new Label(ovLabelInt)));
-//		}
-//		else {
-//			compiler.addInstruction(new BOV(new Label(ovLabel)));
-//		}
-//	}
-
-//	/**
-//	 * Loads the result of the operations and returns it in a register (Useful for the recursive
-//	 * implementation of the operations
-//	 * @param compiler
-//	 * @param opLeft
-//	 * @param opRight
-//	 * @return
-//	 */
-//	protected abstract DVal codeGenLoad(DecacCompiler compiler, DVal opLeft, DVal opRight);
 
 
 	/**
@@ -125,28 +74,38 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 	@Override
 	protected DVal codeGenLoad(DecacCompiler compiler){
 		addArithErrors(compiler);
-		//Loads the result of left operand
-		DVal opLeft = getLeftOperand().codeGenLoad(compiler);
-		//Loads the result of the right operand
-		DVal opRight = getRightOperand().codeGenLoad(compiler);
-		//Returns the register with the result
-		codeGenOpMnem(compiler, opRight, (GPRegister)opLeft);
-		compiler.getRegisterDescriptor().freeRegister((GPRegister) opRight);
+		//Store left in register: If no freeing problems, we are sure there is at least one free register
+		GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
+		//Evaluate right
+		DVal opRight;
+		//Using instanceof here allows us to optimize the assembly code generated
+		if (getRightOperand() instanceof IntLiteral){
+			opRight = new ImmediateInteger(((IntLiteral)getRightOperand()).getValue());
+		}
+		else if (getRightOperand() instanceof Identifier){
+			opRight = ((Identifier)getRightOperand()).getVariableDefinition().getOperand();
+		}
+		else {
+			//testing if we can use LOAD or we should use PUSH/POP
+			if (!compiler.useLoad()){
+				compiler.addInstruction(new PUSH(opLeft));
+				compiler.freeReg(); //free the left because it is pushed
+			}
+			opRight = getRightOperand().codeGenLoad(compiler);
+			if (!compiler.useLoad()){
+				compiler.addInstruction(new POP(Register.R0));
+				opLeft = Register.R0;
+			}
+			if (compiler.useLoad()){
+				compiler.freeReg(); //free the left operand if it's a register because it is freed in next operation
+			}
+		}
+		//Do the operation
+		codeGenOpMnem(compiler, opRight, opLeft);
+
+
 		return opLeft;
 
-	}
-
-	@Override
-	protected void codeGenPush(DecacCompiler compiler){
-		addArithErrors(compiler);
-		GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-		getLeftOperand().codeGenPush(compiler);
-		DVal opRight = getRightOperand().codeGenLoad(compiler);
-
-		compiler.addInstruction(new POP(Register.R0));
-		codeGenOpMnem(compiler, opRight, Register.R0);
-		compiler.getRegisterDescriptor().freeRegister((GPRegister)opRight);
-		compiler.addInstruction(new PUSH(Register.R0));
 	}
 
 	/**
@@ -156,34 +115,34 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 	 * @param dval1
 	 * @param dval2
 	 */
-	protected void codeGenOpMnem(DecacCompiler compiler, DVal dval1, DVal dval2){
+	protected void codeGenOpMnem(DecacCompiler compiler, DVal dval1, GPRegister dval2){
 		if (getOperatorName().equals("+")){
-			compiler.addInstruction(new ADD(dval1, (GPRegister)dval2));
+			compiler.addInstruction(new ADD(dval1, dval2));
 			compiler.addInstruction(new BOV(new Label(ovLabel)));
 		}
 		else if (getOperatorName().equals("-")){
-			compiler.addInstruction(new SUB(dval1, (GPRegister)dval2));
+			compiler.addInstruction(new SUB(dval1, dval2));
 			compiler.addInstruction(new BOV(new Label(ovLabel)));
 		}
 		else if (getOperatorName().equals("*")){
-			compiler.addInstruction(new MUL(dval1, (GPRegister)dval2));
+			compiler.addInstruction(new MUL(dval1, dval2));
 			compiler.addInstruction(new BOV(new Label(ovLabel)));
 		}
 		else if (getOperatorName().equals("/")){
 			Type typeLeft = this.getLeftOperand().getType();
 			Type typeRight = this.getRightOperand().getType();
 			if (typeLeft.isFloat() || typeRight.isFloat()){
-				compiler.addInstruction(new DIV(dval1, (GPRegister)dval2));
+				compiler.addInstruction(new DIV(dval1, dval2));
 				compiler.addInstruction(new BOV(new Label(ovLabel)));
 			} else if (typeLeft.isInt() && typeRight.isInt()) {
-				compiler.addInstruction(new QUO(dval1, (GPRegister)dval2));
+				compiler.addInstruction(new QUO(dval1, dval2));
 				compiler.addInstruction(new BOV(new Label(ovLabelInt)));
 			} else {
 				throw new DecacInternalError("Operandes pour la division non valide");
 			}
 		}
 		else if (getOperatorName().equals("%")){
-			compiler.addInstruction(new REM(dval1, (GPRegister)dval2));
+			compiler.addInstruction(new REM(dval1, dval2));
 			compiler.addInstruction(new BOV(new Label(ovLabelInt)));
 		}
 		else{
@@ -219,7 +178,12 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 			compiler.addInstruction(new WINT());
 		}
 		else {
-			compiler.addInstruction(new WFLOAT());
+			if (hex) {
+				compiler.addInstruction(new WFLOATX());
+			}
+			else {
+				compiler.addInstruction(new WFLOAT());
+			}
 		}
 	}
 

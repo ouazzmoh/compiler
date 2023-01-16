@@ -1,6 +1,5 @@
 package fr.ensimag.deca.tree;
 
-import fr.ensimag.deca.codegen.RegisterDescriptor;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.context.TypeDefinition;
 import fr.ensimag.deca.context.ClassType;
@@ -16,7 +15,6 @@ import fr.ensimag.deca.context.VariableDefinition;
 import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
-import fr.ensimag.deca.codegen.RegisterDescriptor;
 import java.io.PrintStream;
 
 import fr.ensimag.ima.pseudocode.*;
@@ -257,28 +255,24 @@ public class Identifier extends AbstractIdentifier {
 
     @Override
     protected DVal codeGenLoad(DecacCompiler compiler){
-        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+        GPRegister registerToUse = compiler.getFreeReg();
         DVal toLoad = getExpDefinition().getOperand();
         compiler.addInstruction(new LOAD(toLoad, registerToUse));
-        compiler.getRegisterDescriptor().useRegister(registerToUse, toLoad);
+        compiler.useReg();
         return registerToUse;
     }
 
     @Override
     protected void codeGenPush(DecacCompiler compiler){
-        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-        compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), registerToUse)); //No need to use and free
-        compiler.addInstruction(new PUSH(registerToUse));
+        compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), Register.R1)); //No need to use and free
+        compiler.addInstruction(new PUSH(Register.R1));
     }
 
-    //TODO: Turn getExpDefinition to getVarDefinition
 
     @Override
-    protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label, GPRegister register){
-        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-        compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), registerToUse));
-
-        compiler.addInstruction(new CMP(0, registerToUse));
+    protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
+        compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), Register.R1));
+        compiler.addInstruction(new CMP(0, Register.R1));
         if (b){
             compiler.addInstruction(new BNE(label));
         }
@@ -289,18 +283,10 @@ public class Identifier extends AbstractIdentifier {
     }
 
 
-
-
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-        if (compiler.getRegisterDescriptor().useLoad()) {
-            GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-            compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), registerToUse));
-            compiler.addInstruction(new STORE(registerToUse, adr));
-        }
-        else {
-            codeGenPush(compiler);
-        }
+        compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), Register.R1));
+        compiler.addInstruction(new STORE(Register.R1, adr));
     }
 
 }

@@ -37,7 +37,6 @@ public class ConvFloat extends AbstractUnaryExpr {
     protected DVal codeGenLoad(DecacCompiler compiler){
         GPRegister valueReg = (GPRegister) getOperand().codeGenLoad(compiler);
         compiler.addInstruction(new FLOAT(valueReg, valueReg));
-        compiler.getRegisterDescriptor().useRegister(valueReg, valueReg);
         return valueReg;
     }
 
@@ -53,7 +52,7 @@ public class ConvFloat extends AbstractUnaryExpr {
     protected void codeGenPrint(DecacCompiler compiler, boolean hex){
         GPRegister valueReg = (GPRegister) codeGenLoad(compiler);
         compiler.addInstruction(new LOAD(valueReg, Register.R1));
-        compiler.getRegisterDescriptor().freeRegister(valueReg);
+        compiler.freeReg();
         if (hex){
             compiler.addInstruction(new WFLOATX());
         }
