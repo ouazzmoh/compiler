@@ -12,7 +12,7 @@
     boolean b=true;
     while(a){
         while(b){
-            println("ça marche");
+            println("ok");
             b=false;
         }
         a=false;
