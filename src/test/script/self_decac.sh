@@ -37,7 +37,6 @@ do
     direction_fichier_sans_deca="${cas_de_test%.*}"
     test_decac_invalid "$direction_fichier_sans_deca" 
 done
-# test_decac_valid /src/test/deca/codegen/valid/ifThenElseElsif
 
 find $target_dir -name "*.res" -delete
 find $target_dir2 -name "*.ass" -delete
