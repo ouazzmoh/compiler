@@ -45,34 +45,16 @@ public class Or extends AbstractOpBool {
                 ".c" + getLocation().getPositionInLine());
         Label endOr = new Label("endOr.l" + getLocation().getLine() +
                 ".c" + getLocation().getPositionInLine());
-        if (compiler.useLoad()){
-            GPRegister register = compiler.getFreeReg();
-            codeGenBranch(compiler, true, trueOr);
-            //return 0 if false
-            compiler.addInstruction(new LOAD(0, register));
-            compiler.addInstruction(new BRA(endOr));
-            compiler.addLabel(trueOr);
-            //return 1 if true
-            compiler.addInstruction(new LOAD(1, register));
-            compiler.addInstruction(new BRA(endOr));
-            compiler.addLabel(endOr);
-            compiler.addInstruction(new STORE(register, adr));
-        }
-        else{
-            codeGenBranch(compiler, true, trueOr);
-            //return 0 if false
-            compiler.addInstruction(new LOAD(0, Register.R1));
-            compiler.addInstruction(new PUSH(Register.R1));
-            compiler.addInstruction(new BRA(endOr));
-            compiler.addLabel(trueOr);
-            //return 1 if true
-            compiler.addInstruction(new LOAD(1, Register.R1));
-            compiler.addInstruction(new PUSH(Register.R1));
-            compiler.addInstruction(new BRA(endOr));
-            compiler.addLabel(endOr);
-            compiler.addInstruction(new POP(Register.R0));
-            compiler.addInstruction(new STORE(Register.R0, adr));
-        }
+        codeGenBranch(compiler, true, trueOr);
+        //return 0 if false
+        compiler.addInstruction(new LOAD(0, Register.R1));
+        compiler.addInstruction(new BRA(endOr));
+        compiler.addLabel(trueOr);
+        //return 1 if true
+        compiler.addInstruction(new LOAD(1, Register.R1));
+        compiler.addInstruction(new BRA(endOr));
+        compiler.addLabel(endOr);
+        compiler.addInstruction(new STORE(Register.R1, adr));
     }
 
 }

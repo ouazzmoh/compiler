@@ -54,35 +54,6 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
     	}
 
 
-//	/**
-//	 * Initialization of a variable via an arithmetic operation
-//	 * @param compiler
-//	 * @param adr
-//	 */
-//	@Override
-//	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-//		//Todo: optimize with loading the left directly in some cases
-//		//If the registers are full we use the PUSH POP instructions
-//		addArithErrors(compiler);
-//		if (!compiler.getUseLoad()){codeGenInitPush(compiler, adr);}
-//		else{
-//			//Loads the result of the left operand
-//			DVal opLeft = getLeftOperand().codeGenLoad(compiler);
-//
-//			//Loads the result of the right operand (must be a register)
-//			DVal opRight = getRightOperand().codeGenLoad(compiler);
-//			codeGenOpMnem(compiler, opRight, (GPRegister)opLeft);
-//			compiler.freeReg();
-//
-//			//Storing the value of the operation in the memory
-//			compiler.addInstruction(new STORE((GPRegister) opLeft, adr));
-//			//Updating the register descriptor
-//			compiler.freeReg();
-//		}
-//
-//
-//	}
-
 	@Override
 	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
 
@@ -116,7 +87,7 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 		else {
 			if (!compiler.useLoad()){
 				compiler.addInstruction(new PUSH(opLeft));
-				compiler.freeReg();
+				compiler.freeReg(); //free the left because it is pushed
 			}
 			opRight = getRightOperand().codeGenLoad(compiler);
 			if (!compiler.useLoad()){
@@ -124,8 +95,8 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 				opLeft = Register.R0;
 			}
 			if (compiler.useLoad()){
-				compiler.freeReg();
-			}//Free because it is going to be freed in the operation afterwards
+				compiler.freeReg(); //free the left because it is freed in next operation
+			}
 		}
 		//Do the operation
 		codeGenOpMnem(compiler, opRight, opLeft);
@@ -133,18 +104,6 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 
 		return opLeft;
 
-	}
-
-	@Override
-	protected void codeGenPush(DecacCompiler compiler){
-		addArithErrors(compiler);
-		getLeftOperand().codeGenPush(compiler);
-		DVal opRight = getRightOperand().codeGenLoad(compiler);
-
-		compiler.addInstruction(new POP(Register.R0));
-		codeGenOpMnem(compiler, opRight, Register.R0);
-		compiler.freeReg();
-		compiler.addInstruction(new PUSH(Register.R0));
 	}
 
 	/**
