@@ -33,7 +33,6 @@ public class ManualTestContext {
         }
         try {
             prog.verifyProgram(compiler);
-        	prog.codeGenProgram(compiler);
         } catch (LocationException e) {
             e.display(System.err);
             System.exit(1);
