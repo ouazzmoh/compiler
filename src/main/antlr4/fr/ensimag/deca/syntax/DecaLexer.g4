@@ -23,7 +23,7 @@ fragment FILENAME: (LETTER | DIGIT | '.' | '-' | '_')+;
 fragment STRING_CAR: (~('\n' | '\\'));
 
 fragment NUM : DIGIT+;
-fragment SIGN: '+' | '-' ;
+fragment SIGN: '+' | '-';
 fragment EXP: ( 'E' | 'e' ) SIGN? NUM;
 fragment DEC: NUM '.' NUM;
 fragment FI: ('F' | 'f');
@@ -39,6 +39,10 @@ INCLUDE: '#include' (' ')* '"' FILENAME '"' { doInclude(getText()); };
 
 READINT: 'readInt';
 READFLOAT: 'readFloat';
+RETURN: 'return';
+INSTANCEOF: 'intanceof';
+THIS: 'this';
+NEW: 'new';
 
 
 COMMENTMONO: '//' (~('\n'))* { skip(); };
@@ -58,7 +62,6 @@ PRINT: 'print';
 
 TRUE: 'true';
 FALSE: 'false';
-THIS: 'this';
 WHILE: 'while';
 IF: 'if';
 ELSE: 'else';

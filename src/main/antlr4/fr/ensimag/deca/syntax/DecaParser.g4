@@ -180,6 +180,10 @@ inst returns[AbstractInst tree]
 
     | RETURN expr SEMI {
             assert($expr.tree != null);
+            if ($RETURN != null) {
+            	throw new InvalidMethod(this, $ctx);
+            }
+            
         }
     ;
 
@@ -337,6 +341,10 @@ inequality_expr returns[AbstractExpr tree]
     | e1=inequality_expr INSTANCEOF type {
             assert($e1.tree != null);
             assert($type.tree != null);
+            if ($INSTANCEOF != null) {
+            	throw new InvalidMethod(this, $ctx);
+            }
+            
         }
     ;
 
@@ -433,8 +441,9 @@ primary_expr returns[AbstractExpr tree]
         }
     | m=ident OPARENT args=list_expr CPARENT {
             assert($args.tree != null);
-            assert($m.tree != null);
-            $tree = new Methode($m.tree, $args.tree);
+            if ($m.tree != null) {
+            	throw new InvalidMethod(this, $ctx);
+            }
         }
     | OPARENT expr CPARENT {
             assert($expr.tree != null);
@@ -451,12 +460,16 @@ primary_expr returns[AbstractExpr tree]
         }
     | NEW ident OPARENT CPARENT {
             assert($ident.tree != null);
+            if ($NEW != null) {
+            	throw new InvalidMethod(this, $ctx);
+            }
         }
     | cast=OPARENT type CPARENT OPARENT expr CPARENT {
             assert($type.tree != null);
             assert($expr.tree != null);
-            $tree = new CastExpr($expr.tree, $type.tree);    		
-            setLocation($tree, $cast);
+            if ($type.tree != null) {
+            	throw new InvalidMethod(this, $ctx);
+            }
         }
     | literal {
             assert($literal.tree != null);
@@ -509,8 +522,14 @@ literal returns[AbstractExpr tree]
     	setLocation($tree, $FALSE);
         }
     | THIS {
+    	if ($THIS != null) {
+            throw new InvalidMethod(this, $ctx);
+            }
         }
     | NULL {
+    	 if ($NULL != null) {
+            throw new InvalidMethod(this, $ctx);
+            }
         }
     ;
 

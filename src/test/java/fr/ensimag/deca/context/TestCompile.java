@@ -54,6 +54,7 @@ public class TestCompile {
         assertTrue(!compiler.compile());
     }
     
+    
     @Test
     public void testoptionb() throws ContextualError, CLIException {
         // check the result

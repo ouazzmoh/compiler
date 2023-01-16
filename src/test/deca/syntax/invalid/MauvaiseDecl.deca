@@ -1,4 +1,11 @@
-
+// Description:
+//    Mauvaise déclaration de variable
+//
+// Resultats:
+//    Une erreur de compilation
+//
+// Historique:
+//    cree le 04/01/2023
 
 {
 int x, int y;

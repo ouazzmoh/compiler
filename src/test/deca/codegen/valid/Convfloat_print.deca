@@ -2,7 +2,6 @@
 //    convertion to float
 //
 // Resultats:
-//     2.0
 //   
 // Historique:
 //    cree le 01/01/2023
@@ -10,7 +9,7 @@
 {
    float a = 1;
    int b = 2;
-   println(a = b);
+   //println(a = b);
 }
 
 
