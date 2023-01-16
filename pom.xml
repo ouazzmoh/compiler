@@ -11,7 +11,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <compileSource>1.8</compileSource>
-        <jacoco.skip>true</jacoco.skip>
+        <jacoco.skip>false</jacoco.skip>
         <jacoco.report_dir>${project.build.directory}/site</jacoco.report_dir>
     </properties>
 
@@ -134,7 +134,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.7</version>
+                <version>0.8.8</version>
                 <configuration>
                     <outputDirectory>${jacoco.report_dir}/</outputDirectory>
                     <excludes>
@@ -259,6 +259,7 @@
                             <goal>exec</goal>
                         </goals>
                     </execution>
+                    <!--
                     <execution>
                         <id>self_lex</id>
                         <configuration>
@@ -268,7 +269,7 @@
                         <goals>
                             <goal>exec</goal>
                         </goals>
-                    </execution>
+                    </execution> -->
                     <execution>
                         <id>self_synt</id>
                         <configuration>
@@ -283,6 +284,16 @@
                         <id>self_context</id>
                         <configuration>
                         <executable>./src/test/script/self_context.sh</executable>
+                        </configuration>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                     <execution>
+                        <id>tes</id>
+                        <configuration>
+                        <executable>./src/test/script/tes.sh</executable>
                         </configuration>
                         <phase>test</phase>
                         <goals>
