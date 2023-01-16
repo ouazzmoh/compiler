@@ -38,7 +38,6 @@ public abstract class AbstractReadExpr extends AbstractExpr {
     protected DVal codeGenLoad(DecacCompiler compiler){
         GPRegister registerToUse = compiler.getFreeReg();
         compiler.addInstruction(new LOAD(Register.R1, registerToUse));
-//        compiler.getRegisterDescriptor().useRegister(registerToUse, Register.R1);
         compiler.useReg();
         return registerToUse;
     }

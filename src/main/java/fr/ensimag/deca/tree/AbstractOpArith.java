@@ -86,19 +86,19 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 			opRight = ((Identifier)getRightOperand()).getVariableDefinition().getOperand();
 		}
 		else {
-			//testing if we can use LOAD or we should use PUSH/POP
+		//testing if we can use LOAD or we should use PUSH/POP
 			if (!compiler.useLoad()){
 				compiler.addInstruction(new PUSH(opLeft));
 				compiler.freeReg(); //free the left because it is pushed
-			}
-			opRight = getRightOperand().codeGenLoad(compiler);
-			if (!compiler.useLoad()){
+				opRight = getRightOperand().codeGenLoad(compiler);
 				compiler.addInstruction(new POP(Register.R0));
 				opLeft = Register.R0;
 			}
-			if (compiler.useLoad()){
-				compiler.freeReg(); //free the left operand if it's a register because it is freed in next operation
+			else {
+				opRight = getRightOperand().codeGenLoad(compiler);
+				compiler.freeReg();
 			}
+
 		}
 		//Do the operation
 		codeGenOpMnem(compiler, opRight, opLeft);
@@ -149,6 +149,8 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 			throw new DecacInternalError("Error in parsing");
 		}
 	}
+
+
 
 
 	/**

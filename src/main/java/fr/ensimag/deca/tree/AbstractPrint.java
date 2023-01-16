@@ -40,7 +40,6 @@ public abstract class AbstractPrint extends AbstractInst {
     protected void verifyInst(DecacCompiler compiler, EnvironmentExp localEnv,
             ClassDefinition currentClass, Type returnType)
             throws ContextualError {
-        //throw new UnsupportedOperationException("not yet implemented");
     	Type type = null;
     	for (AbstractExpr i : arguments.getList()) {
     		type = i.verifyExpr(compiler, localEnv, currentClass);
@@ -55,13 +54,8 @@ public abstract class AbstractPrint extends AbstractInst {
         for (AbstractExpr a : getArguments().getList()) {
             a.codeGenPrint(compiler, printHex);
     }
-    }
 
-//   @Override
-//   protected void codeGenInstIfRec(DecacCompiler compiler, Label label) {
-//       this.codeGenInst(compiler, label);
-////        compiler.addInstruction(new BRA(label));
-//    }
+    }
 
     private boolean getPrintHex() {
         return printHex;
@@ -69,7 +63,6 @@ public abstract class AbstractPrint extends AbstractInst {
 
     @Override
     public void decompile(IndentPrintStream s) {
-        //throw new UnsupportedOperationException("not yet implemented");
         s.print("print");
         if(getPrintHex()){
             s.print("x");

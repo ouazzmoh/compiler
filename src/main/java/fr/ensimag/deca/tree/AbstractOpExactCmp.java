@@ -15,8 +15,4 @@ public abstract class AbstractOpExactCmp extends AbstractOpCmp {
         super(leftOperand, rightOperand);
     }
 
-//    @Override
-//    protected void codeGenBranchMnem(DecacCompiler compiler, Label label){
-//        codeGenMnemOpp(compiler, label);
-//    }
 }
