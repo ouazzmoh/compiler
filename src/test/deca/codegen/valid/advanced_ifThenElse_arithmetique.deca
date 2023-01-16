@@ -2,12 +2,12 @@
 //    if then else with arithmetique operations
 //
 // Resultats:
+//     day
 //
 // Historique:
 //    cree le 01/01/2023
 
 {
-/*
   int a = 5, b =3;
    if(a + b == (a%b)*4 ){
     if(a/b == 2.8){ print("yester"); }
@@ -25,7 +25,6 @@
     if(false){ print("tomorrow"); }
     else if (true){ print("will"); }
    }
-   */
 }
 
 

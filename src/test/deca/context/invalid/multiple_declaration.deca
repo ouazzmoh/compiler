@@ -2,7 +2,7 @@
 //    multiple_decalations
 //
 // Resultats:
-//    aucune erreur
+//    Erreur contextuelle variable deja déclarée
 //
 // Historique:
 //    cree le 08/01/2023
