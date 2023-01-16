@@ -76,11 +76,25 @@ public class DecacCompiler {
 
         this.errorsMap = new HashMap<String, String>();
 
-        //TODO : limit number of registers
-        this.regMax = 3;
+        this.regMax = 15;
         //
         this.currRegNum = 2;
 
+    }
+
+    public DecacCompiler(CompilerOptions compilerOptions, File source, int regMax) {
+        super();
+        this.compilerOptions = compilerOptions;
+        this.source = source;
+        //
+
+        this.errorsMap = new HashMap<String, String>();
+
+        assert(regMax<= 16 && regMax >= 4);
+
+        this.regMax = regMax - 1;
+        //
+        this.currRegNum = 2;
 
     }
 

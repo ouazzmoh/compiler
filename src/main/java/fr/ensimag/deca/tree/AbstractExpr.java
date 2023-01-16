@@ -10,11 +10,6 @@ import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.*;
 
 import java.io.PrintStream;
-import java.io.UncheckedIOException;
-
-import fr.ensimag.ima.pseudocode.instructions.LOAD;
-import fr.ensimag.ima.pseudocode.instructions.POP;
-import fr.ensimag.ima.pseudocode.instructions.STORE;
 import org.apache.commons.lang.Validate;
 
 /**
@@ -138,10 +133,14 @@ public abstract class AbstractExpr extends AbstractInst {
     }
 
 
-
+    /**
+     * Generate the code corresponding to the instruction
+     * @param compiler
+     * @param endIf : useful to store the endIf label in if instructions
+     */
     @Override
     protected void codeGenInst(DecacCompiler compiler, Label endIf) {
-//        throw new UnsupportedOperationException("no available code generation for this instruction");
+        throw new UnsupportedOperationException("no available code generation for this instruction");
     }
 
     /**
@@ -164,21 +163,12 @@ public abstract class AbstractExpr extends AbstractInst {
 
 
     /**
-     * Loads the value of the expression in a register and removes it
+     * Loads the value of the expression in a register and sets it as used (increments the current register)
      * We need to update the register descriptor after no longer using it
      * @param compiler
      * @return register
      */
     protected DVal codeGenLoad(DecacCompiler compiler){
-        throw new DecacInternalError("Cannot load the expression");
-    }
-
-
-    /**
-     * Loads the value of the expression in the register R1
-     * @param compiler
-     */
-    protected void codeGenLoadR1(DecacCompiler compiler){
         throw new DecacInternalError("Cannot load the expression");
     }
 

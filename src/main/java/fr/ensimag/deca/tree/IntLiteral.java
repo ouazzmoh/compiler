@@ -80,11 +80,6 @@ public class IntLiteral extends AbstractExpr {
 
 
 
-    @Override
-    protected void codeGenLoadR1(DecacCompiler compiler) {
-        compiler.addInstruction(new LOAD(value, Register.R1));
-    }
-
 
 
 

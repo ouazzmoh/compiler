@@ -54,31 +54,6 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
     	throw new ContextualError("erreur dans la condition" + this.getOperatorName() + "operands not permetted", this.getLocation());
     	}
 
-//	/**
-//	 * Initialize a boolean variable with the value of the operation
-//	 * @param compiler
-//	 * @param adr: memory adress of the variable
-//	 */
-//	@Override
-//	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-//		GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
-//		GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler);
-//		compiler.addInstruction(new CMP(opRight, opLeft));
-//		Label falseComp = new Label("falseComp");
-//		Label end = new Label("end");
-//		codeGenMnem(compiler, falseComp, true);
-//
-//		GPRegister registerToUse = compiler.getFreeReg();
-//		compiler.addInstruction(new LOAD(1, registerToUse)); // load 1, r
-//		compiler.addInstruction(new STORE(registerToUse, adr)); // store r, adr
-//		//No need to update registerDescriptor because we load and store
-//		compiler.addInstruction(new BRA(end)); // bra end
-//		compiler.addLabel(falseComp); // neq :
-//		compiler.addInstruction(new LOAD(0, registerToUse)); // load 0, r
-//		compiler.addInstruction(new STORE(registerToUse, adr)); // store r, adr
-//		compiler.addLabel(end); // end:
-//	}
-
 	/**
 	 * Initialize a boolean variable with the value of the operation
 	 * @param compiler
@@ -91,25 +66,6 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 		Label end = new Label("endComp.l" + getLocation().getLine() +
 				".c" + getLocation().getPositionInLine());
 
-//		GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
-//		DVal opRight;
-
-//		if (!compiler.useLoad()){
-//			compiler.addInstruction(new PUSH(opLeft));
-//			compiler.freeReg(); // free left operand because it is pushed
-//		}
-//		opRight = getRightOperand().codeGenLoad(compiler);
-//		if (!compiler.useLoad()){
-//			compiler.addInstruction(new POP(Register.R0));
-//			opLeft = Register.R0;
-//		}
-//		else {compiler.freeReg();}//free the left operand because freed in the comparaison
-//
-//		compiler.addInstruction(new CMP(opRight, opLeft));
-//		compiler.freeReg();//free the right register
-//
-//		codeGenMnem(compiler, falseComp, true);
-//
 		codeGenBranch(compiler, false, falseComp);
 
 		compiler.addInstruction(new LOAD(1, Register.R0)); // load 1, r
@@ -124,24 +80,18 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 
 	}
 
-//	@Override
-//	protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
-//		GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
-//		GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler);
-//		Label falseComp = new Label("falseComp.l" + getLocation().getLine() +
-//				".c" + getLocation().getPositionInLine());
-//		Label endComp = new Label("endComp.l" + getLocation().getLine() +
-//				".c" + getLocation().getPositionInLine());
-//		compiler.addInstruction(new CMP(opRight, opLeft));
-//		codeGenMnem(compiler, label, !b);
-//	}
-
-
+	/**
+	 * Branch to label if expression is b(true/false)
+	 * @param compiler
+	 * @param b : true or false/ compare the exprBool to this
+	 * @param label :
+	 */
 	@Override
 	protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
 		GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
-		DVal opRight;
 
+		//checking whether to use lOAD or PUSH/POP
+		DVal opRight;
 		if (!compiler.useLoad()){
 			compiler.addInstruction(new PUSH(opLeft));
 			compiler.freeReg(); // free left operand because it is pushed
@@ -155,31 +105,16 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 
 
 		compiler.addInstruction(new CMP(opRight, opLeft));
-		compiler.freeReg();
+		compiler.freeReg(); //free the right operand because it is no longer used
 		codeGenMnem(compiler, label, !b);
 	}
 
-
-//	@Override
-//	protected DVal codeGenLoad(DecacCompiler compiler){
-//		GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
-//		GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler);
-//		Label falseComp = new Label("falseComp.l" + getLocation().getLine() +
-//				".c" + getLocation().getPositionInLine());
-//		Label endComp = new Label("endComp.l" + getLocation().getLine() +
-//				".c" + getLocation().getPositionInLine());
-//		compiler.addInstruction(new CMP(opRight, opLeft));
-//		codeGenMnem(compiler,falseComp, true);
-//		compiler.addInstruction(new LOAD(1, opRight));
-//		compiler.addInstruction(new BRA(endComp));
-//		compiler.addLabel(falseComp);
-//		compiler.addInstruction(new LOAD(0, opRight));
-//		compiler.addLabel(endComp);
-////		compiler.getRegisterDescriptor().useRegister(opRight, new ImmediateInteger(1));
-//		compiler.useReg();
-//		return opRight;
-//	}
-
+	/**
+	 * Load the value of the expression in right operand
+	 * this is similar to codeGenBranch, except it does return a
+	 * @param compiler
+	 * @return
+	 */
 	@Override
 	protected DVal codeGenLoad(DecacCompiler compiler){
 		Label falseComp = new Label("falseComp.l" + getLocation().getLine() +
@@ -201,7 +136,6 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 		}
 		else {compiler.freeReg();}//free the left operand because freed in the comparaison
 
-
 		compiler.addInstruction(new CMP(opRight, opLeft));
 		codeGenMnem(compiler, falseComp, false);
 		compiler.addInstruction(new LOAD(1, (GPRegister) opRight));
@@ -209,7 +143,6 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 		compiler.addLabel(falseComp);
 		compiler.addInstruction(new LOAD(0, (GPRegister) opRight));
 		compiler.addLabel(endComp);
-//		compiler.getRegisterDescriptor().useRegister(opRight, new ImmediateInteger(1));
 		return opRight;
 	}
 

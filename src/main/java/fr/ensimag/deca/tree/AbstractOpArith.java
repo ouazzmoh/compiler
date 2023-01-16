@@ -74,10 +74,11 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 	@Override
 	protected DVal codeGenLoad(DecacCompiler compiler){
 		addArithErrors(compiler);
-		//Store left in register: sure reg >=1
+		//Store left in register: If no freeing problems, we are sure there is at least one free register
 		GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
 		//Evaluate right
 		DVal opRight;
+		//Using instanceof here allows us to optimize the assembly code generated
 		if (getRightOperand() instanceof IntLiteral){
 			opRight = new ImmediateInteger(((IntLiteral)getRightOperand()).getValue());
 		}
@@ -85,6 +86,7 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 			opRight = ((Identifier)getRightOperand()).getVariableDefinition().getOperand();
 		}
 		else {
+			//testing if we can use LOAD or we should use PUSH/POP
 			if (!compiler.useLoad()){
 				compiler.addInstruction(new PUSH(opLeft));
 				compiler.freeReg(); //free the left because it is pushed
@@ -95,7 +97,7 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 				opLeft = Register.R0;
 			}
 			if (compiler.useLoad()){
-				compiler.freeReg(); //free the left because it is freed in next operation
+				compiler.freeReg(); //free the left operand if it's a register because it is freed in next operation
 			}
 		}
 		//Do the operation
