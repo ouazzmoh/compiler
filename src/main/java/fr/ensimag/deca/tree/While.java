@@ -80,7 +80,7 @@ public class While extends AbstractInst {
         compiler.addLabel(startWhile);
         body.codeGenListInst(compiler);
         compiler.addLabel(condWhile);
-        condition.codeGenBranch(compiler, true, startWhile, Register.R0);
+        condition.codeGenBranch(compiler, true, startWhile);
     }
 
 

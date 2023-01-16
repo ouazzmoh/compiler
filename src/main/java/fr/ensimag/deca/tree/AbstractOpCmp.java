@@ -68,7 +68,7 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 		Label end = new Label("end");
 		codeGenMnem(compiler, falseComp, true);
 
-		GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
+		GPRegister registerToUse = compiler.getFreeReg();
 		compiler.addInstruction(new LOAD(1, registerToUse)); // load 1, r
 		compiler.addInstruction(new STORE(registerToUse, adr)); // store r, adr
 		//No need to update registerDescriptor because we load and store
@@ -80,7 +80,7 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 	}
 
 	@Override
-	protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label, GPRegister register){
+	protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
 		GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
 		GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler);
 		Label falseComp = new Label("falseComp.l" + getLocation().getLine() +
@@ -108,7 +108,8 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 		compiler.addLabel(falseComp);
 		compiler.addInstruction(new LOAD(0, opRight));
 		compiler.addLabel(endComp);
-		compiler.getRegisterDescriptor().useRegister(opRight, new ImmediateInteger(1));
+//		compiler.getRegisterDescriptor().useRegister(opRight, new ImmediateInteger(1));
+		compiler.useReg();
 		return opRight;
 	}
 

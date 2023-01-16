@@ -1,6 +1,5 @@
 package fr.ensimag.deca;
 
-import fr.ensimag.deca.codegen.RegisterDescriptor;
 
 import java.io.File;
 import org.apache.log4j.Logger;

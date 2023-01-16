@@ -138,9 +138,10 @@ public abstract class AbstractExpr extends AbstractInst {
     }
 
 
+
     @Override
     protected void codeGenInst(DecacCompiler compiler, Label endIf) {
-        throw new UnsupportedOperationException("not yet implemented");
+//        throw new UnsupportedOperationException("no available code generation for this instruction");
     }
 
     /**
@@ -149,16 +150,7 @@ public abstract class AbstractExpr extends AbstractInst {
      * @param adr
      */
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-//        throw new DecacInternalError("expression cannot be initialized");
-        if (compiler.getRegisterDescriptor().useLoad()){
-            GPRegister register = (GPRegister)codeGenLoad(compiler);
-            compiler.addInstruction(new STORE(register, adr));
-        }
-        else {
-            codeGenPush(compiler);
-            compiler.addInstruction(new POP(Register.R0));
-            compiler.addInstruction(new STORE(Register.R0, adr));
-        }
+        throw new DecacInternalError("Shouldn't be initialized");
     }
 
     /**
@@ -183,12 +175,21 @@ public abstract class AbstractExpr extends AbstractInst {
 
 
     /**
+     * Loads the value of the expression in the register R1
+     * @param compiler
+     */
+    protected void codeGenLoadR1(DecacCompiler compiler){
+        throw new DecacInternalError("Cannot load the expression");
+    }
+
+
+    /**
      * Push the value of the expression in the temporary memory
      * Use POP(Rm) later to retrieve the value in the Rm register
      * @param compiler
      */
     protected void codeGenPush(DecacCompiler compiler){
-        throw new DecacInternalError("Cannot load the expression");
+        throw new DecacInternalError("Cannot push the expression");
     }
 
 
@@ -198,9 +199,8 @@ public abstract class AbstractExpr extends AbstractInst {
      * @param compiler
      * @param b : true or false/ compare the exprBool to this
      * @param label :
-     * @param register : load the result to this register
      */
-    protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label, GPRegister register){
+    protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
         throw new DecacInternalError("Expression cannot be used for boolean expressions");
     }
 

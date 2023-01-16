@@ -43,21 +43,22 @@ public class UnaryMinus extends AbstractUnaryExpr {
     protected DVal codeGenLoad(DecacCompiler compiler){
         GPRegister valueReg = (GPRegister) getOperand().codeGenLoad(compiler);
         compiler.addInstruction(new OPP(valueReg, valueReg));
-        compiler.getRegisterDescriptor().useRegister(valueReg, valueReg);
         return valueReg;
     }
 
     @Override
     protected void codeGenPush(DecacCompiler compiler){
-        GPRegister valueReg = (GPRegister) getOperand().codeGenLoad(compiler);
-        compiler.addInstruction(new OPP(valueReg, valueReg));
-        compiler.addInstruction(new PUSH(valueReg));
+        getOperand().codeGenPush(compiler);
+        compiler.addInstruction(new POP(Register.R0));
+        compiler.addInstruction(new OPP(Register.R0, Register.R0));
+        compiler.addInstruction(new PUSH(Register.R0));
     }
 
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean hex){
         GPRegister valueReg = (GPRegister) codeGenLoad(compiler);
         compiler.addInstruction(new LOAD(valueReg, Register.R1));
+        compiler.freeReg();
         compiler.addInstruction(new WINT());
     }
 

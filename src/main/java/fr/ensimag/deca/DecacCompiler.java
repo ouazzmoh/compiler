@@ -1,6 +1,5 @@
 package fr.ensimag.deca;
 
-import fr.ensimag.deca.codegen.RegisterDescriptor;
 import fr.ensimag.deca.context.EnvironmentType;
 import fr.ensimag.deca.syntax.DecaLexer;
 import fr.ensimag.deca.syntax.DecaParser;
@@ -46,16 +45,22 @@ import org.apache.log4j.Logger;
 public class DecacCompiler {
     private static final Logger LOG = Logger.getLogger(DecacCompiler.class);
 
-
-    //attribute to hold information about the registers in the compiler
-    private RegisterDescriptor registerDescriptor;
-
     //Holds information about the errors labels and messages
     private HashMap<String, String> errorsMap;
 
     public HashMap<String, String> getErrorsMap(){
         return errorsMap;
     }
+
+
+    //The current free register, we start from 2
+    private int currRegNum;
+
+    //The maximal number of registers to use
+    private int regMax;
+
+
+
 
 
     /**
@@ -68,19 +73,17 @@ public class DecacCompiler {
         this.compilerOptions = compilerOptions;
         this.source = source;
         //
-        this.registerDescriptor = new RegisterDescriptor();
 
         this.errorsMap = new HashMap<String, String>();
-    }
+
+        //TODO : limit number of registers
+        this.regMax = 3;
+        //
+        this.currRegNum = 2;
 
 
-    public RegisterDescriptor getRegisterDescriptor() {
-        return registerDescriptor;
     }
 
-    public void setRegisterDescriptor(RegisterDescriptor registerDescriptor) {
-        this.registerDescriptor = registerDescriptor;
-    }
 
 
     /**
@@ -180,9 +183,6 @@ public class DecacCompiler {
         return symbolTable.create(name);
     }
 
-//    public String assemblyFileName(String absolutePath){
-//
-//    };
     /**
      * Run the compiler (parse source file, generate code)
      *
@@ -307,6 +307,38 @@ public class DecacCompiler {
                 errorsMap.put(errLab, errMsg);
         }
     }
+
+
+    /**
+     * Gives a free register, needs to check if it's possible before
+     * @return
+     */
+    public GPRegister getFreeReg(){
+        if (useLoad()){
+            return Register.getR(currRegNum);
+        }
+        else {
+            throw new DecacInternalError("out of registers!");
+        }
+    }
+
+
+    public void useReg(){
+        assert(currRegNum <= regMax);
+        currRegNum++;
+    }
+
+
+    public void freeReg(){
+        assert(currRegNum >=2);
+        currRegNum--;
+    }
+
+    public boolean useLoad(){
+        return (currRegNum < regMax) && (currRegNum > 1);
+    }
+
+
 
 
 
