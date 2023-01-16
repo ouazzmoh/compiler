@@ -254,48 +254,6 @@ public class Identifier extends AbstractIdentifier {
 
     }
 
-//    @Override
-//    public void codeGenInstWhile(DecacCompiler compiler,Label endWhile){
-//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg(); //returns a free register
-//        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
-//        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
-//        compiler.addInstruction(new CMP(new ImmediateInteger(0) , registerToUse));
-//        compiler.addInstruction(new BEQ(endWhile));
-//        //TODO: Free the register after use
-//    }
-
-//    @Override
-//    protected DVal codeGenSum(DecacCompiler compiler){
-//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-//        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
-//        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
-//        return registerToUse;
-//    }
-//
-//    @Override
-//    protected DVal codeGenSub(DecacCompiler compiler){
-//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-//        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
-//        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
-//        return registerToUse;
-//    }
-//
-//    @Override
-//    protected DVal codeGenMul(DecacCompiler compiler){
-//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-//        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
-//        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
-//        return registerToUse;
-//    }
-//
-//    //TODO: Factoriser le code plus
-//    @Override
-//    protected DVal codeGenDiv(DecacCompiler compiler){
-//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-//        compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), registerToUse));
-//        compiler.getRegisterDescriptor().useRegister(registerToUse, this.getExpDefinition().getOperand());
-//        return registerToUse;
-//    }
 
     @Override
     protected DVal codeGenLoad(DecacCompiler compiler){
@@ -313,32 +271,25 @@ public class Identifier extends AbstractIdentifier {
         compiler.addInstruction(new PUSH(registerToUse));
     }
 
-//    @Override
-//    protected void codeGenIf(DecacCompiler compiler, Label label){
-//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-//        compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), registerToUse));
-//        compiler.addInstruction(new CMP(0, registerToUse));
-//        compiler.addInstruction(new BEQ(label));
-//
-//    }
-
     //TODO: Turn getExpDefinition to getVarDefinition
 
-//    @Override
-//    protected void codeGenBeq(DecacCompiler compiler, Label label, int p){
-//        GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-//        compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), registerToUse));
-//        compiler.addInstruction(new CMP(p, registerToUse));
-//        compiler.addInstruction(new BEQ(label));
-//    }
-
     @Override
-    protected void codeGenBeq(DecacCompiler compiler, Label label,Label end, int p){
+    protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label, GPRegister register){
         GPRegister registerToUse = compiler.getRegisterDescriptor().getFreeReg();
-        compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), registerToUse));
-        compiler.addInstruction(new CMP(p, registerToUse));
-        compiler.addInstruction(new BEQ(label));
+        compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), registerToUse));
+
+        compiler.addInstruction(new CMP(0, registerToUse));
+        if (b){
+            compiler.addInstruction(new BNE(label));
+        }
+        else {
+            compiler.addInstruction(new BEQ(label));
+        }
+
     }
+
+
+
 
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){

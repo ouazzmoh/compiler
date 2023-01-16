@@ -2,9 +2,11 @@ package fr.ensimag.deca.tree;
 
 
 import fr.ensimag.deca.DecacCompiler;
+import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.*;
 
+import java.awt.peer.ComponentPeer;
 import java.util.logging.Logger;
 
 /**
@@ -24,216 +26,42 @@ public class And extends AbstractOpBool {
     }
 
     @Override
-    protected int getP(){return 0;}
-
-    @Override
-    protected void codeGenBeq(DecacCompiler compiler, Label label,Label end, int i){
-    	
-        Label endAnd = new Label("end.And.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-    	
-    	
-    	GPRegister register = (GPRegister) compiler.getRegisterDescriptor().getFreeReg();
-        Label checkAndLeft = new Label("And.left.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-        Label checkAndRight = new Label("And.right.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-        
-        compiler.addLabel(checkAndLeft);
-        
-        Label trueAnd = new Label("true.And.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine()); 
-        Label falseAnd = new Label("false.And.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-        
-        getLeftOperand().codeGenBeq(compiler, falseAnd,null, 0);
-        
-        compiler.addLabel(checkAndRight);
-        
-        getRightOperand().codeGenBeq(compiler, falseAnd,null, 0);
-        
-        if (end != null) {
-            compiler.addLabel(trueAnd);
-            compiler.addInstruction(new LOAD(0, register));
-            compiler.addInstruction(new BRA(label));
-            
-            
-            compiler.addLabel(falseAnd);
-            compiler.addInstruction(new LOAD(1, register));
-            compiler.addInstruction(new BRA(endAnd));
+    protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label, GPRegister register){
+        if (!b){
+            getLeftOperand().codeGenBranch(compiler, b, label, register);
+            getRightOperand().codeGenBranch(compiler, b, label, register);
         }
-        
         else {
-        	compiler.addLabel(trueAnd);
-            compiler.addInstruction(new LOAD(0, register));
-            compiler.addInstruction(new BRA(endAnd));
-            
-            
+            Label falseAnd = new Label("falseAnd.l" + getLocation().getLine() +
+                    ".c" + getLocation().getPositionInLine());
+            getLeftOperand().codeGenBranch(compiler, !b, falseAnd, register);
+            getRightOperand().codeGenBranch(compiler, b, label, register);
             compiler.addLabel(falseAnd);
-            compiler.addInstruction(new LOAD(1, register));
-            compiler.addInstruction(new BRA(label));
         }
-
-
-        compiler.getRegisterDescriptor().useRegister(register, new ImmediateInteger(1)); //TODO remove value from reg
-
-        compiler.addLabel(endAnd);
-    }
-
-
-    protected DVal codeGenLoad(DecacCompiler compiler, Label label,Label end, int i){
-
-        Label endAnd = new Label("end.And.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-
-
-        GPRegister register = (GPRegister) compiler.getRegisterDescriptor().getFreeReg();
-        Label checkAndLeft = new Label("And.left.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-        Label checkAndRight = new Label("And.right.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-
-        compiler.addLabel(checkAndLeft);
-
-        Label trueAnd = new Label("true.And.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-        Label falseAnd = new Label("false.And.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-
-        getLeftOperand().codeGenBeq(compiler, falseAnd,null, 0);
-
-        compiler.addLabel(checkAndRight);
-
-        getRightOperand().codeGenBeq(compiler, falseAnd,null, 0);
-
-        if (end != null) {
-            compiler.addLabel(trueAnd);
-            compiler.addInstruction(new LOAD(1, register));
-            compiler.addInstruction(new BRA(label));
-
-
-            compiler.addLabel(falseAnd);
-            compiler.addInstruction(new LOAD(0, register));
-            compiler.addInstruction(new BRA(endAnd));
-        }
-
-        else {
-            compiler.addLabel(trueAnd);
-            compiler.addInstruction(new LOAD(1, register));
-            compiler.addInstruction(new BRA(endAnd));
-
-
-            compiler.addLabel(falseAnd);
-            compiler.addInstruction(new LOAD(0, register));
-            compiler.addInstruction(new BRA(label));
-        }
-
-
-        compiler.getRegisterDescriptor().useRegister(register, new ImmediateInteger(1)); //TODO remove value from reg
-
-        compiler.addLabel(endAnd);
-
-        return register;
     }
 
     @Override
-    protected DVal codeGenLoad(DecacCompiler compiler) {
-        Label endAnd = new Label("end.and.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-        return codeGenLoad(compiler, endAnd, null, 0);
-
+    protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+        //boolean a = true && true;
+        Label falseAnd = new Label("falseAnd"+ getLocation().getLine() +
+                ".c" + getLocation().getPositionInLine());
+        Label endAnd = new Label("endAnd.l" + getLocation().getLine() +
+                ".c" + getLocation().getPositionInLine());
+        if (compiler.getRegisterDescriptor().useLoad()){
+            GPRegister register = compiler.getRegisterDescriptor().getFreeReg();
+            codeGenBranch(compiler, false, falseAnd, register);
+            //return 1 if true
+            compiler.addInstruction(new LOAD(1, register));
+            compiler.addInstruction(new BRA(endAnd));
+            compiler.addLabel(falseAnd);
+            //return 0 if false
+            compiler.addInstruction(new LOAD(0, register));
+            compiler.addInstruction(new BRA(endAnd));
+            compiler.addLabel(endAnd);
+            compiler.addInstruction(new STORE(register, adr));
+        }
+        else{
+            //TODO: Push Pop
+        }
     }
-    
-
-
-    /*
-//    @Override
-    protected DVal codeGenLoad(DecacCompiler compiler, Label label){
-        GPRegister register = (GPRegister) compiler.getRegisterDescriptor().getFreeReg(); // reg where value is returned
-        Label checkAnd = new Label("check.and.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-        Label falseAnd = new Label("false.and.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-
-        compiler.addLabel(checkAnd);
-
-        getLeftOperand().codeGenBeq(compiler, falseAnd, 0);
-        getRightOperand().codeGenBeq(compiler, falseAnd, 0);
-
-        compiler.addInstruction(new LOAD(1, register));
-        compiler.addInstruction(new BRA(label));
-
-        compiler.addLabel(falseAnd);
-
-        compiler.addInstruction(new LOAD(0, register));
-        compiler.addInstruction(new BRA(label));
-
-        compiler.getRegisterDescriptor().useRegister(register, new ImmediateInteger(1)); //TODO remove value from reg
-
-        compiler.addLabel(label);
-        return register;
-    }
-
-
-
-
-    @Override
-    protected void codeGenBeq(DecacCompiler compiler, Label label, int p){
-        Label falseAnd = new Label("false.and.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-
-        getLeftOperand().codeGenBeq(compiler, falseAnd, p);
-
-
-        getRightOperand().codeGenBeq(compiler, falseAnd, p);
-        
-        compiler.addLabel(falseAnd);
-        
-        compiler.addInstruction(new BRA(label));
-    }
-
-    @Override
-    protected void codeGenBeq(DecacCompiler compiler, Label trueOr, Label checkRight){
-        Label falseAnd = new Label("false.and.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-//        Label checkAndLeft = new Label("and.left.l" + getLocation().getLine() + ".c" +
-//                getLocation().getPositionInLine());
-//        Label checkAndRight = new Label("and.right.l" + getLocation().getLine() + ".c" +
-//                getLocation().getPositionInLine());
-//
-//        compiler.addLabel(checkAndLeft);
-//        getLeftOperand().codeGenBeq(compiler, falseAnd, 0);
-//        compiler.addLabel(checkAndRight);
-//        getRightOperand().codeGenBeq(compiler, falseAnd, 0);
-
-        codeGenBeq(compiler, trueOr, checkRight, falseAnd);
-
-        compiler.addInstruction(new BRA(trueOr));
-
-        compiler.addLabel(falseAnd);
-
-        compiler.addInstruction(new BRA(checkRight));
-
-
-
-
-    }
-
-    protected void codeGenBeq(DecacCompiler compiler, Label trueOr, Label checkRight, Label falseAnd){
-        Label checkAndLeft = new Label("and.left.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-        Label checkAndRight = new Label("and.right.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-        compiler.addLabel(checkAndLeft);
-        getLeftOperand().codeGenBeq(compiler, falseAnd, 0);
-        compiler.addLabel(checkAndRight);
-        getRightOperand().codeGenBeq(compiler, falseAnd, 0);
-
-
-
-
-
-    }
-*/
-
 }
