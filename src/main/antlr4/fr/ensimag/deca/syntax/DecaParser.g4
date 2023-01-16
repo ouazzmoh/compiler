@@ -499,7 +499,7 @@ literal returns[AbstractExpr tree]
     | fd=FLOAT {
     	 try {
     	 	$tree = new FloatLiteral(Float.parseFloat($fd.text));
-    	 	if ( !($fd.text.equals("0.0")) && ((FloatLiteral) $tree).getValue() == 0) {
+    	 	if ( !($fd.text.equals("0.0") | $fd.text.equals("0.0f") | $fd.text.equals("0x0p+0")) && ((FloatLiteral) $tree).getValue() == 0) {
     	 		throw new InvalidLitteralFloat(this, $ctx);
     	 	}
 		 } catch (IllegalArgumentException e) {

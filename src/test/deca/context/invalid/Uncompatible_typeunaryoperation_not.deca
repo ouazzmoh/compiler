@@ -2,13 +2,11 @@
 //    operations binaires valides
 //
 // Resultats:
-//    aucune erreur
+//    Uncompatible type for unary operation
 //
 // Historique:
 //    cree le 08/01/2023
 
 {
-    int i= 2; float f=1.0; boolean b =true;
-    f=-i;
-    b=!b;
+    !2;
 }

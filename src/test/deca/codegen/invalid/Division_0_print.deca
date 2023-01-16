@@ -8,10 +8,9 @@
 //    cree le 01/01/2023
 
 {
-   int b;
-   int c=4;
+   int b=3;
    b = b/0;
-   print(b/c);
+   print(b);
 }
 
 

@@ -14,8 +14,6 @@
     float p = -2;
     float cc;
     
-    float mmm = (float) (r);
-    int mmmmmm = (int) (mmm);
 
     boolean a = false;
     boolean b = true;
