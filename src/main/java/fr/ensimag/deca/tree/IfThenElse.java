@@ -9,6 +9,7 @@ import fr.ensimag.deca.tools.IndentPrintStream;
 import java.io.PrintStream;
 
 import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.Register;
 import fr.ensimag.ima.pseudocode.instructions.BRA;
 import org.apache.commons.lang.Validate;
 
@@ -80,36 +81,38 @@ public class IfThenElse extends AbstractInst {
 
 
     @Override
-    protected void codeGenInst(DecacCompiler compiler, Label label) {
-    	if (label == null) {
-            Label endIf = new Label("endIf.l" + getLocation().getLine() +
-                    ".c" + getLocation().getPositionInLine());
-            this.codeGenInstIfRec(compiler, endIf);
-            compiler.addLabel(endIf);
-    	}
-    	else {
-            this.codeGenInstIfRec(compiler, label);
-    	}
+    protected void codeGenInst(DecacCompiler compiler, Label endIf) {
+        if (endIf == null){
+            Label endIfInst = new Label("endIf.l" + getLocation().getLine() +
+                    "c." + getLocation().getPositionInLine());
+            //This function is useful for recursion and storing the endIf label
+            codeGenInstIfRec(compiler, endIfInst);
+            compiler.addLabel(endIfInst);
+        }
+        else {
+            codeGenInstIfRec(compiler, endIf);
+        }
+
+
     }
 
-
+    /**
+     * Generate the branching recursively inside the if statement, branches to endIf at the end
+     * @param compiler
+     * @param endIf
+     */
     protected void codeGenInstIfRec(DecacCompiler compiler, Label endIf) {
-        Label elseIf = new Label("elseIf.l" + elseBranch.uniqueNum());
-        condition.codeGenBeq(compiler, elseIf, null, 0);
-        for (AbstractInst i : thenBranch.getList()){
-            i.codeGenInst(compiler, null);
-        }
+        Label elseIf = new Label("elseIf.l" + getLocation().getLine() + "c."
+                + getLocation().getPositionInLine());
+        condition.codeGenBranch(compiler, false, elseIf, null);
+        thenBranch.codeGenListInst(compiler);
         compiler.addInstruction(new BRA(endIf));
         compiler.addLabel(elseIf);
-        for (AbstractInst i : elseBranch.getList()){
+        for (AbstractInst i : elseBranch.getList()) {
             i.codeGenInst(compiler, endIf);
         }
     }
 
-    @Override
-    protected void codeGenInstIf(DecacCompiler compiler, Label endIf){
-        this.codeGenInstIfRec(compiler, endIf);
-    }
 
     @Override
     public void decompile(IndentPrintStream s) {

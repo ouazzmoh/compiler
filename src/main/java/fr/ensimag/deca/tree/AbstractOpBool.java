@@ -39,19 +39,5 @@ public abstract class AbstractOpBool extends AbstractBinaryExpr {
     }
 
 
-	@Override
-	protected void codeGenBeq(DecacCompiler compiler, Label label, int p){
-		getLeftOperand().codeGenBeq(compiler, label, p);
-		getRightOperand().codeGenBeq(compiler, label, p);
-	}
-
-	@Override
-	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-		GPRegister result = (GPRegister) codeGenLoad(compiler);
-		compiler.addInstruction(new STORE(result, adr));
-		compiler.getRegisterDescriptor().freeRegister(result);
-	}
-
-	protected abstract int getP();
 
 }

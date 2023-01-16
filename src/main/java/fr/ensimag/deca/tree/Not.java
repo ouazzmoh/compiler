@@ -55,48 +55,33 @@ public class Not extends AbstractUnaryExpr {
     }
 
     @Override
-    protected void codeGenBeq(DecacCompiler compiler, Label label, int p){
-        GPRegister valueReg = (GPRegister) codeGenLoad(compiler);
-        compiler.addInstruction(new CMP(new ImmediateInteger(p), valueReg));
-        compiler.addInstruction(new BEQ(label));
+    protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label, GPRegister register){
+        getOperand().codeGenBranch(compiler, !b, label, register);
     }
+
     @Override
-    protected void codeGenBeq(DecacCompiler compiler, Label label, Label end, int p){
-//        GPRegister valueReg = (GPRegister) codeGenLoad(compiler);
-
-        Label endNot = new Label("end.Not.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-        Label checkOp = new Label("op.Not.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-
-
-        compiler.addLabel(checkOp);
-
-        Label trueNot = new Label("true.Not.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-        Label falseNot = new Label("false.Not.l" + getLocation().getLine() + ".c" +
-                getLocation().getPositionInLine());
-
-        getOperand().codeGenBeq(compiler, falseNot, trueNot, 1); //iF OPERAND IS TRUE BRANCH TO FalseNot
-
-//        compiler.addInstruction(new CMP(new ImmediateInteger(p), valueReg));
-//        compiler.addInstruction(new BEQ(label));
-
-
-        if (end != null) {
-            compiler.addLabel(trueNot);
-            compiler.addInstruction(new BRA(label));
-            compiler.addLabel(falseNot);
-            compiler.addInstruction(new BRA(endNot));
-        }
-
-        else {
-            compiler.addLabel(trueNot);
+    protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+        //boolean a = true && true;
+        Label falseNot = new Label("falseNot"+ getLocation().getLine() +
+                ".c" + getLocation().getPositionInLine());
+        Label endNot = new Label("endNot.l" + getLocation().getLine() +
+                ".c" + getLocation().getPositionInLine());
+        if (compiler.getRegisterDescriptor().useLoad()){
+            GPRegister register = compiler.getRegisterDescriptor().getFreeReg();
+            codeGenBranch(compiler, false, falseNot, register);
+            //return 1 if true
+            compiler.addInstruction(new LOAD(1, register));
             compiler.addInstruction(new BRA(endNot));
             compiler.addLabel(falseNot);
-            compiler.addInstruction(new BRA(label));
+            //return 0 if false
+            compiler.addInstruction(new LOAD(0, register));
+            compiler.addInstruction(new BRA(endNot));
+            compiler.addLabel(endNot);
+            compiler.addInstruction(new STORE(register, adr));
         }
-        compiler.addLabel(endNot);
+        else{
+            //TODO: Push Pop
+        }
     }
 
 }

@@ -139,7 +139,7 @@ public abstract class AbstractExpr extends AbstractInst {
 
 
     @Override
-    protected void codeGenInst(DecacCompiler compiler, Label label) {
+    protected void codeGenInst(DecacCompiler compiler, Label endIf) {
         throw new UnsupportedOperationException("not yet implemented");
     }
 
@@ -170,29 +170,6 @@ public abstract class AbstractExpr extends AbstractInst {
         this.codeGenInit(compiler, identifier.getExpDefinition().getOperand());
     }
 
-    /**
-     * To generate the code
-     * CMP p, expression
-     * BEQ label
-     * @param compiler
-     * @param label
-     * @param p = 0 (false) or 1 (true)
-     */
-    protected void codeGenBeq(DecacCompiler compiler, Label label,Label end, int p){
-        throw new DecacInternalError("expression cannot be compared");
-    }
-
-    /**
-     * To generate the code
-     * CMP p, expression
-     * BEQ label
-     * @param compiler
-     * @param label
-     * @param p = 0 (false) or 1 (true)
-     */
-    protected void codeGenBeq(DecacCompiler compiler, Label label, int p){
-        throw new DecacInternalError("expression cannot be compared");
-    }
 
     /**
      * Loads the value of the expression in a register and removes it
@@ -215,44 +192,18 @@ public abstract class AbstractExpr extends AbstractInst {
     }
 
 
-    //    protected void codeGenInstWhile(DecacCompiler compiler,Label endWhile){
-//        throw new UnsupportedOperationException("not yet implemented");
-//    }
-
-//    protected void codeGenSum(DecacCompiler compiler){};
-
-//    protected DVal codeGenSum(DecacCompiler compiler){
-//        throw new UnsupportedOperationException("not yet implemented");
-//    }
-//
-//    protected DVal codeGenSub(DecacCompiler compiler){
-//        throw new UnsupportedOperationException("not yet implemented");
-//    }
-//
-//    protected DVal codeGenMul(DecacCompiler compiler){
-//        throw new UnsupportedOperationException("not yet implemented");
-////        return new NullOperand();
-//    }
-
-//    protected DVal codeGenDiv(DecacCompiler compiler){
-//        throw new UnsupportedOperationException("not yet implemented");
-////        return new NullOperand();
-//    }
-
-
-
-
-//    protected void codeGenAnd(DecacCompiler compiler, Label l){
-//        throw new UnsupportedOperationException("not yet implemented");
-//    }
-//
-    protected void codeGenBeq(DecacCompiler compiler, Label l1, Label l2){
-        throw new UnsupportedOperationException("not yet implemented");
+    /**
+     * Generate branching operations
+     * branch to this label if the exprBool == b
+     * @param compiler
+     * @param b : true or false/ compare the exprBool to this
+     * @param label :
+     * @param register : load the result to this register
+     */
+    protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label, GPRegister register){
+        throw new DecacInternalError("Expression cannot be used for boolean expressions");
     }
 
-//    protected void codeGenIf(DecacCompiler compiler, Label label){
-//        throw new UnsupportedOperationException("not yet implemented");
-//    }
 
 
     @Override

@@ -79,67 +79,18 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 		compiler.addLabel(end); // end:
 	}
 
-//	/**
-//	 * Generates the mnemonic depending on the class
-//	 * (BEQ, BLT, BGE, BGT, BLE, BNE)
-//	 * @param compiler
-//	 * @param label
-//	 */
-//	protected abstract void codeGenMnem(DecacCompiler compiler, Label label);
-
-
-//	/**
-//	 * Generates the opposing mnemonic of the class
-//	 * e.g: for EQUALS generates BNE
-//	 * @param compiler
-//	 * @param label
-//	 */
-//	protected abstract void codeGenMnemOpp(DecacCompiler compiler, Label label);
-
-//	/**
-//	 * Generates the mnemonic to be used in the branching
-//	 * For EQUALS, Not Equals : it generates the opposite (BNE, BEQ)
-//	 * For inequality operations : it generates the corresponding to the class
-//	 * @param compiler
-//	 * @param label
-//	 */
-//	protected abstract void codeGenBranchMnem(DecacCompiler compiler, Label label);
-
-
 	@Override
-	protected void codeGenBeq(DecacCompiler compiler, Label label, int p){
-		codeGenBranchOpp(compiler, label);
-	}
-
-//	@Override
-//	protected void codeGenBeq(DecacCompiler compiler, Label label,Label end, int p){
-//		codeGenBranchOpp(compiler, label);
-//	}
-
-	@Override
-	protected void codeGenBeq(DecacCompiler compiler, Label label,Label end, int p){
-		codeGenBranchOpp(compiler, label);
-	}
-	
-	/**
-	 * Branch to the label if the comparison between the operands
-	 * is not true-->useful for if statements
-	 * @param compiler
-	 * @param label
-	 */
-	protected void codeGenBranchOpp(DecacCompiler compiler, Label label){
+	protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label, GPRegister register){
 		GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
 		GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler);
+		Label falseComp = new Label("falseComp.l" + getLocation().getLine() +
+				".c" + getLocation().getPositionInLine());
+		Label endComp = new Label("endComp.l" + getLocation().getLine() +
+				".c" + getLocation().getPositionInLine());
 		compiler.addInstruction(new CMP(opRight, opLeft));
-//		if (getOperatorName().equals("==")||getOperatorName().equals("!=")) {
-//			codeGenMnem(compiler, label, false);
-//		}
-//		else{
-		codeGenMnem(compiler, label, true);
-//		}
-
-
+		codeGenMnem(compiler, label, !b);
 	}
+
 
 
 	@Override
@@ -161,18 +112,6 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 		return opRight;
 	}
 
-//	/**
-//	 * Branch to the label if the comparison between the operands
-//	 * is not true-->useful for if statements
-//	 * @param compiler
-//	 * @param label
-//	 */
-//	protected void codeGenBranchOppBeq(DecacCompiler compiler, Label label){
-//		getLeftOperand().codeGenBeq(compiler);
-//		getRightOperand().codeGenBeq(compiler);
-//		compiler.addInstruction(new CMP(opRight, opLeft));
-//		codeGenMnem(compiler, label, true);
-//	}
 
 	/**
 	 *Generates the mnemonic corresponding to the operation
