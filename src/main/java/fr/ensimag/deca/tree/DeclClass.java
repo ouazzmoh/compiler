@@ -1,9 +1,11 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ClassType;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.deca.tools.SymbolTable.Symbol;
 
 import java.io.PrintStream;
 
@@ -30,7 +32,20 @@ public class DeclClass extends AbstractDeclClass {
 
     @Override
     protected void verifyClass(DecacCompiler compiler) throws ContextualError {
-        throw new UnsupportedOperationException("not yet implemented");
+        //throw new UnsupportedOperationException("not yet implemented");
+    	Symbol name = className.getName();
+    	Symbol superName;
+    	ClassDefinition superClas = null;
+    	if (superClass != null) {
+        	superName = superClass.getName();
+        	superClas = (ClassDefinition) compiler.environmentType.defOfType(superName);
+        	if (superClas == null) {
+        		throw new ContextualError("superClass not defined", this.getLocation());
+        	}
+    	}
+    	ClassType type = new ClassType(name, this.getLocation(), superClas);
+    	ClassDefinition def = new ClassDefinition(type, this.getLocation(), superClas);
+    	compiler.environmentType.declareClass(name, def);
     }
 
     @Override
@@ -48,14 +63,23 @@ public class DeclClass extends AbstractDeclClass {
     @Override
     protected void prettyPrintChildren(PrintStream s, String prefix) {
         //throw new UnsupportedOperationException("Not yet supported");
+    	className.prettyPrint(s, prefix, false);
+    	if (superClass != null) {
+    		superClass.prettyPrint(s, prefix, false);
+    	}
     	declfields.prettyPrint(s, prefix, false);
     	declmethods.prettyPrint(s, prefix, true);
     }
 
     @Override
     protected void iterChildren(TreeFunction f) {
-        throw new UnsupportedOperationException("Not yet supported");
-    }
+    	className.iter(f);
+    	if (superClass != null) {
+        	superClass.iter(f);
+    	}
+    	declfields.iter(f);
+    	declmethods.iter(f); 
+        }
 
 	@Override
 	public void decompile(IndentPrintStream s) {
