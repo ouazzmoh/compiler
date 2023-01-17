@@ -4,6 +4,7 @@ import fr.ensimag.deca.context.ClassType;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.tools.IndentPrintStream;
+
 import java.io.PrintStream;
 
 /**
@@ -13,11 +14,19 @@ import java.io.PrintStream;
  * @date 01/01/2023
  */
 public class DeclClass extends AbstractDeclClass {
+	
+	final private AbstractIdentifier className;
+	final private AbstractIdentifier superClass;
+	final private ListeDeclField declfields;
+	final private ListDeclMethod declmethods;
+	
+	public DeclClass(AbstractIdentifier className,AbstractIdentifier superClass,ListeDeclField declfields, ListDeclMethod declmethods) {
+		this.className = className;
+		this.superClass = superClass;
+		this.declfields = declfields;
+		this.declmethods = declmethods;
+	}
 
-    @Override
-    public void decompile(IndentPrintStream s) {
-        s.print("class { ... A FAIRE ... }");
-    }
 
     @Override
     protected void verifyClass(DecacCompiler compiler) throws ContextualError {
@@ -38,12 +47,20 @@ public class DeclClass extends AbstractDeclClass {
 
     @Override
     protected void prettyPrintChildren(PrintStream s, String prefix) {
-        throw new UnsupportedOperationException("Not yet supported");
+        //throw new UnsupportedOperationException("Not yet supported");
+    	declfields.prettyPrint(s, prefix, false);
+    	declmethods.prettyPrint(s, prefix, true);
     }
 
     @Override
     protected void iterChildren(TreeFunction f) {
         throw new UnsupportedOperationException("Not yet supported");
     }
+
+	@Override
+	public void decompile(IndentPrintStream s) {
+        throw new UnsupportedOperationException("Not yet supported");
+		
+	}
 
 }
