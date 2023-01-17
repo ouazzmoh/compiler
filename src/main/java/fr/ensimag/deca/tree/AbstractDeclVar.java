@@ -33,5 +33,8 @@ public abstract class AbstractDeclVar extends Tree {
 
     protected abstract void codeGenDeclVariable(DecacCompiler compiler, int varOffset);
 
+
+	protected abstract void codeGenDeclVariableArm(DecacCompiler compiler, int varOffset);
+
 }
 

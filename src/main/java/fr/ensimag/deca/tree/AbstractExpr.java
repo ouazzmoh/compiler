@@ -1,6 +1,16 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.context.Type;
+import fr.ensimag.arm.pseudocode.ArmProgram;
+import fr.ensimag.arm.pseudocode.DAddrArm;
+import fr.ensimag.arm.pseudocode.DValArm;
+import fr.ensimag.arm.pseudocode.ImmediateIntegerArm;
+import fr.ensimag.arm.pseudocode.ImmediateStringArm;
+import fr.ensimag.arm.pseudocode.LabelArm;
+import fr.ensimag.arm.pseudocode.RegisterArm;
+import fr.ensimag.arm.pseudocode.instructions.LDR;
+import fr.ensimag.arm.pseudocode.instructions.MOV;
+import fr.ensimag.arm.pseudocode.instructions.SWI;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
@@ -129,9 +139,10 @@ public abstract class AbstractExpr extends AbstractInst {
      * @param compiler
      */
     protected void codeGenPrint(DecacCompiler compiler, boolean hex) {
-        throw new DecacInternalError("expression cannot be printed");
+    	//throw new DecacInternalError("expression cannot be printed");
+        
     }
-
+    
 
     /**
      * Generate the code corresponding to the instruction
@@ -212,4 +223,19 @@ public abstract class AbstractExpr extends AbstractInst {
             s.println();
         }
     }
+
+	protected void codeGenPrintArm(DecacCompiler compiler, boolean hex) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+     * Generate assembly code for the initialization of the expression
+     * @param compiler
+     * @param adr
+     */
+    protected void codeGenInitArm(DecacCompiler compiler, DAddrArm adr){
+        throw new DecacInternalError("Shouldn't be initialized");
+    }
+
 }

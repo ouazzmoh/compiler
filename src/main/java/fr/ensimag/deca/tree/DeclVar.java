@@ -3,6 +3,9 @@ package fr.ensimag.deca.tree;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.context.TypeDefinition;
 import fr.ensimag.deca.context.VariableDefinition;
+import fr.ensimag.arm.pseudocode.DAddrArm;
+import fr.ensimag.arm.pseudocode.GPRegisterArm;
+import fr.ensimag.arm.pseudocode.RegisterOffsetArm;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
@@ -15,6 +18,7 @@ import fr.ensimag.ima.pseudocode.instructions.STORE;
 
 import java.io.PrintStream;
 
+import fr.ensimag.ima.pseudocode.GPRegister;
 import fr.ensimag.ima.pseudocode.Register;
 import fr.ensimag.ima.pseudocode.RegisterOffset;
 import org.apache.commons.lang.Validate;
@@ -105,4 +109,12 @@ public class DeclVar extends AbstractDeclVar {
 //        compiler.addInstruction(new STORE(Register.getR(2), varName.getExpDefinition().getOperand()));
 //        compiler.getRegisterDescriptor().freeRegister();
     }
+
+	@Override
+	protected void codeGenDeclVariableArm(DecacCompiler compiler, int varOffset) {
+		// TODO Auto-generated method stub
+		varName.getExpDefinition().setOperandArm(new RegisterOffsetArm(varOffset, GPRegisterArm.GB));
+        initialization.codeGenInitArm(compiler, varName.getExpDefinition().getOperandArm());
+		
+	}
 }

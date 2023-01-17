@@ -1,5 +1,6 @@
 package fr.ensimag.deca.context;
 
+import fr.ensimag.arm.pseudocode.DAddrArm;
 import fr.ensimag.deca.tree.Location;
 import fr.ensimag.ima.pseudocode.DAddr;
 
@@ -14,11 +15,20 @@ public abstract class ExpDefinition extends Definition {
     public void setOperand(DAddr operand) {
         this.operand = operand;
     }
+    
+    public void setOperandArm(DAddrArm operandArm) {
+        this.operandArm = operandArm;
+    }
 
-    public DAddr getOperand() {
+    public DAddrArm getOperandArm() {
+		return operandArm;
+	}
+
+	public DAddr getOperand() {
         return operand;
     }
     private DAddr operand;
+    private DAddrArm operandArm;
 
     public ExpDefinition(Type type, Location location) {
         super(type, location);

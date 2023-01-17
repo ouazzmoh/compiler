@@ -14,6 +14,11 @@ import fr.ensimag.ima.pseudocode.IMAProgram;
 import fr.ensimag.ima.pseudocode.Instruction;
 import fr.ensimag.ima.pseudocode.Label;
 import fr.ensimag.ima.pseudocode.*;
+import fr.ensimag.arm.pseudocode.AbstractLineArm;
+import fr.ensimag.arm.pseudocode.ArmProgram;
+import fr.ensimag.arm.pseudocode.InstructionArm;
+import fr.ensimag.arm.pseudocode.LabelArm;
+import fr.ensimag.arm.pseudocode.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -42,8 +47,13 @@ import org.apache.log4j.Logger;
  * @author gl24
  * @date 01/01/2023
  */
-public class DecacCompiler {
+public class  DecacCompiler {
     private static final Logger LOG = Logger.getLogger(DecacCompiler.class);
+    public Boolean isArm = true;
+    
+    public static Boolean getIsArm() {
+    	return true;
+    }
 
     //Holds information about the errors labels and messages
     private HashMap<String, String> errorsMap;
@@ -122,12 +132,27 @@ public class DecacCompiler {
     public void add(AbstractLine line) {
         program.add(line);
     }
+    
+    /**
+     * @see
+     * ArmProgram#add(AbstractLineArm)
+     */
+    public void add(AbstractLineArm line) {
+        programArm.add(line);
+    }
 
     /**
      * @see IMAProgram#addComment(java.lang.String)
      */
     public void addComment(String comment) {
         program.addComment(comment);
+    }
+    
+    /**
+     * @see ArmProgram#addComment(java.lang.String)
+     */
+    public void addCommentArm(String comment) {
+        programArm.addComment(comment);
     }
 
     /**
@@ -137,6 +162,14 @@ public class DecacCompiler {
     public void addLabel(Label label) {
         program.addLabel(label);
     }
+    
+    /**
+     * @see
+     * ArmProgram#addLabel(Label)
+     */
+    public void addLabel(LabelArm label) {
+        programArm.addLabel(label);
+    }
 
     /**
      * @see
@@ -144,6 +177,14 @@ public class DecacCompiler {
      */
     public void addInstruction(Instruction instruction) {
         program.addInstruction(instruction);
+    }
+    
+    /**
+     * @see
+     * ArmProgram#addInstruction(InstructionArm)
+     */
+    public void addInstruction(InstructionArm instruction) {
+        programArm.addInstruction(instruction);
     }
 
     /**
@@ -154,6 +195,15 @@ public class DecacCompiler {
     public void addInstruction(Instruction instruction, String comment) {
         program.addFirst(instruction, comment);
     }
+    
+    /**
+     * @see
+     * ArmProgram#addInstruction(InstructionArm,
+     * java.lang.String)
+     */
+    public void addInstruction(InstructionArm instruction, String comment) {
+        programArm.addFirst(instruction, comment);
+    }
 
     /**
      * @see
@@ -161,6 +211,14 @@ public class DecacCompiler {
      */
     public void addInstructionFirst(Instruction instruction) {
         program.addFirst(instruction);
+    }
+    
+    /**
+     * @see
+     * ArmProgram#addInstruction(InstructionArm)
+     */
+    public void addInstructionFirst(InstructionArm instruction) {
+        programArm.addFirst(instruction);
     }
 
     /**
@@ -173,6 +231,15 @@ public class DecacCompiler {
     }
     
     /**
+     * @see
+     * ArmProgram#addInstruction(InstructionArm,
+     * java.lang.String)
+     */
+    public void addInstructionFirst(InstructionArm instruction, String comment) {
+        programArm.addInstruction(instruction, comment);
+    }
+    
+    /**
      * @see 
      * IMAProgram#display()
      */
@@ -180,12 +247,25 @@ public class DecacCompiler {
         return program.display();
     }
     
+    /**
+     * @see 
+     * ArmProgram#display()
+     */
+    public String displayArmProgram() {
+        return programArm.display();
+    }
+    
     private final CompilerOptions compilerOptions;
     private final File source;
+    
     /**
      * The main program. Every instruction generated will eventually end up here.
+     * choosing between the IMA and the ARM achitecture depending on the 
+     * boolean isArm
      */
+
     private final IMAProgram program = new IMAProgram();
+    private final ArmProgram programArm = new ArmProgram();
  
 
     /** The global environment for types (and the symbolTable) */
@@ -267,7 +347,7 @@ public class DecacCompiler {
         //
 
 //        prog.decompile(out);
-
+        /** we choose between ima and arm*/
         addComment("start main program");
         prog.codeGenProgram(this);
         addComment("end main program");
@@ -282,8 +362,8 @@ public class DecacCompiler {
         }
 
         LOG.info("Writing assembler file ...");
-
-        program.display(new PrintStream(fstream));
+        //program.display(new PrintStream(fstream));
+        programArm.display(new PrintStream(fstream));
         LOG.info("Compilation of " + sourceName + " successful.");
         return false;
     }

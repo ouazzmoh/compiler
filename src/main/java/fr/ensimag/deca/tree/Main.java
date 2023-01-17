@@ -66,9 +66,16 @@ public class Main extends AbstractMain {
         compiler.addComment("Beginning of main instructions:");
         compiler.addComment("Generating code for variable declaration");
         //TODO: GENERATE CODE FOR VARIABLE DECLARATION
+        if (DecacCompiler.getIsArm()== true) {
+        	declVariables.codeGenListDeclVariableArm(compiler);
+            compiler.addComment("Generating code for instructions");
+            //insts.codeGenListInstArm(compiler);
+        }
+        else {
         declVariables.codeGenListDeclVariable(compiler);
         compiler.addComment("Generating code for instructions");
         insts.codeGenListInst(compiler);
+        }
         stackSize += declVariables.getList().size();
         if (stackSize != 0){
             compiler.addInstructionFirst(new BOV(new Label("err_stack_overflow")));

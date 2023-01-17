@@ -1,6 +1,7 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.context.Type;
+import fr.ensimag.arm.pseudocode.DAddrArm;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
@@ -49,5 +50,7 @@ public abstract class AbstractInst extends Tree {
     protected void codeGenInstIf(DecacCompiler compiler, Label label){
         throw new UnsupportedOperationException("Not implemented yet");
     }
+
+		
 
 }

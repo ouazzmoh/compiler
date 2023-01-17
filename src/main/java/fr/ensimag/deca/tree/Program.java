@@ -1,5 +1,9 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.ImmediateIntegerArm;
+import fr.ensimag.arm.pseudocode.RegisterArm;
+import fr.ensimag.arm.pseudocode.instructions.MOV;
+import fr.ensimag.arm.pseudocode.instructions.SWI;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.tools.IndentPrintStream;
@@ -58,19 +62,30 @@ public class Program extends AbstractProgram {
 
     @Override
     public void codeGenProgram(DecacCompiler compiler) {
-        compiler.addComment("Main program");
-        compiler.getErrorsMap().put("err_stack_overflow", "Erreur: la pile est pleine");
+    	compiler.addComment("Main program");
         main.codeGenMain(compiler);
-        compiler.addInstruction(new HALT());
-        compiler.addComment("Generating code for errors");
-        Iterator<Map.Entry<String, String>> it = compiler.getErrorsMap().entrySet().iterator();
-        while(it.hasNext()){
-            Map.Entry<String, String> couple = it.next();
-            compiler.addLabel(new Label(couple.getKey()));
-            compiler.addInstruction(new WSTR(couple.getValue()));
-            compiler.addInstruction(new WNL());
-            compiler.addInstruction(new ERROR());
-            it.remove();
+        if (compiler.getIsArm() == true){
+        	// marks the end of the program in the ARM architecture
+        	compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(1)));
+            compiler.addInstruction(new MOV(RegisterArm.getR(0), new ImmediateIntegerArm(0)));
+            compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
+
+        }
+        else{
+            compiler.getErrorsMap().put("err_stack_overflow", "Erreur: la pile est pleine");
+            main.codeGenMain(compiler);
+        	// marks the end of the program for IMA
+        	compiler.addInstruction(new HALT());
+	        compiler.addComment("Generating code for errors");
+	        Iterator<Map.Entry<String, String>> it = compiler.getErrorsMap().entrySet().iterator();
+	        while(it.hasNext()){
+	            Map.Entry<String, String> couple = it.next();
+	            compiler.addLabel(new Label(couple.getKey()));
+	            compiler.addInstruction(new WSTR(couple.getValue()));
+	            compiler.addInstruction(new WNL());
+	            compiler.addInstruction(new ERROR());
+	            it.remove();
+        }
         }
 
 

@@ -1,6 +1,7 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.context.Type;
+import fr.ensimag.arm.pseudocode.DAddrArm;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
@@ -54,4 +55,11 @@ public class NoInitialization extends AbstractInitialization {
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
         //Nothing to add because it doesn't initialize
     }
+
+
+	@Override
+	protected void codeGenInitArm(DecacCompiler compiler, DAddrArm adr) {
+		//Nothing to add because it doesn't initialize
+		
+	}
 }

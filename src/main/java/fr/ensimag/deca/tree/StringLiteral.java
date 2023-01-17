@@ -1,10 +1,20 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.context.Type;
+import fr.ensimag.arm.pseudocode.ArmProgram;
+import fr.ensimag.arm.pseudocode.DValArm;
+import fr.ensimag.arm.pseudocode.ImmediateIntegerArm;
+import fr.ensimag.arm.pseudocode.ImmediateStringArm;
+import fr.ensimag.arm.pseudocode.LabelArm;
+import fr.ensimag.arm.pseudocode.RegisterArm;
+import fr.ensimag.arm.pseudocode.instructions.LDR;
+import fr.ensimag.arm.pseudocode.instructions.MOV;
+import fr.ensimag.arm.pseudocode.instructions.SWI;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.ImmediateString;
 import fr.ensimag.ima.pseudocode.instructions.WSTR;
@@ -41,7 +51,42 @@ public class StringLiteral extends AbstractStringLiteral {
 
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean hex) {
+    	if (compiler.isArm == true) {
+	    	LabelArm lab = new LabelArm("message1");
+			ArmProgram.data.put(lab,(DValArm)(new ImmediateStringArm(value.toString())));
+			compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(4)));
+	        compiler.addInstruction(new MOV(RegisterArm.getR(1), new ImmediateIntegerArm(1)));
+	        compiler.addInstruction(new LDR(RegisterArm.getR(1),lab));
+	        int l = lab.toString().length();
+	        compiler.addInstruction(new MOV(RegisterArm.getR(2), new ImmediateIntegerArm(l-2) ));
+	        compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
+    	}
+    	else {
         compiler.addInstruction(new WSTR(new ImmediateString(value)));
+    }
+    }
+    
+    /**
+     * Generate code to println the expression
+     * @param compiler
+     */
+    protected void codeGenPrintln(DecacCompiler compiler, boolean hex) {
+        //throw new DecacInternalError("expression cannot be printed")
+    	if (compiler.getIsArm() == true) {
+	    	LabelArm lab = new LabelArm("message1");
+			ArmProgram.data.put(lab,(DValArm)(new ImmediateStringArm(this.toString() + "\n")));
+			compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(4)));
+	        compiler.addInstruction(new MOV(RegisterArm.getR(1), new ImmediateIntegerArm(1)));
+	        compiler.addInstruction(new LDR(RegisterArm.getR(1),lab));
+	        int l = lab.toString().length();
+	        compiler.addInstruction(new MOV(RegisterArm.getR(2), new ImmediateIntegerArm(l-2) ));
+	        compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
+    	}
+		else {
+			compiler.addInstruction(new WSTR(new ImmediateString(value + "\n")));
+		}
+
+        
     }
 
     @Override
