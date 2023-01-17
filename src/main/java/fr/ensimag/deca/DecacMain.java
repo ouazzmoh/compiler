@@ -4,6 +4,7 @@ package fr.ensimag.deca;
 import java.io.File;
 import org.apache.log4j.Logger;
 
+
 /**
  * Main class for the command-line Deca compiler.
  *
@@ -55,16 +56,19 @@ public class DecacMain {
                     "parallèle (pour accélérer la compilation)\n");
 
         }
-        if (options.getParallel()) {
-            // A FAIRE : instancier DecacCompiler pour chaque fichier à
-            // compiler, et lancer l'exécution des méthodes compile() de chaque
-            // instance en parallèle. Il est conseillé d'utiliser
-            // java.util.concurrent de la bibliothèque standard Java.
-            //TODO : solve for parallel files
+        if (options.getParallel()) {;
             throw new UnsupportedOperationException("Parallel build not yet implemented");
         } else {
             for (File source : options.getSourceFiles()) {
-                DecacCompiler compiler = new DecacCompiler(options, source);
+                DecacCompiler compiler;
+                //Checking how many register to use
+                if (options.getCustomNumReg() >= 4 && options.getCustomNumReg() <= 16){
+                    compiler = new DecacCompiler(options, source, options.getCustomNumReg());
+                }
+                else {
+                    compiler = new DecacCompiler(options, source);
+                }
+                //Beginning of compilation
                 if (compiler.compile()) {
                     error = true;
                 }

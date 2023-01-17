@@ -63,8 +63,10 @@ public class CompilerOptions {
     		optionp = true;
     	}
     }
-    
-    
+
+    public int getCustomNumReg() {
+        return customNumReg;
+    }
     
     
     public List<File> getSourceFiles() {
@@ -75,7 +77,10 @@ public class CompilerOptions {
     private boolean parallel = false;
     private boolean printBanner = false;
     private boolean optionv = false;
+
     private boolean optionp = false;
+
+    private int customNumReg = 0;
     private List<File> sourceFiles = new ArrayList<File>();
 
     /**
@@ -115,7 +120,6 @@ public class CompilerOptions {
 //        throw new UnsupportedOperationException("not yet implemented");
         logger.debug("Trying the decac with no option arguments yet");
         if(args.length == 0){
-            //TODO: show all options
             logger.debug("arguments empty");
         }
         else {
