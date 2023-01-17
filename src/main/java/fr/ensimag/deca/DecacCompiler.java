@@ -269,6 +269,7 @@ public class DecacCompiler {
 //        prog.decompile(out);
 
         addComment("start main program");
+
         prog.codeGenProgram(this);
         addComment("end main program");
         LOG.debug("Generated assembly code:" + nl + program.display());
@@ -328,7 +329,7 @@ public class DecacCompiler {
      * @return
      */
     public GPRegister getFreeReg(){
-        if (useLoad()){
+        if (currRegNum>=2 && currRegNum <= regMax){
             return Register.getR(currRegNum);
         }
         else {
@@ -339,17 +340,17 @@ public class DecacCompiler {
 
     public void useReg(){
         assert(currRegNum <= regMax);
-        currRegNum++;
+        currRegNum += 1;
     }
 
 
     public void freeReg(){
         assert(currRegNum >=2);
-        currRegNum--;
+        currRegNum -= 1;
     }
 
     public boolean useLoad(){
-        return (currRegNum < regMax) && (currRegNum > 1);
+        return (regMax - currRegNum > 0);
     }
 
 

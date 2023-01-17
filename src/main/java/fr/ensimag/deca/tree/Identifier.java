@@ -262,17 +262,12 @@ public class Identifier extends AbstractIdentifier {
         return registerToUse;
     }
 
-    @Override
-    protected void codeGenPush(DecacCompiler compiler){
-        compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), Register.R1)); //No need to use and free
-        compiler.addInstruction(new PUSH(Register.R1));
-    }
-
 
     @Override
     protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
-        compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), Register.R1));
-        compiler.addInstruction(new CMP(0, Register.R1));
+        GPRegister reg = compiler.getFreeReg();
+        compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), reg));
+        compiler.addInstruction(new CMP(0, reg));
         if (b){
             compiler.addInstruction(new BNE(label));
         }
@@ -285,8 +280,10 @@ public class Identifier extends AbstractIdentifier {
 
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-        compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), Register.R1));
-        compiler.addInstruction(new STORE(Register.R1, adr));
+        GPRegister reg = compiler.getFreeReg();
+        //implicit use and free
+        compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), reg));
+        compiler.addInstruction(new STORE(reg, adr));
     }
 
 }

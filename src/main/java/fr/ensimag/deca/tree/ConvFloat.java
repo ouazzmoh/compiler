@@ -40,13 +40,6 @@ public class ConvFloat extends AbstractUnaryExpr {
         return valueReg;
     }
 
-    @Override
-    protected void codeGenPush(DecacCompiler compiler){
-        getOperand().codeGenPush(compiler);
-        compiler.addInstruction(new POP(Register.R0));
-        compiler.addInstruction(new FLOAT(Register.R0, Register.R0));
-        compiler.addInstruction(new PUSH(Register.R0));
-    }
 
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean hex){

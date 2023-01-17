@@ -48,15 +48,18 @@ public class And extends AbstractOpBool {
         Label endAnd = new Label("endAnd.l" + getLocation().getLine() +
                 ".c" + getLocation().getPositionInLine());
 
+        GPRegister reg = compiler.getFreeReg();
+        //Implicit use and free of register
+
         codeGenBranch(compiler, false, falseAnd);
         //return 1 if true
-        compiler.addInstruction(new LOAD(1, Register.R1));
+        compiler.addInstruction(new LOAD(1, reg));
         compiler.addInstruction(new BRA(endAnd));
         compiler.addLabel(falseAnd);
         //return 0 if false
-        compiler.addInstruction(new LOAD(0, Register.R1));
+        compiler.addInstruction(new LOAD(0, reg));
         compiler.addInstruction(new BRA(endAnd));
         compiler.addLabel(endAnd);
-        compiler.addInstruction(new STORE(Register.R1, adr));
+        compiler.addInstruction(new STORE(reg, adr));
     }
 }

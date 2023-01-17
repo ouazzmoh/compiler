@@ -56,12 +56,6 @@ public class ReadInt extends AbstractReadExpr {
         return super.codeGenLoad(compiler);
     }
 
-    @Override
-    protected void codeGenPush(DecacCompiler compiler){
-        compiler.addInstruction(new RINT());
-        super.codeGenPush(compiler);
-    }
-
 
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean hex){

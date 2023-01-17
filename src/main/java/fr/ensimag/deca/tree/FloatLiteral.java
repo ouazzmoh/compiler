@@ -72,8 +72,10 @@ public class FloatLiteral extends AbstractExpr {
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
         DVal valueToAdd = new ImmediateFloat(value);
-        compiler.addInstruction(new LOAD(valueToAdd, Register.R1));
-        compiler.addInstruction(new STORE(Register.R1, adr));
+        GPRegister reg = compiler.getFreeReg();
+        //Implicit use and free of register
+        compiler.addInstruction(new LOAD(valueToAdd, reg));
+        compiler.addInstruction(new STORE(reg, adr));
     }
 
     @Override
@@ -87,9 +89,6 @@ public class FloatLiteral extends AbstractExpr {
         }
     }
 
-
-
-
     @Override
     protected DVal codeGenLoad(DecacCompiler compiler){
         GPRegister registerToUse = compiler.getFreeReg();
@@ -97,13 +96,6 @@ public class FloatLiteral extends AbstractExpr {
         compiler.addInstruction(new LOAD(toLoad, registerToUse));
         compiler.useReg();
         return registerToUse;
-    }
-
-    @Override
-    protected void codeGenPush(DecacCompiler compiler){
-        ImmediateFloat toLoad = new ImmediateFloat(value);
-        compiler.addInstruction(new LOAD(toLoad, Register.R1));
-        compiler.addInstruction(new PUSH(Register.R1));
     }
 
 }

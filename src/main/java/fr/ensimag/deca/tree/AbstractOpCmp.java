@@ -70,13 +70,16 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 
 		codeGenBranch(compiler, false, falseComp);
 
-		compiler.addInstruction(new LOAD(1, Register.R0)); // load 1, r
-		compiler.addInstruction(new STORE(Register.R0, adr)); // store r, adr
+		GPRegister reg  = compiler.getFreeReg();
+		//Implicit use and free
+
+		compiler.addInstruction(new LOAD(1, reg)); // load 1, r
+		compiler.addInstruction(new STORE(reg, adr)); // store r, adr
 		//No need to update registerDescriptor because we load and store
 		compiler.addInstruction(new BRA(end)); // bra end
 		compiler.addLabel(falseComp); // neq :
-		compiler.addInstruction(new LOAD(0, Register.R0)); // load 0, r
-		compiler.addInstruction(new STORE(Register.R0, adr)); // store r, adr
+		compiler.addInstruction(new LOAD(0, reg)); // load 0, r
+		compiler.addInstruction(new STORE(reg, adr)); // store r, adr
 		compiler.addLabel(end); // end:
 
 

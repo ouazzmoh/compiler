@@ -65,9 +65,10 @@ public class IntLiteral extends AbstractExpr {
      */
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-        compiler.addInstruction(new LOAD(value, Register.R1));
-        compiler.addInstruction(new STORE(Register.R1, adr));
-
+        GPRegister reg = compiler.getFreeReg();
+        compiler.addInstruction(new LOAD(value, reg));
+        compiler.addInstruction(new STORE(reg, adr));
+        //Implicit use and free
     }
 
     @Override
@@ -78,18 +79,6 @@ public class IntLiteral extends AbstractExpr {
         return registerToUse;
     }
 
-
-
-
-
-
-
-
-    @Override
-    protected void codeGenPush(DecacCompiler compiler){
-        compiler.addInstruction(new LOAD(value, Register.R1));
-        compiler.addInstruction(new PUSH(Register.R1));
-    }
 
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean hex){

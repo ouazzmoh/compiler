@@ -27,13 +27,5 @@ public class GreaterOrEqual extends AbstractOpIneq {
     }
 
 
-    protected void codeGenMnem(DecacCompiler compiler, Label label){
-        compiler.addInstruction(new BGE(label));
-    }
-
-    protected void codeGenMnemOpp(DecacCompiler compiler, Label label){
-        compiler.addInstruction(new BLT(label));
-    }
-
 
 }

@@ -83,5 +83,4 @@ public class While extends AbstractInst {
         condition.codeGenBranch(compiler, true, startWhile);
     }
 
-
 }

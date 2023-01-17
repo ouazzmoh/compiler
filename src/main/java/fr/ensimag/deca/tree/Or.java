@@ -46,15 +46,18 @@ public class Or extends AbstractOpBool {
         Label endOr = new Label("endOr.l" + getLocation().getLine() +
                 ".c" + getLocation().getPositionInLine());
         codeGenBranch(compiler, true, trueOr);
+        GPRegister reg = compiler.getFreeReg();
+        //Implicit use and free of register
+
         //return 0 if false
-        compiler.addInstruction(new LOAD(0, Register.R1));
+        compiler.addInstruction(new LOAD(0, reg));
         compiler.addInstruction(new BRA(endOr));
         compiler.addLabel(trueOr);
         //return 1 if true
-        compiler.addInstruction(new LOAD(1, Register.R1));
+        compiler.addInstruction(new LOAD(1, reg));
         compiler.addInstruction(new BRA(endOr));
         compiler.addLabel(endOr);
-        compiler.addInstruction(new STORE(Register.R1, adr));
+        compiler.addInstruction(new STORE(reg, adr));
     }
 
 }
