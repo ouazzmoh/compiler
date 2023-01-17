@@ -85,6 +85,9 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 		else if (getRightOperand() instanceof Identifier){
 			opRight = ((Identifier)getRightOperand()).getVariableDefinition().getOperand();
 		}
+		else if (getRightOperand() instanceof FloatLiteral){
+			opRight = new ImmediateFloat(((FloatLiteral)getRightOperand()).getValue());
+		}
 		else {
 		//testing if we can use LOAD or we should use PUSH/POP
 			if (!compiler.useLoad()){
