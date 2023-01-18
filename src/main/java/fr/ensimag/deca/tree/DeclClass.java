@@ -4,6 +4,8 @@ import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ClassType;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ContextualError;
+import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.deca.context.FieldDefinition;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
 
@@ -18,7 +20,7 @@ import java.io.PrintStream;
 public class DeclClass extends AbstractDeclClass {
 	
 	final private AbstractIdentifier className;
-	final private AbstractIdentifier superClass;
+	private AbstractIdentifier superClass;
 	final private ListeDeclField declfields;
 	final private ListDeclMethod declmethods;
 	
@@ -43,20 +45,43 @@ public class DeclClass extends AbstractDeclClass {
         		throw new ContextualError("superClass not defined", this.getLocation());
         	}
     	}
+    	else {
+    		superClass = new Identifier(compiler.createSymbol("object"));
+    		superClas = (ClassDefinition) compiler.environmentType.defOfType(compiler.createSymbol("object"));
+    		superClass.setDefinition(superClas);
+    		superClass.setLocation(superClas.getLocation());
+    	}
     	ClassType type = new ClassType(name, this.getLocation(), superClas);
     	ClassDefinition def = new ClassDefinition(type, this.getLocation(), superClas);
     	compiler.environmentType.declareClass(name, def);
+    	className.setDefinition(def);
     }
 
     @Override
     protected void verifyClassMembers(DecacCompiler compiler)
             throws ContextualError {
-        throw new UnsupportedOperationException("not yet implemented");
+        //throw new UnsupportedOperationException("not yet implemented");
+    	EnvironmentExp env = new EnvironmentExp(null);
+    	Symbol supe = null;
+    	//if (superClass != null) {
+    	supe = superClass.getName();
+    	ClassDefinition def  = (ClassDefinition) compiler.environmentType.defOfType(supe);
+    	if (def == null) {
+    		throw new ContextualError("problems with verifyClassMembers", this.getLocation());
+    	}
+    	//}
+    	EnvironmentExp env_exp_super = def.getMembers();
+    	declfields.verifyListDeclField(compiler, className.getName(), supe , env);
+    	
     }
     
     @Override
     protected void verifyClassBody(DecacCompiler compiler) throws ContextualError {
-        throw new UnsupportedOperationException("not yet implemented");
+        //throw new UnsupportedOperationException("not yet implemented");
+    	Symbol s = className.getName();
+    	ClassDefinition def = (ClassDefinition) compiler.environmentType.defOfType(s);
+    	EnvironmentExp env = def.getMembers();
+    	declfields.verifyListFields(compiler, env, s);
     }
 
 

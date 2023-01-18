@@ -4,7 +4,15 @@ import java.io.PrintStream;
 
 import org.apache.commons.lang.Validate;
 
+import fr.ensimag.deca.DecacCompiler;
+import fr.ensimag.deca.context.ClassDefinition;
+import fr.ensimag.deca.context.ContextualError;
+import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.deca.context.EnvironmentExp.DoubleDefException;
+import fr.ensimag.deca.context.FieldDefinition;
+import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.deca.tools.SymbolTable.Symbol;
 
 public class DeclField extends AbstractDeclField {
     final private AbstractIdentifier type;
@@ -45,6 +53,38 @@ public class DeclField extends AbstractDeclField {
 	@Override
 	public void decompile(IndentPrintStream s) {
 		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	protected EnvironmentExp verifyDeclField(DecacCompiler compiler, Symbol className, Symbol superClass, int j) throws ContextualError {
+		Type t = type.verifyType(compiler);
+		type.setType(t);
+    	this.type.setDefinition(compiler.environmentType.defOfType(type.getName()));
+		Symbol name = varName.getName();
+		if (t.sameType(compiler.environmentType.VOID)) {
+			throw new ContextualError("void type can't be a field", type.getLocation());
+		}
+		ClassDefinition def = (ClassDefinition) compiler.environmentType.defOfType(superClass);
+		EnvironmentExp envi = new EnvironmentExp(null);
+		FieldDefinition defField = new FieldDefinition(t,this.getLocation(), v, (ClassDefinition) compiler.environmentType.defOfType(className), j);
+		try {
+			envi.declare(name, defField);
+			def.getMembers().declare(name, defField);
+    		varName.setDefinition(defField);
+    		varName.setType(t);
+		} catch (DoubleDefException e1) {
+			throw new ContextualError("Something went wrong in fields", this.getLocation());
+		}
+		return envi;
+	}
+
+
+	@Override
+	protected void verifyField(DecacCompiler compiler, Symbol className, EnvironmentExp env) throws ContextualError {
+		Type t = this.type.getType();
+		initialization.verifyInitialization(compiler, t, env, (ClassDefinition) compiler.environmentType.defOfType(className));
 		
 	}
 	

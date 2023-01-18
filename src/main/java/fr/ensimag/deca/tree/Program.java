@@ -49,10 +49,10 @@ public class Program extends AbstractProgram {
         classes.verifyListClass(compiler);
         
         // passe2 on hérite env_typesr
-        classes.verifyListClassBody(compiler);
+        classes.verifyListClassMembers(compiler);
         
         //passe3 herite l'attribut synthetisé de 2
-        classes.verifyListClassMembers(compiler);
+        classes.verifyListClassBody(compiler);
         main.verifyMain(compiler);
     }
 
