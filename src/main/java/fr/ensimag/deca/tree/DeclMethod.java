@@ -2,7 +2,14 @@ package fr.ensimag.deca.tree;
 
 import java.io.PrintStream;
 
+import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.LabelOperand;
+import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.STORE;
 
 public class DeclMethod extends AbstractDeclMethod {
 	final private AbstractIdentifier type;
@@ -41,6 +48,14 @@ public class DeclMethod extends AbstractDeclMethod {
         name.iter(f);
         parametres.iter(f);
         body.iter(f);
+	}
+
+	@Override
+	public void codeGenVirtualTable(DecacCompiler compiler, String className, int addrTableMethodes){
+		Label methodeLabel = new Label("code."+className+"."+name.getName().getName());
+		LabelOperand opMethodeLabel = new LabelOperand(methodeLabel);
+		compiler.addInstruction(new LOAD(opMethodeLabel, Register.R0));
+		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(addrTableMethodes+name.getMethodDefinition().getIndex(), Register.GB)));
 	}
 
 }

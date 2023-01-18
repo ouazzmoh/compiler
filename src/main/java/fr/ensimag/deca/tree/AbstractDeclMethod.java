@@ -8,6 +8,8 @@ import fr.ensimag.deca.context.EnvironmentExp;
 
 public abstract class AbstractDeclMethod extends Tree {
 
+    public abstract void codeGenVirtualTable(DecacCompiler compiler, String className, int addrTableMethodes);
+    
 
 
 }

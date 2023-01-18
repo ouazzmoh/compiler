@@ -4,6 +4,7 @@ import java.io.PrintStream;
 
 import org.apache.commons.lang.Validate;
 
+import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.tools.IndentPrintStream;
 
 public class DeclField extends AbstractDeclField {
@@ -47,6 +48,7 @@ public class DeclField extends AbstractDeclField {
 		// TODO Auto-generated method stub
 		
 	}
+    
 	
 	
 }

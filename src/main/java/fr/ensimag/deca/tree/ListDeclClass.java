@@ -50,5 +50,13 @@ public class ListDeclClass extends TreeList<AbstractDeclClass> {
         //throw new UnsupportedOperationException("not yet implemented");
     }
 
+    /**
+     * First Pass Generating CodeGen for Virtual Table
+     */
+    public void codeGenVirtualTable(DecacCompiler compiler){
+        for(AbstractDeclClass e : this.getList()){
+            e.codeGenVirtualTable(compiler);
+        }
+    }
 
 }

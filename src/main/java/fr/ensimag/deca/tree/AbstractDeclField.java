@@ -9,5 +9,4 @@ import fr.ensimag.deca.context.EnvironmentExp;
 public abstract class AbstractDeclField extends Tree {
 
 
-
 }
