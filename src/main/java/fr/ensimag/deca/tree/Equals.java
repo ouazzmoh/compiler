@@ -22,5 +22,4 @@ public class Equals extends AbstractOpExactCmp {
         return "==";
     }
 
-    
 }

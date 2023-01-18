@@ -93,25 +93,26 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 	 */
 	@Override
 	protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
-		GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
-
-		//checking whether to use lOAD or PUSH/POP
-		DVal opRight;
-		if (!compiler.useLoad()){
+		//If comparable, we load the values and compare
+		if (compiler.useLoad()){
+			GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
+			GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler);
+			compiler.addInstruction(new CMP(opRight, opLeft));
+			compiler.freeReg();
+			compiler.freeReg();
+		}
+		else {
+			GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
 			compiler.addInstruction(new PUSH(opLeft));
-			compiler.freeReg(); // free left operand because it is pushed
-		}
-		opRight = getRightOperand().codeGenLoad(compiler);
-		if (!compiler.useLoad()){
+			compiler.freeReg();
+			GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler);
 			compiler.addInstruction(new POP(Register.R0));
-			opLeft = Register.R0;
+			compiler.addInstruction(new CMP(opRight, Register.R0));
+			compiler.freeReg();
 		}
-		else {compiler.freeReg();}//free the left operand because freed in the comparaison
-
-
-		compiler.addInstruction(new CMP(opRight, opLeft));
-		compiler.freeReg(); //free the right operand because it is no longer used
+		//Free the two registers because we no longer need to use them
 		codeGenMnem(compiler, label, !b);
+
 	}
 
 	/**
@@ -122,33 +123,37 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 	 */
 	@Override
 	protected DVal codeGenLoad(DecacCompiler compiler){
-		Label falseComp = new Label("falseComp.l" + getLocation().getLine() +
-				".c" + getLocation().getPositionInLine());
-		Label endComp = new Label("endComp.l" + getLocation().getLine() +
-				".c" + getLocation().getPositionInLine());
-
-		GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
-		DVal opRight;
-
-		if (!compiler.useLoad()){
+		Label falseComp = new Label("falseComp." + this.toString().split("@")[1]);
+		Label endComp = new Label("endComp." + this.toString().split("@")[1]);
+		if (compiler.useLoad()){
+			//We are sure in this case that the operands are atomic
+			GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
+			GPRegister opRight =  (GPRegister) getRightOperand().codeGenLoad(compiler);
+			compiler.addInstruction(new CMP(opRight, opLeft));
+			codeGenMnem(compiler, falseComp, getOpp());
+			compiler.addInstruction(new LOAD(1, (GPRegister) opLeft));
+			compiler.addInstruction(new BRA(endComp));
+			compiler.addLabel(falseComp);
+			compiler.addInstruction(new LOAD(0, (GPRegister) opLeft));
+			compiler.addLabel(endComp);
+			compiler.freeReg();//Free the right register
+			return opLeft;
+		}
+		else {
+			GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
 			compiler.addInstruction(new PUSH(opLeft));
-			compiler.freeReg(); // free left operand because it is pushed
-		}
-		opRight = getRightOperand().codeGenLoad(compiler);
-		if (!compiler.useLoad()){
+			compiler.freeReg();
+			GPRegister opRight =  (GPRegister) getRightOperand().codeGenLoad(compiler);
 			compiler.addInstruction(new POP(Register.R0));
-			opLeft = Register.R0;
+			compiler.addInstruction(new CMP(opRight, Register.R0));
+			codeGenMnem(compiler, falseComp, getOpp());
+			compiler.addInstruction(new LOAD(1, (GPRegister) opRight));
+			compiler.addInstruction(new BRA(endComp));
+			compiler.addLabel(falseComp);
+			compiler.addInstruction(new LOAD(0, (GPRegister) opRight));
+			compiler.addLabel(endComp);
+			return opRight;
 		}
-		else {compiler.freeReg();}//free the left operand because freed in the comparaison
-
-		compiler.addInstruction(new CMP(opRight, opLeft));
-		codeGenMnem(compiler, falseComp, false);
-		compiler.addInstruction(new LOAD(1, (GPRegister) opRight));
-		compiler.addInstruction(new BRA(endComp));
-		compiler.addLabel(falseComp);
-		compiler.addInstruction(new LOAD(0, (GPRegister) opRight));
-		compiler.addLabel(endComp);
-		return opRight;
 	}
 
 
@@ -211,5 +216,12 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 		}
 	}
 
+
+	/**
+	 * Whether we should generate the opposite label
+	 *	useful to facotrize the code
+	 * @return true for ==/!= , false for others
+	 */
+	protected abstract boolean getOpp();
 
 }
