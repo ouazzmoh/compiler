@@ -52,7 +52,7 @@ public class ListDeclVar extends TreeList<AbstractDeclVar> {
         compiler.addInstruction(new ADDSP(d1));
         for (AbstractDeclVar d : getList()){
             d.codeGenDeclVariable(compiler, compiler.getOffset());
-            compiler.incOffset();
+            compiler.incOffset(1);
         }
 
 
