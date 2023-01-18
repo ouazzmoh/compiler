@@ -53,7 +53,6 @@ public class DeclField extends AbstractDeclField {
 	@Override
 	public void decompile(IndentPrintStream s) {
 		// TODO Auto-generated method stub
-		
 	}
 
 
