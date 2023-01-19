@@ -108,7 +108,22 @@ public class DeclClass extends AbstractDeclClass {
 
 	@Override
 	public void decompile(IndentPrintStream s) {
-        throw new UnsupportedOperationException("Not yet supported");
+        //throw new UnsupportedOperationException("Not yet supported");
+		s.print("class ");
+		this.className.decompile(s);
+		s.print(" extends ");
+		if(this.superClass == null){
+			s.print("Object");
+		}
+		else{
+			this.superClass.decompile(s);
+		}
+		s.println("{");
+		s.indent();
+		this.declfields.decompile(s);
+		this.declmethods.decompile(s);
+		s.unindent();
+		s.print("}");
 		
 	}
 

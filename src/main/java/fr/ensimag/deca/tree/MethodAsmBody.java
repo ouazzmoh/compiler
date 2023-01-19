@@ -16,7 +16,9 @@ public class MethodAsmBody extends AbstractMethodBody {
 	@Override
 	public void decompile(IndentPrintStream s) {
 		// TODO Auto-generated method stub
-		
+		s.print("asm(");
+		this.string.decompile(s);
+		s.print(");");
 	}
 
 	@Override

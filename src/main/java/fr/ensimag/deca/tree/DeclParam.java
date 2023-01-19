@@ -18,7 +18,9 @@ public class DeclParam extends AbstractDeclParam {
 	@Override
 	public void decompile(IndentPrintStream s) {
 		// TODO Auto-generated method stub
-		
+		this.type.decompile(s);
+		s.print(" ");
+		this.name.decompile(s);
 	}
 
 	@Override

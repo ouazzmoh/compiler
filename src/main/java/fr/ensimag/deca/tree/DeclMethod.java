@@ -22,7 +22,13 @@ public class DeclMethod extends AbstractDeclMethod {
 	@Override
 	public void decompile(IndentPrintStream s) {
 		// TODO Auto-generated method stub
-		
+		this.type.decompile(s);
+		s.print(" ");
+		this.name.decompile(s);
+		s.print("(");
+		this.parametres.decompile(s);
+		s.print(")");
+		this.body.decompile(s);
 	}
 
 	@Override
