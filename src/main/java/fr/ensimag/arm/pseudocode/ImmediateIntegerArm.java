@@ -1,5 +1,7 @@
 package fr.ensimag.arm.pseudocode;
 
+import java.io.PrintStream;
+
 /**
  * Immediate integer.
  * 
@@ -27,5 +29,15 @@ public class ImmediateIntegerArm extends DValArm{
         return " " + value;
     	//return "" + value;
     }
-
+    @Override
+    public String toStringWord() {
+		// TODO Auto-generated method stub
+		return "" + value;
+	}
+    
+    @Override
+    void display(PrintStream s){
+    	s.println("		.word " + value);
+        s.println();
+    }
 }

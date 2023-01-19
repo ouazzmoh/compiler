@@ -87,7 +87,8 @@ public class Initialization extends AbstractInitialization {
     
     @Override
     protected void codeGenInitArm(DecacCompiler compiler, DAddrArm adr){
-    	//ArmProgram.data.(lab,new ImmediateIntegerArm(0));
+    	//super.codeGenInitArm(compiler,adr);
+    	//ArmProgram.data.put(new LabelArm(getName().),new ImmediateIntegerArm(0));
         expression.codeGenInitArm(compiler, adr);
     }
 

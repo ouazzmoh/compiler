@@ -24,4 +24,10 @@ public abstract class DValArm extends OperandArm{
     }
 
 
+	public String toStringWord() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
 }

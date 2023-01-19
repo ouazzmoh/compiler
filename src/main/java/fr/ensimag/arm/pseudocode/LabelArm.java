@@ -31,7 +31,7 @@ public class LabelArm extends OperandArm {
 	    private String name;
 		public void display(PrintStream s) {
 			// TODO Auto-generated method stub
-			s.println("		" + DecacCompiler.getLabel(0) + ":");
+			s.println("		" + this.toString() + ":");
 			
 		}
 	}

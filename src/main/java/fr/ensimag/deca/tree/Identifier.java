@@ -268,18 +268,17 @@ public class Identifier extends AbstractIdentifier {
     @Override
     protected void codeGenPrintArm(DecacCompiler compiler, boolean hex){
         if (this.getType().isInt()) {
-        	LabelArm lab = DecacCompiler.getLabel();
-        	LabelArm lab2 = new LabelArm(DecacCompiler.getLabel().toString() + "toPrint");
-        	//DecacCompiler.data.put(lab, null);
-        	DecacCompiler.data.put(lab2, new ImmediateStringArm(DecacCompiler.data.get(lab).toString()));
-            compiler.addInstruction(new LDR(GPRegisterArm.getR(2), lab2));
-            compiler.addInstruction(new MOV(RegisterArm.getR(0), new ImmediateIntegerArm(4) ));
-            compiler.addInstruction(new MOV(RegisterArm.getR(1), new ImmediateIntegerArm(1) ));
-            compiler.addInstruction(new MOV(RegisterArm.getR(2), RegisterArm.getR(2) ));
-            compiler.addInstruction(new MOV(RegisterArm.getR(3), new ImmediateIntegerArm(4) ));
-	        compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
-        	
-        	
+        	//+ " (" + this.getVariableDefinition().getLocation().getPositionInLine() + ")"
+        	LabelArm lab = new LabelArm("Variable" + this.getVariableDefinition().getLocation().getLine());
+        	LabelArm zb = new LabelArm(lab.toString() + "toprint");
+        	DValArm valeur = DecacCompiler.getLabel(lab);
+        	DecacCompiler.data.put( zb, new ImmediateStringArm(valeur.toStringWord()));
+        	compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(4)));
+            compiler.addInstruction(new MOV(RegisterArm.getR(1), new ImmediateIntegerArm(1)));
+            compiler.addInstruction(new LDR(RegisterArm.getR(1),zb));
+            int l = DecacCompiler.data.get(zb).toString().length();
+            compiler.addInstruction(new MOV(RegisterArm.getR(2), new ImmediateIntegerArm(l-2) ));
+            compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
         } else if (this.getType().isFloat()) {
             compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
             if (hex) {
@@ -336,7 +335,6 @@ public class Identifier extends AbstractIdentifier {
 	@Override
 	protected void codeGenInitArm(DecacCompiler compiler, DAddrArm adr) {
 		// TODO Auto-generated method stub
-		//DecacCompiler.data.put(new LabelArm(getVariableDefinition().getOperand().toString()),new ImmediateIntegerArm(4) );
 		
 	}
 

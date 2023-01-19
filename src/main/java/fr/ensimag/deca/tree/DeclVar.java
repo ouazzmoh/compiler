@@ -114,11 +114,7 @@ public class DeclVar extends AbstractDeclVar {
 
 	@Override
 	protected void codeGenDeclVariableArm(DecacCompiler compiler, int varOffset) {
-		// TODO Auto-generated method stub
-		DecacCompiler.data.put(new LabelArm(this.toString()), null);
 		initialization.codeGenInitArm(compiler, varName.getExpDefinition().getOperandArm());
-		//varName.getExpDefinition().setOperandArm(new RegisterOffsetArm(varOffset, GPRegisterArm.GB));
-        //initialization.codeGenInitArm(compiler, varName.getExpDefinition().getOperandArm());
 		
 	}
 }

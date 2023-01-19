@@ -87,15 +87,14 @@ public class IntLiteral extends AbstractExpr {
     }
     
     /**
-     * Generate initialization code for a integer variable for ARM
+     * Generate initialization code for a integer variable for ARM by
+     * adding it into our data
      * @param compiler
      * @param adr
      */
     @Override
     protected void codeGenInitArm(DecacCompiler compiler, DAddrArm adr){
-    	//LabelArm lab2 = new LabelArm("x");
-	    LabelArm lab = DecacCompiler.getLabel();
-	    DecacCompiler.data.replace(lab, new ImmediateIntegerArm(this.value));
+    	DecacCompiler.data.put(new LabelArm("Variable" + this.getLocation().getLine()), new ImmediateIntegerArm(this.value));
     }
     
     
@@ -128,9 +127,8 @@ public class IntLiteral extends AbstractExpr {
     
     @Override
     protected void codeGenPrintArm(DecacCompiler compiler, boolean hex){
-    	LabelArm lab = DecacCompiler.getLabel();
-    	LabelArm lab2 = new LabelArm("toprint");
-    	DecacCompiler.data.put(lab2, new ImmediateStringArm(this.getValueString()));
+    	LabelArm lab2 = new LabelArm( " Variable " + this.getLocation().getLine() + " (" + this.getLocation().getPositionInLine() + ")" + "toprint");
+    	DecacCompiler.data.put(lab2, new ImmediateStringArm(getValueString()));
     	compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(4)));
         compiler.addInstruction(new MOV(RegisterArm.getR(1), new ImmediateIntegerArm(1)));
         compiler.addInstruction(new LDR(RegisterArm.getR(1),lab2));

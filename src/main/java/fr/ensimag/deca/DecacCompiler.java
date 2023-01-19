@@ -20,6 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -46,7 +47,7 @@ import org.apache.log4j.Logger;
 public class  DecacCompiler {
     private static final Logger LOG = Logger.getLogger(DecacCompiler.class);
     public Boolean isArm = true;
-    public static HashMap<LabelArm, DValArm> data = new HashMap<LabelArm, DValArm>();
+    public static Map<LabelArm, DValArm> data = new HashMap<LabelArm, DValArm>();
     
     public static  LabelArm getLabel(int i){
 		int c = 0;
@@ -57,16 +58,15 @@ public class  DecacCompiler {
 		}
 		return null;
 	}
-	
+    
+    public static void addData(LabelArm lab, DValArm dv) {
+    	data.putIfAbsent(lab, dv);
+    }
+	/**
 	public static  LabelArm getLabel(){
-		int c = 0;
-		for (LabelArm a: data.keySet()) {
-			if (data.keySet().size()>=0 &&c==data.keySet().size()-1) {
-				return a;
-			}
-		}
-		return null;
+		//return data.keySet()[0];
 	}
+	*/
     
     public static Boolean getIsArm() {
     	return true;
@@ -448,6 +448,16 @@ public class  DecacCompiler {
     public boolean useLoad(){
         return (currRegNum < regMax) && (currRegNum > 1);
     }
+
+	public static DValArm getLabel(LabelArm lab) {
+		// TODO Auto-generated method stub
+		for (LabelArm label : data.keySet()) {
+			if(label.toString().equals(lab.toString())) {
+				return data.get(label);
+			}
+		}
+		return null;
+	}
 
 
 
