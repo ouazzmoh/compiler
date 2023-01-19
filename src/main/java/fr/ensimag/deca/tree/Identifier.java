@@ -3,6 +3,18 @@ package fr.ensimag.deca.tree;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.context.TypeDefinition;
 import fr.ensimag.deca.context.ClassType;
+import fr.ensimag.arm.pseudocode.ArmProgram;
+import fr.ensimag.arm.pseudocode.DAddrArm;
+import fr.ensimag.arm.pseudocode.DValArm;
+import fr.ensimag.arm.pseudocode.GPRegisterArm;
+import fr.ensimag.arm.pseudocode.ImmediateIntegerArm;
+import fr.ensimag.arm.pseudocode.ImmediateStringArm;
+import fr.ensimag.arm.pseudocode.LabelArm;
+import fr.ensimag.arm.pseudocode.RegisterArm;
+import fr.ensimag.arm.pseudocode.RegisterOffsetArm;
+import fr.ensimag.arm.pseudocode.instructions.LDR;
+import fr.ensimag.arm.pseudocode.instructions.MOV;
+import fr.ensimag.arm.pseudocode.instructions.SWI;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
@@ -256,8 +268,18 @@ public class Identifier extends AbstractIdentifier {
     @Override
     protected void codeGenPrintArm(DecacCompiler compiler, boolean hex){
         if (this.getType().isInt()) {
-            compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
-            compiler.addInstruction(new WINT());
+        	LabelArm lab = DecacCompiler.getLabel();
+        	LabelArm lab2 = new LabelArm(DecacCompiler.getLabel().toString() + "toPrint");
+        	//DecacCompiler.data.put(lab, null);
+        	DecacCompiler.data.put(lab2, new ImmediateStringArm(DecacCompiler.data.get(lab).toString()));
+            compiler.addInstruction(new LDR(GPRegisterArm.getR(2), lab2));
+            compiler.addInstruction(new MOV(RegisterArm.getR(0), new ImmediateIntegerArm(4) ));
+            compiler.addInstruction(new MOV(RegisterArm.getR(1), new ImmediateIntegerArm(1) ));
+            compiler.addInstruction(new MOV(RegisterArm.getR(2), RegisterArm.getR(2) ));
+            compiler.addInstruction(new MOV(RegisterArm.getR(3), new ImmediateIntegerArm(4) ));
+	        compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
+        	
+        	
         } else if (this.getType().isFloat()) {
             compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
             if (hex) {
@@ -309,5 +331,19 @@ public class Identifier extends AbstractIdentifier {
         compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), Register.R1));
         compiler.addInstruction(new STORE(Register.R1, adr));
     }
+
+
+	@Override
+	protected void codeGenInitArm(DecacCompiler compiler, DAddrArm adr) {
+		// TODO Auto-generated method stub
+		//DecacCompiler.data.put(new LabelArm(getVariableDefinition().getOperand().toString()),new ImmediateIntegerArm(4) );
+		
+	}
+
+	@Override
+	protected void codeGenInstArm(DecacCompiler compiler, Label endIf) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

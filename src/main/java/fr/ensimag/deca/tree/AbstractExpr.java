@@ -17,6 +17,7 @@ import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.deca.tools.SymbolTable.Symbol;
 import fr.ensimag.ima.pseudocode.*;
 
 import java.io.PrintStream;
@@ -36,6 +37,7 @@ public abstract class AbstractExpr extends AbstractInst {
     boolean isImplicit() {
         return false;
     }
+    
 
     /**
      * Get the type decoration associated to this expression (i.e. the type computed by contextual verification).
@@ -154,6 +156,7 @@ public abstract class AbstractExpr extends AbstractInst {
         throw new UnsupportedOperationException("no available code generation for this instruction");
     }
 
+ 
     /**
      * Generate assembly code for the initialization of the expression
      * @param compiler
@@ -206,7 +209,6 @@ public abstract class AbstractExpr extends AbstractInst {
     }
 
 
-
     @Override
     protected void decompileInst(IndentPrintStream s) {
         decompile(s);
@@ -224,18 +226,19 @@ public abstract class AbstractExpr extends AbstractInst {
         }
     }
 
-	protected void codeGenPrintArm(DecacCompiler compiler, boolean hex) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/**
-     * Generate assembly code for the initialization of the expression
+    
+    /**
+     * Generate code to print the expression
      * @param compiler
-     * @param adr
      */
-    protected void codeGenInitArm(DecacCompiler compiler, DAddrArm adr){
-        throw new DecacInternalError("Shouldn't be initialized");
+    protected void codeGenPrintArm(DecacCompiler compiler, boolean hex) {
+    	//throw new DecacInternalError("expression cannot be printed");
+        
     }
+
+
+	 protected void codeGenInitArm(DecacCompiler compiler, DAddrArm adr){
+	        throw new DecacInternalError("Shouldn't be initialized");
+	    }
 
 }

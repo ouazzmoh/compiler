@@ -106,4 +106,10 @@ public class FloatLiteral extends AbstractExpr {
         compiler.addInstruction(new PUSH(Register.R1));
     }
 
+	@Override
+	protected void codeGenInstArm(DecacCompiler compiler, Label endIf) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

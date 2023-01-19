@@ -1,6 +1,7 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.context.Type;
+import fr.ensimag.arm.pseudocode.LabelArm;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
@@ -56,6 +57,7 @@ public abstract class AbstractPrint extends AbstractInst {
     }
 
     }
+    
 
     private boolean getPrintHex() {
         return printHex;
@@ -81,6 +83,13 @@ public abstract class AbstractPrint extends AbstractInst {
     @Override
     protected void prettyPrintChildren(PrintStream s, String prefix) {
         arguments.prettyPrint(s, prefix, true);
+    }
+    @Override
+    protected void codeGenInstArm(DecacCompiler compiler, Label label) {
+        for (AbstractExpr a : getArguments().getList()) {
+            a.codeGenPrintArm(compiler, printHex);
+    }
+
     }
 
 }

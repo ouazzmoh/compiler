@@ -35,6 +35,10 @@ public class IntLiteral extends AbstractExpr {
     public int getValue() {
         return value;
     }
+    
+    public String getValueString() {
+    	return ""+this.value;
+    }
 
     private int value;
 
@@ -89,10 +93,12 @@ public class IntLiteral extends AbstractExpr {
      */
     @Override
     protected void codeGenInitArm(DecacCompiler compiler, DAddrArm adr){
-    	compiler.addInstruction(new MOV(GPRegisterArm.R1,(DValArm)new ImmediateIntegerArm(value)));
-	    compiler.addInstruction(new STR(GPRegisterArm.R1, adr ));
+    	//LabelArm lab2 = new LabelArm("x");
+	    LabelArm lab = DecacCompiler.getLabel();
+	    DecacCompiler.data.replace(lab, new ImmediateIntegerArm(this.value));
     }
-
+    
+    
     @Override
     protected DVal codeGenLoad(DecacCompiler compiler) {
         GPRegister registerToUse = compiler.getFreeReg();
@@ -116,8 +122,28 @@ public class IntLiteral extends AbstractExpr {
 
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean hex){
-        compiler.addInstruction(new LOAD(value, Register.R1));
-        compiler.addInstruction(new WINT());
+	        compiler.addInstruction(new LOAD(value, Register.R1));
+	        compiler.addInstruction(new WINT());
     }
+    
+    @Override
+    protected void codeGenPrintArm(DecacCompiler compiler, boolean hex){
+    	LabelArm lab = DecacCompiler.getLabel();
+    	LabelArm lab2 = new LabelArm("toprint");
+    	DecacCompiler.data.put(lab2, new ImmediateStringArm(this.getValueString()));
+    	compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(4)));
+        compiler.addInstruction(new MOV(RegisterArm.getR(1), new ImmediateIntegerArm(1)));
+        compiler.addInstruction(new LDR(RegisterArm.getR(1),lab2));
+        int l = DecacCompiler.data.get(lab2).toString().length();
+        compiler.addInstruction(new MOV(RegisterArm.getR(2), new ImmediateIntegerArm(l-2) ));
+        compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
+        }
 
+	@Override
+	protected void codeGenInstArm(DecacCompiler compiler, Label endIf) {
+		// TODO Auto-generated method stub
+		
+	}
+ 
+    	
 }

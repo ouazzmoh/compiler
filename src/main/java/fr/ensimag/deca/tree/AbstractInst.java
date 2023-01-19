@@ -2,6 +2,7 @@ package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.arm.pseudocode.DAddrArm;
+import fr.ensimag.arm.pseudocode.LabelArm;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
@@ -36,6 +37,14 @@ public abstract class AbstractInst extends Tree {
      * @param endIf : useful to store the endIf label in if instructions
      */
     protected abstract void codeGenInst(DecacCompiler compiler, Label endIf);
+    
+    /**
+     * Generate assembly code for the instruction.
+     * 
+     * @param compiler
+     * @param endIf : useful to store the endIf label in if instructions
+     */
+    //protected abstract void codeGenInstArm(DecacCompiler compiler, LabelArm endIf);
 
 
     /**
@@ -51,6 +60,14 @@ public abstract class AbstractInst extends Tree {
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
-		
+    /**
+     * Generate assembly code for the instruction.
+     * 
+     * @param compiler
+     * @param endIf : useful to store the endIf label in if instructions
+     */
+    protected abstract void codeGenInstArm(DecacCompiler compiler, Label endIf);
+    
+    
 
 }

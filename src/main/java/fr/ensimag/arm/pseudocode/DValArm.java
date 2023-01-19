@@ -2,6 +2,8 @@ package fr.ensimag.arm.pseudocode;
 
 import java.io.PrintStream;
 
+import fr.ensimag.deca.DecacCompiler;
+
 /**
  * Operand of an ARM Instruction.
  *
@@ -17,7 +19,6 @@ public abstract class DValArm extends OperandArm{
 	
 
     void display(PrintStream s){
-    	s.println("		" + ArmProgram.getLabel(0) + ":");
     	s.println("		.ascii " + toString());
         s.println();
     }

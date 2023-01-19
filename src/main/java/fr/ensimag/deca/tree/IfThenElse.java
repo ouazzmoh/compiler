@@ -1,6 +1,7 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.context.Type;
+import fr.ensimag.arm.pseudocode.LabelArm;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
@@ -121,4 +122,10 @@ public class IfThenElse extends AbstractInst {
         thenBranch.prettyPrint(s, prefix, false);
         elseBranch.prettyPrint(s, prefix, true);
     }
+
+	@Override
+	protected void codeGenInstArm(DecacCompiler compiler, LabelArm label) {
+		// TODO Auto-generated method stub
+		
+	}
 }

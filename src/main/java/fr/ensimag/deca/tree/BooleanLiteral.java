@@ -1,6 +1,13 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.context.Type;
+import fr.ensimag.arm.pseudocode.ImmediateIntegerArm;
+import fr.ensimag.arm.pseudocode.ImmediateStringArm;
+import fr.ensimag.arm.pseudocode.LabelArm;
+import fr.ensimag.arm.pseudocode.RegisterArm;
+import fr.ensimag.arm.pseudocode.instructions.LDR;
+import fr.ensimag.arm.pseudocode.instructions.MOV;
+import fr.ensimag.arm.pseudocode.instructions.SWI;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
@@ -119,6 +126,15 @@ public class BooleanLiteral extends AbstractExpr {
         compiler.addInstruction(new LOAD(toLoad, Register.R1));
         compiler.addInstruction(new PUSH(Register.R1));
     }
+
+    
+
+	@Override
+	protected void codeGenInstArm(DecacCompiler compiler, Label endIf) {
+		// TODO Auto-generated method stub
+		
+		
+	}
 
 }
 

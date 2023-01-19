@@ -14,10 +14,6 @@ import fr.ensimag.ima.pseudocode.IMAProgram;
 import fr.ensimag.ima.pseudocode.Instruction;
 import fr.ensimag.ima.pseudocode.Label;
 import fr.ensimag.ima.pseudocode.*;
-import fr.ensimag.arm.pseudocode.AbstractLineArm;
-import fr.ensimag.arm.pseudocode.ArmProgram;
-import fr.ensimag.arm.pseudocode.InstructionArm;
-import fr.ensimag.arm.pseudocode.LabelArm;
 import fr.ensimag.arm.pseudocode.*;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -50,6 +46,27 @@ import org.apache.log4j.Logger;
 public class  DecacCompiler {
     private static final Logger LOG = Logger.getLogger(DecacCompiler.class);
     public Boolean isArm = true;
+    public static HashMap<LabelArm, DValArm> data = new HashMap<LabelArm, DValArm>();
+    
+    public static  LabelArm getLabel(int i){
+		int c = 0;
+		for (LabelArm a: data.keySet()) {
+			if (i==c) {
+				return a;
+			}
+		}
+		return null;
+	}
+	
+	public static  LabelArm getLabel(){
+		int c = 0;
+		for (LabelArm a: data.keySet()) {
+			if (data.keySet().size()>=0 &&c==data.keySet().size()-1) {
+				return a;
+			}
+		}
+		return null;
+	}
     
     public static Boolean getIsArm() {
     	return true;

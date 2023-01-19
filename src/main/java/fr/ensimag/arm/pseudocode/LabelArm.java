@@ -1,6 +1,10 @@
 package fr.ensimag.arm.pseudocode;
 
+import java.io.PrintStream;
+
 import org.apache.commons.lang.Validate;
+
+import fr.ensimag.deca.DecacCompiler;
 
 /**
  * Representation of a label in ARM code. The same structure is used for label
@@ -25,4 +29,9 @@ public class LabelArm extends OperandArm {
 	        this.name = name;
 	    }
 	    private String name;
+		public void display(PrintStream s) {
+			// TODO Auto-generated method stub
+			s.println("		" + DecacCompiler.getLabel(0) + ":");
+			
+		}
 	}

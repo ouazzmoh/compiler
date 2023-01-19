@@ -1,5 +1,6 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.LabelArm;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.ima.pseudocode.Label;
 import fr.ensimag.ima.pseudocode.instructions.WNL;
@@ -20,14 +21,14 @@ public class Println extends AbstractPrint {
 
     @Override
     protected void codeGenInst(DecacCompiler compiler, Label label) {
-    	if (compiler.getIsArm() == false) {
 	        super.codeGenInst(compiler, label);
 	        compiler.addInstruction(new WNL());
     	}
-    }
 
     @Override
     String getSuffix() {
         return "ln";
     }
+
+
 }

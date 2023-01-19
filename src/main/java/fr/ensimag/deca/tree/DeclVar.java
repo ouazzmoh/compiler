@@ -3,8 +3,10 @@ package fr.ensimag.deca.tree;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.context.TypeDefinition;
 import fr.ensimag.deca.context.VariableDefinition;
+import fr.ensimag.arm.pseudocode.ArmProgram;
 import fr.ensimag.arm.pseudocode.DAddrArm;
 import fr.ensimag.arm.pseudocode.GPRegisterArm;
+import fr.ensimag.arm.pseudocode.LabelArm;
 import fr.ensimag.arm.pseudocode.RegisterOffsetArm;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
@@ -113,8 +115,10 @@ public class DeclVar extends AbstractDeclVar {
 	@Override
 	protected void codeGenDeclVariableArm(DecacCompiler compiler, int varOffset) {
 		// TODO Auto-generated method stub
-		varName.getExpDefinition().setOperandArm(new RegisterOffsetArm(varOffset, GPRegisterArm.GB));
-        initialization.codeGenInitArm(compiler, varName.getExpDefinition().getOperandArm());
+		DecacCompiler.data.put(new LabelArm(this.toString()), null);
+		initialization.codeGenInitArm(compiler, varName.getExpDefinition().getOperandArm());
+		//varName.getExpDefinition().setOperandArm(new RegisterOffsetArm(varOffset, GPRegisterArm.GB));
+        //initialization.codeGenInitArm(compiler, varName.getExpDefinition().getOperandArm());
 		
 	}
 }

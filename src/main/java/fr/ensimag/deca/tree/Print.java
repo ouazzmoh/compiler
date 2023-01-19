@@ -1,5 +1,8 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.deca.DecacCompiler;
+import fr.ensimag.ima.pseudocode.Label;
+
 /**
  * @author gl24
  * @date 01/01/2023
@@ -17,4 +20,5 @@ public class Print extends AbstractPrint {
     String getSuffix() {
         return "";
     }
+
 }

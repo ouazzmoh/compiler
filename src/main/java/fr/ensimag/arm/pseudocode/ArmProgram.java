@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.LinkedList;
+
+import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.tree.AbstractExpr;
 
 
@@ -18,8 +20,8 @@ import fr.ensimag.deca.tree.AbstractExpr;
 
 public class ArmProgram  {
 	private final LinkedList<AbstractLineArm> lines = new LinkedList<AbstractLineArm>();
-	public static HashMap<LabelArm, DValArm> data = new HashMap<LabelArm, DValArm>();
-	public static  LabelArm getLabel(int i){
+	//public static HashMap<LabelArm, DValArm> data = new HashMap<LabelArm, DValArm>();
+	/**public static  LabelArm getLabel(int i){
 		int c = 0;
 		for (LabelArm a: data.keySet()) {
 			if (i==c) {
@@ -28,6 +30,17 @@ public class ArmProgram  {
 		}
 		return null;
 	}
+	
+	public static  LabelArm getLabel(){
+		int c = 0;
+		for (LabelArm a: data.keySet()) {
+			if (data.keySet().size()>=0 &&c==data.keySet().size()-1) {
+				return a;
+			}
+		}
+		return null;
+	}
+	*/
     public void add(AbstractLineArm line) {
         lines.add(line);
     }
@@ -74,10 +87,13 @@ public class ArmProgram  {
             l.display(s);
         }
         s.println(".section .data");
-        for (DValArm val : data.values()) {
-    		val.display(s);
-    	}
-    }
+        for (LabelArm lab :DecacCompiler.data.keySet() ) {
+        	lab.display(s);
+        	if (DecacCompiler.data.get(lab)!= null) {
+        		DecacCompiler.data.get(lab).display(s);
+        	}
+        }
+        }
 
     /**
      * Return the program in a textual form readable by ARM as a String.
