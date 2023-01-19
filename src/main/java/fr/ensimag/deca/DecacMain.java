@@ -56,8 +56,34 @@ public class DecacMain {
                     "parallèle (pour accélérer la compilation)\n");
 
         }
-        if (options.getParallel()) {;
-            throw new UnsupportedOperationException("Parallel build not yet implemented");
+        if (options.getParallel()) {
+            ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+            for(File source : options.getSourceFiles()){
+                Future<Boolean> f = executor.submit(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        Boolean err = false;
+                        DecacCompiler compiler;
+                        //Checking how many register to use
+                        if (options.getCustomNumReg() >= 4 && options.getCustomNumReg() <= 16){
+                            compiler = new DecacCompiler(options, source, options.getCustomNumReg());
+                        }
+                        else {
+                            compiler = new DecacCompiler(options, source);
+                        }
+                        //Beginning of compilation
+                        if (compiler.compile()) {
+                            err = true;
+                        }
+                        return err;
+                    }
+                });
+                try {
+                    f.get();
+                } catch (ExecutionException | CancellationException | InterruptedException ex){
+                    ex.printStackTrace();
+                }
+            }
         } else {
             for (File source : options.getSourceFiles()) {
                 DecacCompiler compiler;
