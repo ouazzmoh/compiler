@@ -81,6 +81,9 @@ public class Program extends AbstractProgram {
         main.codeGenMain(compiler);
 
         compiler.addInstruction(new HALT());
+
+
+
         compiler.addComment("Generating code for errors");
         Iterator<Map.Entry<String, String>> it = compiler.getErrorsMap().entrySet().iterator();
         while(it.hasNext()){
