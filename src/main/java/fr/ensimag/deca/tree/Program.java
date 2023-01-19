@@ -8,17 +8,12 @@ import fr.ensimag.ima.pseudocode.LabelOperand;
 import fr.ensimag.ima.pseudocode.NullOperand;
 import fr.ensimag.ima.pseudocode.Register;
 import fr.ensimag.ima.pseudocode.RegisterOffset;
-import fr.ensimag.ima.pseudocode.instructions.ERROR;
-import fr.ensimag.ima.pseudocode.instructions.HALT;
-import fr.ensimag.ima.pseudocode.instructions.LOAD;
-import fr.ensimag.ima.pseudocode.instructions.STORE;
+import fr.ensimag.ima.pseudocode.instructions.*;
 
 import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.Map;
 
-import fr.ensimag.ima.pseudocode.instructions.WNL;
-import fr.ensimag.ima.pseudocode.instructions.WSTR;
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
 
@@ -64,22 +59,27 @@ public class Program extends AbstractProgram {
 
     @Override
     public void codeGenProgram(DecacCompiler compiler) {
-        // Faire les commandes TSTO ADDSP ET BOV
+        // todo :Faire les commandes TSTO ADDSP ET BOV
         if(!this.getClasses().isEmpty()){
+            //The first class will necessarily have object as superclass
+            //STORE null, 1(GB)
+            //STORE code.Object.equals, 2(GB)
             Label objectLabel = new Label("code.Object.equals");
             LabelOperand operandObjectLabel = new LabelOperand(objectLabel);
-            compiler.addComment("Virtual Table of methodes of Object class");
+            compiler.addComment("Virtual Table of methods for Object class");
             compiler.addInstruction(new LOAD(new NullOperand(),Register.R0));
             compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(),Register.GB)));
             compiler.incOffset(1);
             compiler.addInstruction(new LOAD(operandObjectLabel, Register.R0));
-            compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(), Register.R0)));
+            compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(), Register.GB)));
             compiler.incOffset(1);
-            classes.codeGenVirtualTable(compiler);
+            //Construct vTable for clases
+            classes.codeGenListVirtualTable(compiler);
         }
         compiler.addComment("Main program");
         compiler.getErrorsMap().put("err_stack_overflow", "Erreur: la pile est pleine");
         main.codeGenMain(compiler);
+
         compiler.addInstruction(new HALT());
         compiler.addComment("Generating code for errors");
         Iterator<Map.Entry<String, String>> it = compiler.getErrorsMap().entrySet().iterator();
@@ -90,6 +90,14 @@ public class Program extends AbstractProgram {
             compiler.addInstruction(new WNL());
             compiler.addInstruction(new ERROR());
             it.remove();
+        }
+
+        compiler.addComment("Generating code for classes: Fields initializations and methods");
+        if (!classes.isEmpty()){
+            classes.codeGenListFieldsMethods(compiler);
+            compiler.addLabel(new Label("Code.Object.equals"));
+            //TODO: Remove this from here
+            compiler.addInstruction(new RTS());
         }
 
 

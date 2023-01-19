@@ -42,18 +42,18 @@ public class ClassDefinition extends TypeDefinition {
 
     private int numberOfFields = 0;
     private int numberOfMethods = 0;
-    private int addrTableMethodes;
+    private int stackIndex;
     
     @Override
     public boolean isClass() {
         return true;
     }
-    public int getAddrTableMathodes(){
-        return addrTableMethodes;
+    public int getStackIndex(){
+        return stackIndex;
     }
     
-    public void setAddrTableMethodes(int r){
-        this.addrTableMethodes=r;
+    public void setStackIndex(int r){
+        this.stackIndex=r;
     }
     @Override
     public ClassType getType() {

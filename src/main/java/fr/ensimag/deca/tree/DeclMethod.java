@@ -51,11 +51,11 @@ public class DeclMethod extends AbstractDeclMethod {
 	}
 
 	@Override
-	public void codeGenVirtualTable(DecacCompiler compiler, String className, int addrTableMethodes){
-		Label methodeLabel = new Label("code."+className+"."+name.getName().getName());
-		LabelOperand opMethodeLabel = new LabelOperand(methodeLabel);
-		compiler.addInstruction(new LOAD(opMethodeLabel, Register.R0));
-		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(addrTableMethodes+name.getMethodDefinition().getIndex(), Register.GB)));
+	protected void codeGenVtableMethods(DecacCompiler compiler, String className, int stackIndex){
+		Label methodLabel = new Label("code."+className+"."+name.getName().getName());
+		LabelOperand opMethodLabel = new LabelOperand(methodLabel);
+		compiler.addInstruction(new LOAD(opMethodLabel, Register.R0));
+		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(stackIndex+name.getMethodDefinition().getIndex(), Register.GB)));
 	}
 
 }

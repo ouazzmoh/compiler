@@ -59,10 +59,23 @@ public class ListDeclClass extends TreeList<AbstractDeclClass> {
     /**
      * First Pass Generating CodeGen for Virtual Table
      */
-    public void codeGenVirtualTable(DecacCompiler compiler){
+    public void codeGenListVirtualTable(DecacCompiler compiler){
         for(AbstractDeclClass e : this.getList()){
             e.codeGenVirtualTable(compiler);
         }
     }
+
+
+    /**
+     * Generate the methods to initialize the fields and define the functions
+     * @param compiler
+     */
+    public void codeGenListFieldsMethods(DecacCompiler compiler){
+        for(AbstractDeclClass e : this.getList()){
+            e.codeGenFieldsMethods(compiler);
+        }
+    }
+
+
 
 }

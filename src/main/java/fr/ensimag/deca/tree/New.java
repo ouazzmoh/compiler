@@ -11,6 +11,8 @@ import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.context.ExpDefinition;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.*;
+import fr.ensimag.ima.pseudocode.instructions.*;
 
 public class New extends AbstractExpr {
 	private AbstractIdentifier ident;
@@ -53,6 +55,33 @@ public class New extends AbstractExpr {
 	protected void iterChildren(TreeFunction f) {
 		// TODO Auto-generated method stub
 		ident.iter(f);
+	}
+
+
+	@Override
+	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+//		NEW #2, R2
+//		BOV tas_plein
+//		LEA 3 (GB), R0
+//		STORE R0, 0 (R2)
+//				PUSH R2
+//		BSR init.A
+//		POP R2
+//		STORE R2, 7 (GB)
+		GPRegister reg = compiler.getFreeReg();
+//		compiler.addInstruction(new NEW(1 + ident.getClassDefinition().getNumberOfFields(), reg));
+		compiler.addInstruction(new NEW(1 + 1, reg));
+		compiler.useReg();
+		//TODO: BOV tas plein
+		DAddr dGB = new RegisterOffset(ident.getClassDefinition().getStackIndex(), Register.GB);
+		compiler.addInstruction(new LEA(dGB, Register.R0));
+		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(0, reg)));
+		compiler.addInstruction(new PUSH(reg));
+		compiler.freeReg();
+		compiler.addInstruction(new BSR(new Label("init." + getType().getName().getName())));
+		compiler.addInstruction(new POP(reg));
+		compiler.addInstruction(new STORE(reg, adr));
+		//Implicit use and free of register
 	}
 
 }

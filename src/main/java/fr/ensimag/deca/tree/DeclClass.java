@@ -14,6 +14,7 @@ import fr.ensimag.ima.pseudocode.Register;
 import fr.ensimag.ima.pseudocode.RegisterOffset;
 import fr.ensimag.ima.pseudocode.instructions.LEA;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.SETROUND_UPWARD;
 import fr.ensimag.ima.pseudocode.instructions.STORE;
 
 import java.io.PrintStream;
@@ -120,23 +121,42 @@ public class DeclClass extends AbstractDeclClass {
 	}
 
 	@Override
-	public void codeGenVirtualTable(DecacCompiler compiler){
+	protected void codeGenVirtualTable(DecacCompiler compiler){
 		compiler.addComment("Virtual Table of methodes of "+ this.className.getName().getName()+" class");
-		if(superClass.getName().getName() == "Object"){
-			compiler.addInstruction(new LEA(new RegisterOffset(1, Register.GB), Register.R0));
+		if(superClass.getName().getName().equals("object")){
+			superClass.getClassDefinition().setStackIndex(1);
+			//TODO: SET THIS IN PARSING
 		}
-		else{
-			compiler.addInstruction(new LEA(new RegisterOffset(superClass.getClassDefinition().getAddrTableMathodes(), Register.GB), Register.R0));
-		}
+		//Store @superClass, stackIndex of new class
+		//Store inherited methods in, stakIndex + methodIndex for new class
+		compiler.addInstruction(new LEA(new RegisterOffset(superClass.getClassDefinition().getStackIndex(), Register.GB), Register.R0));
 		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(), Register.GB)));
-		this.className.getClassDefinition().setAddrTableMethodes(compiler.getOffset());
+		this.className.getClassDefinition().setStackIndex(compiler.getOffset());
 		compiler.incOffset(1);
 		Label objectLabel = new Label("code.Object.equals");
 		LabelOperand oLabelOperand = new LabelOperand(objectLabel);
 		compiler.addInstruction(new LOAD(oLabelOperand, Register.R0));
 		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(), Register.GB)));
 		compiler.incOffset(1+declmethods.size());
-		declmethods.codeGenVirtualTable(compiler,className.getName().getName(),superClass.getClassDefinition().getAddrTableMathodes());
+		declmethods.codeGenListVtableMethods(compiler,className.getName().getName(),superClass.getClassDefinition().getStackIndex());
 	}
+
+	@Override
+	protected void codeGenFieldsMethods(DecacCompiler compiler){
+		//TODO: Generate the code of initialization for fields and methods of class
+		compiler.addComment("--------------------------------------------------");
+		compiler.addComment("                 Classe " + className.getName().getName());
+		compiler.addComment("--------------------------------------------------");
+		//Code for fields.initializations
+		compiler.addLabel(new Label("init."+ className.getName().getName()));
+		//TODO : TSTO
+		//TODO: Avec superclass, tous les nv champs, initialiser les champs heritees, init explicit des nv champs
+		for (AbstractDeclField d : declfields.getList()){
+			d.codeGenDeclField(compiler);
+		}
+
+
+	}
+
 
 }

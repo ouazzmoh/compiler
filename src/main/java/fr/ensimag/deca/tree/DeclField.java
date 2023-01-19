@@ -2,6 +2,11 @@ package fr.ensimag.deca.tree;
 
 import java.io.PrintStream;
 
+import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.RTS;
+import fr.ensimag.ima.pseudocode.instructions.STORE;
 import org.apache.commons.lang.Validate;
 
 import fr.ensimag.deca.DecacCompiler;
@@ -86,7 +91,17 @@ public class DeclField extends AbstractDeclField {
 		initialization.verifyInitialization(compiler, t, env, (ClassDefinition) compiler.environmentType.defOfType(className));
 		
 	}
-    
+
+
+	@Override
+	protected void codeGenDeclField(DecacCompiler compiler){
+		compiler.addComment("Initialization of field  " + varName.getName().getName());
+		initialization.codeGenInitField(compiler);
+		compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), Register.R1));
+		//TODO: 1 = field index (for now)
+		compiler.addInstruction(new STORE(Register.R1, new RegisterOffset(1, Register.R1)));
+		compiler.addInstruction(new RTS());
+	}
 	
 	
 }

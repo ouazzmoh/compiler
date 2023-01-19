@@ -38,4 +38,6 @@ public abstract class AbstractDeclClass extends Tree {
 
     protected abstract void codeGenVirtualTable(DecacCompiler compiler);
 
+    protected abstract void codeGenFieldsMethods(DecacCompiler compiler);
+
 }

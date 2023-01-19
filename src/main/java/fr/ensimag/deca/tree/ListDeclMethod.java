@@ -11,9 +11,9 @@ public class ListDeclMethod extends TreeList<AbstractDeclMethod> {
 		throw new UnsupportedOperationException("Not yet implemented");
 	}
 
-	public void codeGenVirtualTable(DecacCompiler compiler, String className, int addrTableMethodes){
+	public void codeGenListVtableMethods(DecacCompiler compiler, String className, int stackIndex){
         for(AbstractDeclMethod e : this.getList()){
-            e.codeGenVirtualTable(compiler,className, addrTableMethodes);
+            e.codeGenVtableMethods(compiler,className, stackIndex);
         }
     }
 
