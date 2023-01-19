@@ -1,7 +1,9 @@
 package fr.ensimag.deca.context;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
 
@@ -45,11 +47,13 @@ public class EnvironmentExp {
     @SuppressWarnings("finally")
 	public ExpDefinition get(Symbol key) {
         //throw new UnsupportedOperationException("not yet implemented");
-    	try {
+    	if (envTypes.get(key) != null) {
     		return envTypes.get(key);
-    	} catch (Exception e) {
+    	}
+    	else if (this.parentEnvironment != null) {
     		return this.parentEnvironment.get(key);
     	}
+    	return null;
     }
 
     /**
@@ -74,5 +78,24 @@ public class EnvironmentExp {
     	}
     	envTypes.put(name, def);
     }
+    
+    public void empilement(EnvironmentExp env) {
+    	Set<Symbol> s = envTypes.keySet();
+    	Iterator<Symbol> i = s.iterator();
+    	while(i.hasNext()) {
+    		Symbol verif = i.next();
+    		if (env.get(verif) == null) {
+    			ExpDefinition def = envTypes.get(verif);
+    			try {
+					env.declare(verif, def);
+				} catch (DoubleDefException e) {
+					e.printStackTrace();
+				}
+    		}
+    		
+    	}
+    }
+    
+    
 
 }

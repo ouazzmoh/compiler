@@ -37,6 +37,12 @@ fragment FLOATHEX: ('0x' | '0X') NUMHEX '.' NUMHEX ('P' | 'p') SIGN? NUM FI?;
 INCLUDE: '#include' (' ')* '"' FILENAME '"' { doInclude(getText()); };
 
 
+CLASS: 'class';
+EXTENDS: 'extends';
+PROTECTED: 'protected';
+ASM: 'asm';
+
+
 READINT: 'readInt';
 READFLOAT: 'readFloat';
 RETURN: 'return';
@@ -105,6 +111,8 @@ EXCLAM: '!';
 
 
 STRING: '"' (STRING_CAR | SLAS | SLASS)*? '"' {setText(getText().substring(getText().indexOf('"')+1, getText().lastIndexOf('"')));};
+MULTI_LINE_STRING: '"' (STRING_CAR | '\n' | SLAS | SLASS)*? '"' {setText(getText().substring(getText().indexOf('"')+1, getText().lastIndexOf('"')));};
+
 
 WS  :   ( ' '
         | '\t'

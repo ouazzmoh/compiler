@@ -37,9 +37,14 @@ public class EnvironmentType {
 
         Symbol stringSymb = compiler.createSymbol("string");
         STRING = new StringType(stringSymb);
-        envTypes.put(stringSymb, new TypeDefinition(STRING, Location.BUILTIN));
+        //envTypes.put(stringSymb, new TypeDefinition(STRING, Location.BUILTIN));
         
         // not added to envTypes, it's not visible for the user.
+        Symbol object = compiler.createSymbol("object");
+        OBJECT = new ClassType(object);
+        ClassDefinition def = new ClassDefinition(OBJECT, Location.BUILTIN, null);
+        envTypes.put(object, def);
+        
         
     }
 
@@ -48,10 +53,17 @@ public class EnvironmentType {
     public TypeDefinition defOfType(Symbol s) {
         return envTypes.get(s);
     }
+    
+    public void declareClass(Symbol s, ClassDefinition def) {
+    	envTypes.put(s, def);
+    }
+    
+    
 
     public final VoidType    VOID;
     public final IntType     INT;
     public final FloatType   FLOAT;
     public final StringType  STRING;
     public final BooleanType BOOLEAN;
+    public final ClassType OBJECT;
 }
