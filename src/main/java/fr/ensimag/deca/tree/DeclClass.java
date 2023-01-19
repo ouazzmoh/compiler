@@ -48,9 +48,9 @@ public class DeclClass extends AbstractDeclClass {
     	else {
     		superClass = new Identifier(compiler.createSymbol("object"));
     		superClas = (ClassDefinition) compiler.environmentType.defOfType(compiler.createSymbol("object"));
-    		superClass.setDefinition(superClas);
-    		superClass.setLocation(superClas.getLocation());
     	}
+		superClass.setDefinition(superClas);
+		superClass.setLocation(superClas.getLocation());
     	ClassType type = new ClassType(name, this.getLocation(), superClas);
     	ClassDefinition def = new ClassDefinition(type, this.getLocation(), superClas);
     	compiler.environmentType.declareClass(name, def);

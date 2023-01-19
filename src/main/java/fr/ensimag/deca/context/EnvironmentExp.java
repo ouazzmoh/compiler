@@ -47,11 +47,13 @@ public class EnvironmentExp {
     @SuppressWarnings("finally")
 	public ExpDefinition get(Symbol key) {
         //throw new UnsupportedOperationException("not yet implemented");
-    	try {
+    	if (envTypes.get(key) != null) {
     		return envTypes.get(key);
-    	} catch (Exception e) {
+    	}
+    	else if (this.parentEnvironment != null) {
     		return this.parentEnvironment.get(key);
     	}
+    	return null;
     }
 
     /**

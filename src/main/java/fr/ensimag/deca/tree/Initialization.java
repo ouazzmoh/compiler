@@ -40,7 +40,7 @@ public class Initialization extends AbstractInitialization {
         //throw new UnsupportedOperationException("not yet implemented");
     	
     	AbstractExpr exp = expression.verifyRValue(compiler, localEnv, currentClass, t);
-    	exp.verifyExpr(compiler, localEnv, currentClass);
+    	//exp.verifyExpr(compiler, localEnv, currentClass);
     	this.setExpression(exp);
     	
     	/*
