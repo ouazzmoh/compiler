@@ -8,6 +8,13 @@ import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.context.FieldDefinition;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
+import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.LabelOperand;
+import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.instructions.LEA;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.STORE;
 
 import java.io.PrintStream;
 
@@ -110,6 +117,26 @@ public class DeclClass extends AbstractDeclClass {
 	public void decompile(IndentPrintStream s) {
         throw new UnsupportedOperationException("Not yet supported");
 		
+	}
+
+	@Override
+	public void codeGenVirtualTable(DecacCompiler compiler){
+		compiler.addComment("Virtual Table of methodes of "+ this.className.getName().getName()+" class");
+		if(superClass.getName().getName() == "Object"){
+			compiler.addInstruction(new LEA(new RegisterOffset(1, Register.GB), Register.R0));
+		}
+		else{
+			compiler.addInstruction(new LEA(new RegisterOffset(superClass.getClassDefinition().getAddrTableMathodes(), Register.GB), Register.R0));
+		}
+		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(), Register.GB)));
+		this.className.getClassDefinition().setAddrTableMethodes(compiler.getOffset());
+		compiler.incOffset(1);
+		Label objectLabel = new Label("code.Object.equals");
+		LabelOperand oLabelOperand = new LabelOperand(objectLabel);
+		compiler.addInstruction(new LOAD(oLabelOperand, Register.R0));
+		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(), Register.GB)));
+		compiler.incOffset(1+declmethods.size());
+		declmethods.codeGenVirtualTable(compiler,className.getName().getName(),superClass.getClassDefinition().getAddrTableMathodes());
 	}
 
 }

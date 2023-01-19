@@ -86,6 +86,7 @@ public class DeclField extends AbstractDeclField {
 		initialization.verifyInitialization(compiler, t, env, (ClassDefinition) compiler.environmentType.defOfType(className));
 		
 	}
+    
 	
 	
 }

@@ -4,8 +4,14 @@ import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.LabelOperand;
+import fr.ensimag.ima.pseudocode.NullOperand;
+import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.RegisterOffset;
 import fr.ensimag.ima.pseudocode.instructions.ERROR;
 import fr.ensimag.ima.pseudocode.instructions.HALT;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.STORE;
 
 import java.io.PrintStream;
 import java.util.Iterator;
@@ -58,6 +64,19 @@ public class Program extends AbstractProgram {
 
     @Override
     public void codeGenProgram(DecacCompiler compiler) {
+        // Faire les commandes TSTO ADDSP ET BOV
+        if(!this.getClasses().isEmpty()){
+            Label objectLabel = new Label("code.Object.equals");
+            LabelOperand operandObjectLabel = new LabelOperand(objectLabel);
+            compiler.addComment("Virtual Table of methodes of Object class");
+            compiler.addInstruction(new LOAD(new NullOperand(),Register.R0));
+            compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(),Register.GB)));
+            compiler.incOffset(1);
+            compiler.addInstruction(new LOAD(operandObjectLabel, Register.R0));
+            compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(), Register.R0)));
+            compiler.incOffset(1);
+            classes.codeGenVirtualTable(compiler);
+        }
         compiler.addComment("Main program");
         compiler.getErrorsMap().put("err_stack_overflow", "Erreur: la pile est pleine");
         main.codeGenMain(compiler);

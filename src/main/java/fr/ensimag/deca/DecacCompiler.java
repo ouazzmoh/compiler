@@ -59,6 +59,8 @@ public class DecacCompiler {
     //The maximal number of registers to use
     private int regMax;
 
+    //Variable Offset
+    private int offset ;
 
 
 
@@ -79,6 +81,7 @@ public class DecacCompiler {
         this.regMax = 15;
         //
         this.currRegNum = 2;
+        this.offset = 1;
 
     }
 
@@ -95,6 +98,7 @@ public class DecacCompiler {
         this.regMax = regMax - 1;
         //
         this.currRegNum = 2;
+        this.offset = 1;
 
     }
 
@@ -115,6 +119,13 @@ public class DecacCompiler {
         return compilerOptions;
     }
 
+    public int getOffset(){
+        return this.offset;
+    }
+    
+    public void incOffset(int r){
+        this.offset+=r;
+    }
     /**
      * @see
      * IMAProgram#add(AbstractLine)
