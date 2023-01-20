@@ -17,4 +17,9 @@ public class ArmADD extends TernaryInstructionArm {
 	public ArmADD(GPRegisterArm op1, GPRegisterArm op2, OperandArm op3) {
 		super(op1, op2, op3);
 	}
+
+	@Override
+	public String getName(){
+		return "add";
+	}
 }

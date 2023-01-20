@@ -10,22 +10,14 @@ import java.io.PrintStream;
  */
 public abstract class InstructionArm {
 
-    String getName() {
+    public String getName() {
         return this.getClass().getSimpleName().toLowerCase();
     }
 
     abstract void displayOperands(PrintStream s);
 
     void display(PrintStream s){
-        if (getName().equals("armadd")){
-            s.print("		" + "add");
-        }
-        else if (getName().equals("ldrreg")){
-            s.print("		" + "ldr");
-        }
-        else {
-            s.print("		" + getName());
-        }
+        s.print("		" + getName());
         displayOperands(s);
     }
 }

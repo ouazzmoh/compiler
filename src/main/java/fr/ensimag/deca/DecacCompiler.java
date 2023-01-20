@@ -416,7 +416,7 @@ public class  DecacCompiler {
             Iterator<OperandArm> it = dataSetArm.iterator();
             while (it.hasNext()) {
                 OperandArm op = it.next();
-                s.println("\t\t" + op.toString() + ": .word");
+                s.println("\t\t" + op.toString() + ": .word  0");
             }
 
         }

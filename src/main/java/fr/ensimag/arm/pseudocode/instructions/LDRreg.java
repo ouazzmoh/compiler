@@ -17,6 +17,11 @@ public class LDRreg extends BinaryInstructionArm{
 		super(op1, adr);
 	}
 
+	@Override
+	public String getName(){
+		return "ldr";
+	}
+
 //	protected void displayOperands(PrintStream s) {
 //		s.print(" ");
 //		s.print(this.getOperand1());
