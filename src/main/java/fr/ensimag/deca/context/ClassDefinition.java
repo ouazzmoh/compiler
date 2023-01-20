@@ -34,7 +34,7 @@ public class ClassDefinition extends TypeDefinition {
     }
     
     public int incNumberOfMethods() {
-        numberOfMethods++;
+        numberOfMethods+= 1;
         return numberOfMethods;
     }
 
@@ -63,7 +63,7 @@ public class ClassDefinition extends TypeDefinition {
     public EnvironmentExp getMembers() {
         return members;
     }
-
+    
     public ClassDefinition(ClassType type, Location location, ClassDefinition superClass) {
         super(type, location);
         EnvironmentExp parent;
@@ -75,5 +75,6 @@ public class ClassDefinition extends TypeDefinition {
         members = new EnvironmentExp(parent);
         this.superClass = superClass;
     }
+    
     
 }

@@ -55,7 +55,13 @@ public class DeclVar extends AbstractDeclVar {
 
     	Symbol name = varName.getName();
     	
-    	initialization.verifyInitialization(compiler, t1, localEnv, currentClass);    
+    	if(currentClass == null) {
+        	initialization.verifyInitialization(compiler, t1, localEnv, currentClass);    
+    	}
+    	else {
+    		localEnv.parentEnvironment.Empilement(localEnv);
+        	initialization.verifyInitialization(compiler, t1, localEnv, currentClass);    
+    	}
     	try {
     		ExpDefinition def =  new VariableDefinition(t1, varName.getLocation());
     		localEnv.declare(name,def);
