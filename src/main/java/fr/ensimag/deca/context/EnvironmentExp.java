@@ -83,8 +83,12 @@ public class EnvironmentExp {
     public ExpDefinition getCurrent(Symbol key) {
     	return envTypes.get(key);
     }
-    
-    public void Empilement(EnvironmentExp env) {
+
+	public Map<Symbol, ExpDefinition> getEnvTypes() {
+		return envTypes;
+	}
+
+	public void Empilement(EnvironmentExp env) {
     	Set<Symbol> s = envTypes.keySet();
     	Iterator<Symbol> i = s.iterator();
     	while(i.hasNext()) {

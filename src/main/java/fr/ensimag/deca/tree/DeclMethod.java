@@ -25,6 +25,11 @@ import fr.ensimag.deca.tools.SymbolTable.Symbol;
 public class DeclMethod extends AbstractDeclMethod {
 	final private AbstractIdentifier type;
 	final private AbstractIdentifier name;
+
+	public AbstractIdentifier getName() {
+		return name;
+	}
+
 	final private ListDeclParam parametres;
 	final private AbstractMethodBody body;
 	
@@ -118,7 +123,6 @@ public class DeclMethod extends AbstractDeclMethod {
 	}
 
 
-
 	@Override
 	protected void codeGenVtableMethods(DecacCompiler compiler, String className, int stackIndex) {
 		Label methodLabel = new Label("code." + className + "." + name.getName().getName());
@@ -126,6 +130,12 @@ public class DeclMethod extends AbstractDeclMethod {
 		compiler.addInstruction(new LOAD(opMethodLabel, Register.R0));
 		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(stackIndex + name.getMethodDefinition().getIndex() + 1, Register.GB)));
 	}
+
+	@Override
+	protected void codeGenDeclMethod(DecacCompiler compiler){
+
+	}
+
 
 
 }
