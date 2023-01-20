@@ -4,12 +4,14 @@ import java.io.PrintStream;
 
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.tools.IndentPrintStream;
-import fr.ensimag.ima.pseudocode.Label;
-import fr.ensimag.ima.pseudocode.LabelOperand;
-import fr.ensimag.ima.pseudocode.Register;
-import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.*;
+import fr.ensimag.ima.pseudocode.instructions.BOV;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.POP;
+import fr.ensimag.ima.pseudocode.instructions.PUSH;
+import fr.ensimag.ima.pseudocode.instructions.RTS;
 import fr.ensimag.ima.pseudocode.instructions.STORE;
+import fr.ensimag.ima.pseudocode.instructions.TSTO;
 import fr.ensimag.deca.DecacFatalError;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
@@ -42,6 +44,7 @@ public class DeclMethod extends AbstractDeclMethod {
 		this.body = body;
 	}
 
+	
 	@Override
 	public void decompile(IndentPrintStream s) {
 		// TODO Auto-generated method stub
@@ -123,19 +126,40 @@ public class DeclMethod extends AbstractDeclMethod {
 	}
 
 
+
 	@Override
-	protected void codeGenVtableMethods(DecacCompiler compiler, String className, int stackIndex) {
-		Label methodLabel = new Label("code." + className + "." + name.getName().getName());
-		LabelOperand opMethodLabel = new LabelOperand(methodLabel);
-		compiler.addInstruction(new LOAD(opMethodLabel, Register.R0));
-		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(stackIndex + name.getMethodDefinition().getIndex() + 1, Register.GB)));
+	protected void  codeGenDeclMethod(DecacCompiler compiler, String className){
+		int oldRegNum = compiler.getCurrRegNum();
+
+
+		compiler.addComment("Saving registers");
+		while (compiler.getCurrRegNum()>2){
+			compiler.addInstruction(new PUSH(Register.getR(compiler.getCurrRegNum()-1)));//-1 because currRegNum is the next free Register
+			compiler.freeReg();
+		}
+
+		Label startMethod = new Label("code."+className+"."+name.getName().getName());
+		compiler.addLabel(startMethod);
+		//We load the object in a register
+		GPRegister thisReg = compiler.getFreeReg();
+		compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), thisReg));
+		compiler.useReg();
+		body.codeGenBodyMethod(compiler, parametres, thisReg);
+		Label endMethod = new Label("fin."+className+"."+name.getName().getName());
+		compiler.addLabel(endMethod);
+		compiler.addComment("Restoring Registers");
+		while (compiler.getCurrRegNum()< oldRegNum){
+			compiler.addInstruction(new POP(Register.getR(compiler.getCurrRegNum()-1)));
+			compiler.useReg();
+		}
+		compiler.addInstruction(new RTS());
+
 	}
 
 	@Override
-	protected void codeGenDeclMethod(DecacCompiler compiler){
-
+	protected AbstractIdentifier getMethodeName() {
+		return name;
 	}
-
 
 
 }

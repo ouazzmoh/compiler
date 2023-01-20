@@ -5,7 +5,9 @@ import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.GPRegister;
 import fr.ensimag.ima.pseudocode.Label;
 
 /**
@@ -35,6 +37,19 @@ public abstract class AbstractInst extends Tree {
      * @param endIf : useful to store the endIf label in if instructions
      */
     protected abstract void codeGenInst(DecacCompiler compiler, Label endIf);
+
+
+    /**
+     * Generate assembly code for the instruction.
+     *
+     * @param compiler
+     * @param endIf : useful to store the endIf label in if instructions
+     * @param thisReg : contains the object of the class
+     */
+    protected void codeGenInst(DecacCompiler compiler, Label endIf, GPRegister thisReg){
+        throw new DecacInternalError("Not yet abtracted");
+    }
+
 
 
     /**

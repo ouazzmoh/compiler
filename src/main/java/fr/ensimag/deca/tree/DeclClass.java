@@ -188,11 +188,8 @@ public class DeclClass extends AbstractDeclClass {
 		}
 
 		for (AbstractDeclMethod m : declmethods.getList()){
-			m.codeGenDeclMethod(compiler);
+			m.codeGenDeclMethod(compiler, className.getName().getName());
 		}
-
-
 	}
-
 
 }

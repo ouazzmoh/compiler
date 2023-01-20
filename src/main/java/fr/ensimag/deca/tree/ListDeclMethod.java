@@ -34,11 +34,5 @@ public class ListDeclMethod extends TreeList<AbstractDeclMethod> {
         }
     }
 
-	public void codeGenListVtableMethods(DecacCompiler compiler, String className, int stackIndex){
-        for(AbstractDeclMethod e : this.getList()){
-            //TODO : Check superclass
-            e.codeGenVtableMethods(compiler,className, stackIndex);
-        }
-    }
 
 }

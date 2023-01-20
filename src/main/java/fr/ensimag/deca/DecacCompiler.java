@@ -64,6 +64,7 @@ public class DecacCompiler {
 
     //Number of temporaries reserved in stack, in the main program(Push=> +1, Pop=> -1)
     private int tempStack;
+    
 
 
 
@@ -132,6 +133,14 @@ public class DecacCompiler {
     
     public void incOffset(int r){
         this.offset+=r;
+    }
+
+    public void setCurrRegNum(int i){
+        this.currRegNum = i;
+    }
+
+    public int getCurrRegNum(){
+        return this.currRegNum;
     }
     /**
      * @see

@@ -8,6 +8,7 @@ import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.Definition;
 import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.ima.pseudocode.RegisterOffset;
 
 /**
  * Assignment, i.e. lvalue = expr.
@@ -50,6 +51,16 @@ public class Assign extends AbstractBinaryExpr {
     protected void codeGenInst(DecacCompiler compiler, Label label){
             //Load right_operand(expr), left_operand(lvalue)
         compiler.addComment("Assigning a variable");
+        this.getRightOperand().codeGenAssign(compiler, (Identifier) this.getLeftOperand());
+    }
+
+    @Override
+    protected void codeGenInst(DecacCompiler compiler, Label label, GPRegister thisReg){
+        //Load right_operand(expr), left_operand(lvalue)
+        AbstractIdentifier ident = (Identifier)getLeftOperand();
+        if (ident.getExpDefinition().getOperand() == null){
+            ident.getExpDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(),thisReg));
+        }
         this.getRightOperand().codeGenAssign(compiler, (Identifier) this.getLeftOperand());
     }
 
