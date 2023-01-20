@@ -47,8 +47,11 @@ public class Selection extends AbstractExpr {
 				return t2.getType();
 			}
 			else {
+				if (currentClass == null) {
+					throw new ContextualError("Access to protected field", this.getLocation());
+				}
 				if(compiler.environmentType.subType(t, currentClass.getType())){
-					if(compiler.environmentType.subType(currentClass.getType(), t2.getType())) {
+					if(compiler.environmentType.subType(currentClass.getType(), res.getContainingClass().getType())) {
 						return t2.getType();
 					}
 				}
