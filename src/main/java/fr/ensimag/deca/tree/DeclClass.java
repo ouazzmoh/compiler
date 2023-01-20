@@ -169,9 +169,7 @@ public class DeclClass extends AbstractDeclClass {
 		for (AbstractDeclField d : declfields.getList()){
 			d.codeGenDeclField(compiler);
 		}
-
-
+		declmethods.codeGenMethods(compiler,className.getName().getName());
 	}
-
 
 }

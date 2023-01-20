@@ -40,5 +40,11 @@ public class ListDeclMethod extends TreeList<AbstractDeclMethod> {
             e.codeGenVtableMethods(compiler,className, stackIndex);
         }
     }
+    public void codeGenMethods(DecacCompiler compiler, String className){
+        for(AbstractDeclMethod m : this.getList()){
+            compiler.addComment("------------ Code de la methode "+m.getMethodeName()+" dans la classe "+className);
+            m.codeGenMethods(compiler, className);
+        }
+    }
 
 }

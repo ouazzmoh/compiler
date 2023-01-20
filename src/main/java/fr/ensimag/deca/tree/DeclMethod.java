@@ -8,8 +8,13 @@ import fr.ensimag.ima.pseudocode.Label;
 import fr.ensimag.ima.pseudocode.LabelOperand;
 import fr.ensimag.ima.pseudocode.Register;
 import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.instructions.BOV;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.POP;
+import fr.ensimag.ima.pseudocode.instructions.PUSH;
+import fr.ensimag.ima.pseudocode.instructions.RTS;
 import fr.ensimag.ima.pseudocode.instructions.STORE;
+import fr.ensimag.ima.pseudocode.instructions.TSTO;
 import fr.ensimag.deca.DecacFatalError;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
@@ -37,6 +42,7 @@ public class DeclMethod extends AbstractDeclMethod {
 		this.body = body;
 	}
 
+	
 	@Override
 	public void decompile(IndentPrintStream s) {
 		// TODO Auto-generated method stub
@@ -125,6 +131,35 @@ public class DeclMethod extends AbstractDeclMethod {
 		LabelOperand opMethodLabel = new LabelOperand(methodLabel);
 		compiler.addInstruction(new LOAD(opMethodLabel, Register.R0));
 		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(stackIndex + name.getMethodDefinition().getIndex() + 1, Register.GB)));
+	}
+
+	@Override
+	protected void codeGenMethods(DecacCompiler compiler, String className){
+		int oldRegNum = compiler.getCurrRegNum();
+		compiler.addInstruction(new TSTO(oldRegNum));
+		compiler.addInstruction(new BOV(new Label("err_stack_overflow")));
+		compiler.addComment("Sauvegarde des registres");
+		for(int i=2; i< oldRegNum ; i++){
+			compiler.addInstruction(new PUSH(Register.getR(i)));
+		}
+		compiler.setCurrRegNum(2);
+		Label startMethode = new Label("code."+className+"."+name.getName().getName());
+		compiler.addLabel(startMethode);
+		body.codeGenBodyMethod(compiler, parametres);
+		Label endMethode = new Label("fin."+className+"."+name.getName().getName());
+		compiler.addLabel(endMethode);
+		compiler.addComment("Restauration des registres");
+		for(int i=2;i < oldRegNum; i++){
+			compiler.addInstruction(new POP(Register.getR(i)));
+		}
+		compiler.setCurrRegNum(oldRegNum);
+		compiler.addInstruction(new RTS());
+
+	}
+
+	@Override
+	protected AbstractIdentifier getMethodeName() {
+		return name;
 	}
 
 

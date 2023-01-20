@@ -53,4 +53,10 @@ public class MethodBody extends AbstractMethodBody {
         insts.verifyListInst(compiler, envExpParam, (ClassDefinition) compiler.environmentType.defOfType(className), returnType);
 	}
 
+	@Override
+	protected void codeGenBodyMethod(DecacCompiler compiler, ListDeclParam parametres) {
+		declVariables.codeGenListDeclVariable(compiler);
+		insts.codeGenListInst(compiler);
+	}
+
 }

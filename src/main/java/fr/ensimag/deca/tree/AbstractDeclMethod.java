@@ -11,6 +11,7 @@ public abstract class AbstractDeclMethod extends Tree {
 
 
     protected abstract void codeGenVtableMethods(DecacCompiler compiler, String className, int stackIndex);
+	protected abstract AbstractIdentifier getMethodeName();
     
 
 	protected abstract EnvironmentExp verifyDeclMethod(DecacCompiler compiler, Symbol className,
@@ -18,6 +19,7 @@ public abstract class AbstractDeclMethod extends Tree {
 	
 	protected abstract void verifyMethod(DecacCompiler compiler, Symbol className,
 			EnvironmentExp env) throws ContextualError;
+	protected abstract void codeGenMethods(DecacCompiler compiler, String className);
 
 }
 
