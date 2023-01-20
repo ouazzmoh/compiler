@@ -48,6 +48,17 @@ public class EnvironmentType {
         Symbol object = compiler.createSymbol("object");
         OBJECT = new ClassType(object);
         ClassDefinition def = new ClassDefinition(OBJECT, Location.BUILTIN, null);
+        def.setNumberOfMethods(1);
+        Symbol equals = compiler.createSymbol("equals");
+        Signature s = new Signature();
+        s.add(OBJECT);
+        MethodDefinition eq = new MethodDefinition(this.BOOLEAN, Location.BUILTIN, s, 1);
+        try {
+			def.getMembers().declare(equals, eq);
+		} catch (DoubleDefException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         envTypes.put(object, def);
         
         

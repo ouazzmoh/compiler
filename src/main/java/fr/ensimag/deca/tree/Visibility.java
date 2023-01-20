@@ -12,4 +12,5 @@ import java.io.PrintStream;
 public enum Visibility {
     PUBLIC,
     PROTECTED;
+	
 }

@@ -30,6 +30,9 @@ public class DeclField extends AbstractDeclField {
         this.initialization = initialization;
 		this.v = v;
     }
+    public Visibility getVisibility() {
+    	return v;
+    }
     
 
 	@Override
