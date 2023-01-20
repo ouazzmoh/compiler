@@ -420,6 +420,7 @@ select_expr returns[AbstractExpr tree]
     | e1=select_expr DOT i=ident {
             assert($e1.tree != null);
             assert($i.tree != null);
+            $tree = new Selection($e1.tree, $i.tree);
         }
         (o=OPARENT args=list_expr CPARENT {
             // we matched "e1.i(args)"
@@ -519,9 +520,8 @@ literal returns[AbstractExpr tree]
     	setLocation($tree, $FALSE);
         }
     | THIS {
-    	if ($THIS != null) {
-            throw new InvalidMethod(this, $ctx);
-            }
+    	$tree = new This();
+    	setLocation($tree, $THIS);
         }
     | NULL {
     	 if ($NULL != null) {
