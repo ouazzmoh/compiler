@@ -234,6 +234,29 @@ public class Identifier extends AbstractIdentifier {
 
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean hex){
+
+        if (this.getType().isInt()) {
+            compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
+            compiler.addInstruction(new WINT());
+        } else if (this.getType().isFloat()) {
+            compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
+            if (hex) {
+                compiler.addInstruction(new WFLOATX());
+            }
+            else {
+                compiler.addInstruction(new WFLOAT());
+            }
+        }
+        else{
+            throw new DecacInternalError("Cannot print expression");
+        }
+
+    }
+
+
+    @Override
+    protected void codeGenPrint(DecacCompiler compiler, boolean hex, GPRegister thisReg){
+        setAdrField(compiler, new RegisterOffset(0, thisReg));
         if (this.getType().isInt()) {
             compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
             compiler.addInstruction(new WINT());
