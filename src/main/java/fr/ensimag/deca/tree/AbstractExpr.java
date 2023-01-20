@@ -187,6 +187,23 @@ public abstract class AbstractExpr extends AbstractInst {
     }
 
 
+    /**
+     * Sets the adress of a field when using it inside a method
+     * if the expression is not a field it doesn't do anything
+     * @param compiler
+     * @param adr: Can be a register ofsset, we are intersted in the register and we use the index
+     *           to get to the adress if it is actually a field
+     */
+    protected void setAdrField(DecacCompiler compiler, DAddr adr){
+
+    }
+
+
+
+
+
+
+
 
     @Override
     protected void decompileInst(IndentPrintStream s) {

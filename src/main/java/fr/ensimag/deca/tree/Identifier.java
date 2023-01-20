@@ -281,9 +281,20 @@ public class Identifier extends AbstractIdentifier {
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
         GPRegister reg = compiler.getFreeReg();
-        //implicit use and free
-        compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), reg));
+        setAdrField(compiler, adr);
+        compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
         compiler.addInstruction(new STORE(reg, adr));
     }
+
+    @Override
+    protected void setAdrField(DecacCompiler compiler, DAddr adr){
+        //implicit use and free
+        if (definition.isField()){
+            RegisterOffset registerOffset = (RegisterOffset) adr;
+            int index = ((FieldDefinition)definition).getIndex();
+            getExpDefinition().setOperand(new RegisterOffset(index, registerOffset.getRegister()));
+        }
+    }
+
 
 }
