@@ -42,7 +42,7 @@ public class RegisterArm extends DValArm {
     /** 
      * Application Program Status Register : R16
      */
-    public static final RegisterArm APSR = new RegisterArm("APSR");
+    public static final RegisterArm CPSR = new RegisterArm("CPSR");
     /**
      * General Purpose Registers. Array is private because Java arrays cannot be
      * made immutable, use getR(i) to access it.

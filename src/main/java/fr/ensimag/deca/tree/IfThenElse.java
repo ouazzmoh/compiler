@@ -123,7 +123,6 @@ public class IfThenElse extends AbstractInst {
         elseBranch.prettyPrint(s, prefix, true);
     }
 
-	@Override
 	protected void codeGenInstArm(DecacCompiler compiler, LabelArm label) {
 		// TODO Auto-generated method stub
 		

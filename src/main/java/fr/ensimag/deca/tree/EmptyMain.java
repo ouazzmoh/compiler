@@ -45,4 +45,9 @@ public class EmptyMain extends AbstractMain {
         // leaf node => nothing to do
     }
 
+    @Override
+    protected void codeGenMainArm(DecacCompiler compiler){
+
+    }
+
 }

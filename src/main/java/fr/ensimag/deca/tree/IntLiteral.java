@@ -1,16 +1,8 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.*;
 import fr.ensimag.deca.DecacMain;
 import fr.ensimag.deca.context.Type;
-import fr.ensimag.arm.pseudocode.ArmProgram;
-import fr.ensimag.arm.pseudocode.DAddrArm;
-import fr.ensimag.arm.pseudocode.DValArm;
-import fr.ensimag.arm.pseudocode.GPRegisterArm;
-import fr.ensimag.arm.pseudocode.ImmediateIntegerArm;
-import fr.ensimag.arm.pseudocode.ImmediateStringArm;
-import fr.ensimag.arm.pseudocode.LabelArm;
-import fr.ensimag.arm.pseudocode.OperandArm;
-import fr.ensimag.arm.pseudocode.RegisterArm;
 import fr.ensimag.arm.pseudocode.instructions.LDR;
 import fr.ensimag.arm.pseudocode.instructions.MOV;
 import fr.ensimag.arm.pseudocode.instructions.STR;
@@ -93,8 +85,20 @@ public class IntLiteral extends AbstractExpr {
      * @param adr
      */
     @Override
-    protected void codeGenInitArm(DecacCompiler compiler, DAddrArm adr){
-    	DecacCompiler.data.put(new LabelArm("Variable" + this.getLocation().getLine()), new ImmediateIntegerArm(this.value));
+    protected void codeGenInitArm(DecacCompiler compiler, OperandArm adr){
+        compiler.addOperandData(adr);
+        compiler.addInstruction(new MOV(RegisterArm.R0, new ImmediateIntegerArm(value)));
+        compiler.addInstruction(new LDR(RegisterArm.R1, (LabelArm) adr));
+        compiler.addInstruction(new STR(RegisterArm.R0, new RegisterOffsetArm(0, RegisterArm.R1)));
+
+    }
+
+    @Override
+    protected DValArm codeGenLoadArm(DecacCompiler compiler){
+        GPRegisterArm reg = compiler.getFreeRegArm();
+        compiler.addInstruction(new MOV(reg, new ImmediateIntegerArm(value)));
+        compiler.useRegArm();
+        return reg;
     }
     
     
@@ -106,18 +110,6 @@ public class IntLiteral extends AbstractExpr {
         return registerToUse;
     }
 
-
-
-
-
-
-
-
-    @Override
-    protected void codeGenPush(DecacCompiler compiler){
-        compiler.addInstruction(new LOAD(value, Register.R1));
-        compiler.addInstruction(new PUSH(Register.R1));
-    }
 
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean hex){

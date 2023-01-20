@@ -1,20 +1,10 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.*;
+import fr.ensimag.arm.pseudocode.instructions.*;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.context.TypeDefinition;
 import fr.ensimag.deca.context.ClassType;
-import fr.ensimag.arm.pseudocode.ArmProgram;
-import fr.ensimag.arm.pseudocode.DAddrArm;
-import fr.ensimag.arm.pseudocode.DValArm;
-import fr.ensimag.arm.pseudocode.GPRegisterArm;
-import fr.ensimag.arm.pseudocode.ImmediateIntegerArm;
-import fr.ensimag.arm.pseudocode.ImmediateStringArm;
-import fr.ensimag.arm.pseudocode.LabelArm;
-import fr.ensimag.arm.pseudocode.RegisterArm;
-import fr.ensimag.arm.pseudocode.RegisterOffsetArm;
-import fr.ensimag.arm.pseudocode.instructions.LDR;
-import fr.ensimag.arm.pseudocode.instructions.MOV;
-import fr.ensimag.arm.pseudocode.instructions.SWI;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
@@ -32,6 +22,8 @@ import java.io.PrintStream;
 import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.*;
 
+import fr.ensimag.ima.pseudocode.instructions.CMP;
+import fr.ensimag.ima.pseudocode.instructions.PUSH;
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
 
@@ -265,34 +257,34 @@ public class Identifier extends AbstractIdentifier {
     }
     
     
-    @Override
-    protected void codeGenPrintArm(DecacCompiler compiler, boolean hex){
-        if (this.getType().isInt()) {
-        	//+ " (" + this.getVariableDefinition().getLocation().getPositionInLine() + ")"
-        	LabelArm lab = new LabelArm("Variable" + this.getVariableDefinition().getLocation().getLine());
-        	LabelArm zb = new LabelArm(lab.toString() + "toprint");
-        	DValArm valeur = DecacCompiler.getLabel(lab);
-        	DecacCompiler.data.put( zb, new ImmediateStringArm(valeur.toStringWord()));
-        	compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(4)));
-            compiler.addInstruction(new MOV(RegisterArm.getR(1), new ImmediateIntegerArm(1)));
-            compiler.addInstruction(new LDR(RegisterArm.getR(1),zb));
-            int l = DecacCompiler.data.get(zb).toString().length();
-            compiler.addInstruction(new MOV(RegisterArm.getR(2), new ImmediateIntegerArm(l-2) ));
-            compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
-        } else if (this.getType().isFloat()) {
-            compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
-            if (hex) {
-                compiler.addInstruction(new WFLOATX());
-            }
-            else {
-                compiler.addInstruction(new WFLOAT());
-            }
-        }
-        else{
-            throw new DecacInternalError("Cannot print expression");
-        }
-
-    }
+//    @Override
+//    protected void codeGenPrintArm(DecacCompiler compiler, boolean hex){
+//        if (this.getType().isInt()) {
+//        	//+ " (" + this.getVariableDefinition().getLocation().getPositionInLine() + ")"
+//        	LabelArm lab = new LabelArm("Variable" + this.getVariableDefinition().getLocation().getLine());
+//        	LabelArm zb = new LabelArm(lab.toString() + "toprint");
+//        	DValArm valeur = DecacCompiler.getLabel(lab);
+//        	DecacCompiler.data.put( zb, new ImmediateStringArm(valeur.toStringWord()));
+//        	compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(4)));
+//            compiler.addInstruction(new MOV(RegisterArm.getR(1), new ImmediateIntegerArm(1)));
+//            compiler.addInstruction(new LDR(RegisterArm.getR(1),zb));
+//            int l = DecacCompiler.data.get(zb).toString().length();
+//            compiler.addInstruction(new MOV(RegisterArm.getR(2), new ImmediateIntegerArm(l-2) ));
+//            compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
+//        } else if (this.getType().isFloat()) {
+//            compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
+//            if (hex) {
+//                compiler.addInstruction(new WFLOATX());
+//            }
+//            else {
+//                compiler.addInstruction(new WFLOAT());
+//            }
+//        }
+//        else{
+//            throw new DecacInternalError("Cannot print expression");
+//        }
+//
+//    }
 
 
     @Override
@@ -324,7 +316,6 @@ public class Identifier extends AbstractIdentifier {
 
     }
 
-
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
         compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), Register.R1));
@@ -332,16 +323,21 @@ public class Identifier extends AbstractIdentifier {
     }
 
 
-	@Override
-	protected void codeGenInitArm(DecacCompiler compiler, DAddrArm adr) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    protected void codeGenInitArm(DecacCompiler compiler, OperandArm adr){
+        GPRegisterArm reg = (GPRegisterArm) codeGenLoadArm(compiler);
+        compiler.addInstruction(new LDR(RegisterArm.R1, (LabelArm) adr));
+        compiler.addInstruction(new STR(reg, new RegisterOffsetArm(0, RegisterArm.R1)));
+        compiler.freeRegArm();
+    }
 
-	@Override
-	protected void codeGenInstArm(DecacCompiler compiler, Label endIf) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    protected DValArm codeGenLoadArm(DecacCompiler compiler){
+        GPRegisterArm reg = compiler.getFreeRegArm();
+        compiler.addInstruction(new LDR(RegisterArm.R0, (LabelArm) getExpDefinition().getOperandArm()));
+        compiler.addInstruction(new LDRreg(reg, new RegisterOffsetArm(0, RegisterArm.R0)));
+        compiler.useRegArm();
+        return reg;
+    }
 
 }

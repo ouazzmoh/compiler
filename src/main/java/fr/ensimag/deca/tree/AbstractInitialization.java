@@ -1,5 +1,6 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.OperandArm;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.arm.pseudocode.DAddrArm;
 import fr.ensimag.arm.pseudocode.LabelArm;
@@ -34,7 +35,7 @@ public abstract class AbstractInitialization extends Tree {
 
     protected abstract void codeGenInit(DecacCompiler compiler, DAddr adr);
 
-	protected abstract void codeGenInitArm(DecacCompiler compiler, DAddrArm adr);
+	protected abstract void codeGenInitArm(DecacCompiler compiler, OperandArm adr);
 
 
 }

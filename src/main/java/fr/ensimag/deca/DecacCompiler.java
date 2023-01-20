@@ -20,10 +20,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -46,10 +43,19 @@ import org.apache.log4j.Logger;
  */
 public class  DecacCompiler {
     private static final Logger LOG = Logger.getLogger(DecacCompiler.class);
-    public Boolean isArm = true;
+    public boolean isArm = true;
+
     public static Map<LabelArm, DValArm> data = new HashMap<LabelArm, DValArm>();
+
+    public Set<OperandArm> dataSetArm;
+
+    public void addOperandData(OperandArm op){
+        assert(isArm);
+        dataSetArm.add(op);
+    }
+
     
-    public static  LabelArm getLabel(int i){
+    public LabelArm getLabel(int i){
 		int c = 0;
 		for (LabelArm a: data.keySet()) {
 			if (i==c) {
@@ -59,7 +65,7 @@ public class  DecacCompiler {
 		return null;
 	}
     
-    public static void addData(LabelArm lab, DValArm dv) {
+    public void addData(LabelArm lab, DValArm dv) {
     	data.putIfAbsent(lab, dv);
     }
 	/**
@@ -68,7 +74,7 @@ public class  DecacCompiler {
 	}
 	*/
     
-    public static Boolean getIsArm() {
+    public Boolean getIsArm() {
     	return true;
     }
 
@@ -85,6 +91,8 @@ public class  DecacCompiler {
 
     //The maximal number of registers to use
     private int regMax;
+
+    private int currRegNumArm;
 
 
 
@@ -107,6 +115,12 @@ public class  DecacCompiler {
         //
         this.currRegNum = 2;
 
+        if (isArm){
+            this.dataSetArm = new HashSet<OperandArm>();
+            this.currRegNumArm = 2;
+        }
+
+
     }
 
     public DecacCompiler(CompilerOptions compilerOptions, File source, int regMax) {
@@ -122,6 +136,11 @@ public class  DecacCompiler {
         this.regMax = regMax - 1;
         //
         this.currRegNum = 2;
+
+        if (isArm){
+            this.dataSetArm = new HashSet<OperandArm>();
+        }
+
 
     }
 
@@ -366,7 +385,12 @@ public class  DecacCompiler {
 //        prog.decompile(out);
         /** we choose between ima and arm*/
         addComment("start main program");
-        prog.codeGenProgram(this);
+        if (isArm){
+            prog.codeGenProgramArm(this);
+        }else {
+            prog.codeGenProgram(this);
+        }
+
         addComment("end main program");
         LOG.debug("Generated assembly code:" + nl + program.display());
         LOG.info("Output file assembly file is: " + destName);
@@ -379,8 +403,33 @@ public class  DecacCompiler {
         }
 
         LOG.info("Writing assembler file ...");
-        //program.display(new PrintStream(fstream));
-        programArm.display(new PrintStream(fstream));
+        if (!isArm){
+            program.display(new PrintStream(fstream));
+        }
+        else {
+
+            PrintStream s = new PrintStream(fstream);
+            programArm.display(s);
+
+            //Display data section
+            s.println(".section .data");
+            Iterator<OperandArm> it = dataSetArm.iterator();
+            while (it.hasNext()) {
+                OperandArm op = it.next();
+                s.println("\t\t" + op.toString() + ": .word");
+            }
+
+        }
+
+
+//        for (LabelArm lab : dataSetArm) {
+//            lab.display(s);
+//            if (DecacCompiler.data.get(lab)!= null) {
+//                DecacCompiler.data.get(lab).display(s);
+//            }
+//        }
+
+
         LOG.info("Compilation of " + sourceName + " successful.");
         return false;
     }
@@ -433,6 +482,10 @@ public class  DecacCompiler {
         }
     }
 
+    public GPRegisterArm getFreeRegArm(){
+       return RegisterArm.getR(currRegNumArm);
+    }
+
 
     public void useReg(){
         assert(currRegNum <= regMax);
@@ -443,6 +496,17 @@ public class  DecacCompiler {
     public void freeReg(){
         assert(currRegNum >=2);
         currRegNum--;
+    }
+
+    public void useRegArm(){
+        assert(currRegNumArm <= regMax);
+        currRegNumArm++;
+    }
+
+
+    public void freeRegArm(){
+        assert(currRegNumArm >=2);
+        currRegNumArm--;
     }
 
     public boolean useLoad(){

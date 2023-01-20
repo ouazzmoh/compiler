@@ -43,10 +43,10 @@ public class NoOperation extends AbstractInst {
         // leaf node => nothing to do
     }
 
-	@Override
-	protected void codeGenInstArm(DecacCompiler compiler, LabelArm label) {
-		// TODO Auto-generated method stub
-		
-	}
+//	@Override
+//	protected void codeGenInstArm(DecacCompiler compiler, LabelArm label) {
+//		// TODO Auto-generated method stub
+//
+//	}
 
 }

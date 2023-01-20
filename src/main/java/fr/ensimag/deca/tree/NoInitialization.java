@@ -1,5 +1,6 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.OperandArm;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.arm.pseudocode.DAddrArm;
 import fr.ensimag.deca.DecacCompiler;
@@ -58,7 +59,7 @@ public class NoInitialization extends AbstractInitialization {
 
 
 	@Override
-	protected void codeGenInitArm(DecacCompiler compiler, DAddrArm adr) {
+	protected void codeGenInitArm(DecacCompiler compiler, OperandArm adr) {
 		//Nothing to add because it doesn't initialize
 		
 	}

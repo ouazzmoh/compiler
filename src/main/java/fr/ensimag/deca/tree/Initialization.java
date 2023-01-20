@@ -1,10 +1,7 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.*;
 import fr.ensimag.deca.context.Type;
-import fr.ensimag.arm.pseudocode.ArmProgram;
-import fr.ensimag.arm.pseudocode.DAddrArm;
-import fr.ensimag.arm.pseudocode.ImmediateIntegerArm;
-import fr.ensimag.arm.pseudocode.LabelArm;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
@@ -86,7 +83,7 @@ public class Initialization extends AbstractInitialization {
     }
     
     @Override
-    protected void codeGenInitArm(DecacCompiler compiler, DAddrArm adr){
+    protected void codeGenInitArm(DecacCompiler compiler, OperandArm adr){
     	//super.codeGenInitArm(compiler,adr);
     	//ArmProgram.data.put(new LabelArm(getName().),new ImmediateIntegerArm(0));
         expression.codeGenInitArm(compiler, adr);

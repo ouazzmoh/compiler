@@ -62,11 +62,11 @@ public abstract class AbstractInst extends Tree {
 
     /**
      * Generate assembly code for the instruction.
-     * 
+     *
      * @param compiler
      * @param endIf : useful to store the endIf label in if instructions
      */
-    protected abstract void codeGenInstArm(DecacCompiler compiler, Label endIf);
+    protected  void codeGenInstArm(DecacCompiler compiler, Label endIf){}
     
     
 

@@ -1,13 +1,7 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.*;
 import fr.ensimag.deca.context.Type;
-import fr.ensimag.arm.pseudocode.ArmProgram;
-import fr.ensimag.arm.pseudocode.DAddrArm;
-import fr.ensimag.arm.pseudocode.DValArm;
-import fr.ensimag.arm.pseudocode.ImmediateIntegerArm;
-import fr.ensimag.arm.pseudocode.ImmediateStringArm;
-import fr.ensimag.arm.pseudocode.LabelArm;
-import fr.ensimag.arm.pseudocode.RegisterArm;
 import fr.ensimag.arm.pseudocode.instructions.LDR;
 import fr.ensimag.arm.pseudocode.instructions.MOV;
 import fr.ensimag.arm.pseudocode.instructions.SWI;
@@ -226,7 +220,11 @@ public abstract class AbstractExpr extends AbstractInst {
         }
     }
 
-    
+
+
+
+
+    /*****************************Methods for arm generation**************************************/
     /**
      * Generate code to print the expression
      * @param compiler
@@ -237,8 +235,20 @@ public abstract class AbstractExpr extends AbstractInst {
     }
 
 
-	 protected void codeGenInitArm(DecacCompiler compiler, DAddrArm adr){
+	 protected void codeGenInitArm(DecacCompiler compiler, OperandArm adr){
 	        throw new DecacInternalError("Shouldn't be initialized");
-	    }
+     }
+
+
+    protected void codeGenAssignArm(DecacCompiler compiler, Identifier identifier){
+        throw new DecacInternalError("Shouldn't be Assigned");
+    }
+
+
+    protected DValArm codeGenLoadArm(DecacCompiler compiler){
+        throw new DecacInternalError("Shouldn't load value");
+    }
+
+
 
 }

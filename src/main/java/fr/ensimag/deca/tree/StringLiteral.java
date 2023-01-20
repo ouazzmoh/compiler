@@ -51,45 +51,45 @@ public class StringLiteral extends AbstractStringLiteral {
     	return this.getType();
     }
 
-    @Override
-    protected void codeGenPrint(DecacCompiler compiler, boolean hex) {
-    	if (compiler.isArm == true) {
-	    	LabelArm lab = new LabelArm("message1");
-			DecacCompiler.data.put(lab,(DValArm)(new ImmediateStringArm(value.toString())));
-			compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(4)));
-	        compiler.addInstruction(new MOV(RegisterArm.getR(1), new ImmediateIntegerArm(1)));
-	        compiler.addInstruction(new LDR(RegisterArm.getR(1),lab));
-	        int l = lab.toString().length();
-	        compiler.addInstruction(new MOV(RegisterArm.getR(2), new ImmediateIntegerArm(l-2) ));
-	        compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
-    	}
-    	else {
-        compiler.addInstruction(new WSTR(new ImmediateString(value)));
-    }
-    }
-    
-    /**
-     * Generate code to println the expression
-     * @param compiler
-     */
-    protected void codeGenPrintln(DecacCompiler compiler, boolean hex) {
-        //throw new DecacInternalError("expression cannot be printed")
-    	if (compiler.getIsArm() == true) {
-	    	LabelArm lab = new LabelArm("message1");
-			DecacCompiler.data.put(lab,(DValArm)(new ImmediateStringArm(this.toString() + "\n")));
-			compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(4)));
-	        compiler.addInstruction(new MOV(RegisterArm.getR(1), new ImmediateIntegerArm(1)));
-	        compiler.addInstruction(new LDR(RegisterArm.getR(1),lab));
-	        int l = lab.toString().length();
-	        compiler.addInstruction(new MOV(RegisterArm.getR(2), new ImmediateIntegerArm(l-2) ));
-	        compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
-    	}
-		else {
-			compiler.addInstruction(new WSTR(new ImmediateString(value + "\n")));
-		}
-
-        
-    }
+//    @Override
+//    protected void codeGenPrint(DecacCompiler compiler, boolean hex) {
+//    	if (compiler.isArm == true) {
+//	    	LabelArm lab = new LabelArm("message1");
+//			DecacCompiler.data.put(lab,(DValArm)(new ImmediateStringArm(value.toString())));
+//			compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(4)));
+//	        compiler.addInstruction(new MOV(RegisterArm.getR(1), new ImmediateIntegerArm(1)));
+//	        compiler.addInstruction(new LDR(RegisterArm.getR(1),lab));
+//	        int l = lab.toString().length();
+//	        compiler.addInstruction(new MOV(RegisterArm.getR(2), new ImmediateIntegerArm(l-2) ));
+//	        compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
+//    	}
+//    	else {
+//        compiler.addInstruction(new WSTR(new ImmediateString(value)));
+//    }
+//    }
+//
+//    /**
+//     * Generate code to println the expression
+//     * @param compiler
+//     */
+//    protected void codeGenPrintln(DecacCompiler compiler, boolean hex) {
+//        //throw new DecacInternalError("expression cannot be printed")
+//    	if (compiler.getIsArm() == true) {
+//	    	LabelArm lab = new LabelArm("message1");
+//			DecacCompiler.data.put(lab,(DValArm)(new ImmediateStringArm(this.toString() + "\n")));
+//			compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(4)));
+//	        compiler.addInstruction(new MOV(RegisterArm.getR(1), new ImmediateIntegerArm(1)));
+//	        compiler.addInstruction(new LDR(RegisterArm.getR(1),lab));
+//	        int l = lab.toString().length();
+//	        compiler.addInstruction(new MOV(RegisterArm.getR(2), new ImmediateIntegerArm(l-2) ));
+//	        compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
+//    	}
+//		else {
+//			compiler.addInstruction(new WSTR(new ImmediateString(value + "\n")));
+//		}
+//
+//
+//    }
 
     @Override
     public void decompile(IndentPrintStream s) {
@@ -112,21 +112,14 @@ public class StringLiteral extends AbstractStringLiteral {
         return "StringLiteral (" + value + ")";
     }
 
-	@Override
-	protected void codeGenInitArm(DecacCompiler compiler, DAddrArm adr) {
-		// TODO Auto-generated method stub
-		
-	}
 
 	@Override
 	protected void codeGenPrintArm(DecacCompiler compiler, boolean hex) {
 		LabelArm lab = new LabelArm("message1");
-		DecacCompiler.data.put(lab,(DValArm)(new ImmediateStringArm(this.toString() + "\n")));
+		compiler.data.put(lab,(DValArm)(new ImmediateStringArm(value + "\n")));
 		compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(4)));
-        compiler.addInstruction(new MOV(RegisterArm.getR(1), new ImmediateIntegerArm(1)));
         compiler.addInstruction(new LDR(RegisterArm.getR(1),lab));
-        int l = lab.toString().length();
-        compiler.addInstruction(new MOV(RegisterArm.getR(2), new ImmediateIntegerArm(l-2) ));
+        compiler.addInstruction(new MOV(RegisterArm.getR(2), new ImmediateIntegerArm(value.length() + 1) ));
         compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
 		
 	}

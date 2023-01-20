@@ -17,6 +17,7 @@ public class LDR extends BinaryInstructionArm{
 		super(op1, op2);
 		// TODO Auto-generated constructor stub
 	}
+
 	
     protected void displayOperands(PrintStream s) {
         s.print(" ");

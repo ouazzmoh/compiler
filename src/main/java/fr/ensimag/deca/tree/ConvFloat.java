@@ -62,11 +62,10 @@ public class ConvFloat extends AbstractUnaryExpr {
         }
     }
 
-	@Override
-	//protected void codeGenInitArm(DecacCompiler compiler, DAddrArm adr) {
-		// TODO Auto-generated method stub
-		
-	}
+//	@Override
+//	protected void codeGenInitArm(DecacCompiler compiler, DAddrArm adr) {
+//
+//	}
 
 
 }

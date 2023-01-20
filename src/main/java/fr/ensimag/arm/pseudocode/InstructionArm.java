@@ -17,7 +17,15 @@ public abstract class InstructionArm {
     abstract void displayOperands(PrintStream s);
 
     void display(PrintStream s){
-        s.print("		" + getName());
+        if (getName().equals("armadd")){
+            s.print("		" + "add");
+        }
+        else if (getName().equals("ldrreg")){
+            s.print("		" + "ldr");
+        }
+        else {
+            s.print("		" + getName());
+        }
         displayOperands(s);
     }
 }

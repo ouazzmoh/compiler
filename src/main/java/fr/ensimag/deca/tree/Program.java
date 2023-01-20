@@ -62,33 +62,32 @@ public class Program extends AbstractProgram {
 
     @Override
     public void codeGenProgram(DecacCompiler compiler) {
-    	compiler.addComment("Main program");
+        compiler.addComment("Main program");
+        compiler.getErrorsMap().put("err_stack_overflow", "Erreur: la pile est pleine");
         main.codeGenMain(compiler);
-        if (compiler.getIsArm() == true){
-        	// marks the end of the program in the ARM architecture
-        	compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(1)));
-            compiler.addInstruction(new MOV(RegisterArm.getR(0), new ImmediateIntegerArm(0)));
-            compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
-
+        compiler.addInstruction(new HALT());
+        compiler.addComment("Generating code for errors");
+        Iterator<Map.Entry<String, String>> it = compiler.getErrorsMap().entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry<String, String> couple = it.next();
+            compiler.addLabel(new Label(couple.getKey()));
+            compiler.addInstruction(new WSTR(couple.getValue()));
+            compiler.addInstruction(new WNL());
+            compiler.addInstruction(new ERROR());
+            it.remove();
         }
-        else{
-            compiler.getErrorsMap().put("err_stack_overflow", "Erreur: la pile est pleine");
-            main.codeGenMain(compiler);
-        	// marks the end of the program for IMA
-        	compiler.addInstruction(new HALT());
-	        compiler.addComment("Generating code for errors");
-	        Iterator<Map.Entry<String, String>> it = compiler.getErrorsMap().entrySet().iterator();
-	        while(it.hasNext()){
-	            Map.Entry<String, String> couple = it.next();
-	            compiler.addLabel(new Label(couple.getKey()));
-	            compiler.addInstruction(new WSTR(couple.getValue()));
-	            compiler.addInstruction(new WNL());
-	            compiler.addInstruction(new ERROR());
-	            it.remove();
-        }
-        }
+    }
 
 
+    @Override
+    public void codeGenProgramArm(DecacCompiler compiler) {
+        main.codeGenMainArm(compiler);
+        //HALT instructions for arm: sends interruption signal to kernel
+        compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(1)));
+        compiler.addInstruction(new MOV(RegisterArm.getR(0), new ImmediateIntegerArm(0)));
+        compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
+        //
+        //TODO: Exceptions
     }
 
     @Override

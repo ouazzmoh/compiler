@@ -1,9 +1,8 @@
 package fr.ensimag.arm.pseudocode.instructions;
-import fr.ensimag.arm.pseudocode.*;
 
-import fr.ensimag.ima.pseudocode.DAddr;
-
-import java.io.PrintStream;
+import fr.ensimag.arm.pseudocode.BinaryInstructionArm;
+import fr.ensimag.arm.pseudocode.GPRegisterArm;
+import fr.ensimag.arm.pseudocode.OperandArm;
 
 /**
  * STR : The STR instruction STR operation: stores
@@ -13,8 +12,8 @@ import java.io.PrintStream;
  * @date 17/01/2023
  */
 
-public class STR extends BinaryInstructionArm{
-	public STR(GPRegisterArm op1, OperandArm adr) {
+public class LDRreg extends BinaryInstructionArm{
+	public LDRreg(GPRegisterArm op1, OperandArm adr) {
 		super(op1, adr);
 	}
 

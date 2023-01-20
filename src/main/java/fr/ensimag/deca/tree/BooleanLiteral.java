@@ -129,12 +129,12 @@ public class BooleanLiteral extends AbstractExpr {
 
     
 
-	@Override
-	protected void codeGenInstArm(DecacCompiler compiler, Label endIf) {
-		// TODO Auto-generated method stub
-		
-		
-	}
+//	@Override
+//	protected void codeGenInstArm(DecacCompiler compiler, Label endIf) {
+//		// TODO Auto-generated method stub
+//
+//
+//	}
 
 }
 

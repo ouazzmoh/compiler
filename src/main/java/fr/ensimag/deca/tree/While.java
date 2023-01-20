@@ -84,11 +84,11 @@ public class While extends AbstractInst {
         condition.codeGenBranch(compiler, true, startWhile);
     }
 
-	@Override
-	protected void codeGenInstArm(DecacCompiler compiler, LabelArm label) {
-		// TODO Auto-generated method stub
-		
-	}
+//	@Override
+//	protected void codeGenInstArm(DecacCompiler compiler, LabelArm label) {
+//		// TODO Auto-generated method stub
+//
+//	}
 
 
 }
