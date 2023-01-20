@@ -8,6 +8,7 @@ import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.GPRegister;
 import fr.ensimag.ima.pseudocode.Label;
 
 public class Return extends AbstractInst {
@@ -28,7 +29,7 @@ public class Return extends AbstractInst {
 	}
 
 	@Override
-	protected void codeGenInst(DecacCompiler compiler, Label endIf) {
+	protected void codeGenInst(DecacCompiler compiler, Label endIf, GPRegister thisReg) {
 		// TODO Auto-generated method stub
 		
 	}

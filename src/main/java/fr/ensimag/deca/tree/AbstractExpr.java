@@ -128,26 +128,20 @@ public abstract class AbstractExpr extends AbstractInst {
      * Generate code to print the expression
      * @param compiler
      */
-    protected void codeGenPrint(DecacCompiler compiler, boolean hex) {
-        throw new DecacInternalError("expression cannot be printed");
-    }
-
-    /**
-     * Generate code to print the expression
-     * @param compiler
-     */
     protected void codeGenPrint(DecacCompiler compiler, boolean hex, GPRegister thisReg) {
         throw new DecacInternalError("expression cannot be printed");
     }
+
 
 
     /**
      * Generate the code corresponding to the instruction
      * @param compiler
      * @param endIf : useful to store the endIf label in if instructions
+     * @param thisReg : register used when there is an object
      */
     @Override
-    protected void codeGenInst(DecacCompiler compiler, Label endIf) {
+    protected void codeGenInst(DecacCompiler compiler, Label endIf, GPRegister thisReg) {
         throw new UnsupportedOperationException("no available code generation for this instruction");
     }
 

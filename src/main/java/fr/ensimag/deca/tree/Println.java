@@ -19,11 +19,6 @@ public class Println extends AbstractPrint {
         super(printHex, arguments);
     }
 
-    @Override
-    protected void codeGenInst(DecacCompiler compiler, Label label) {
-        super.codeGenInst(compiler, label);
-        compiler.addInstruction(new WNL());
-    }
 
 
     @Override

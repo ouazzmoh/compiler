@@ -30,13 +30,7 @@ public abstract class AbstractInst extends Tree {
     protected abstract void verifyInst(DecacCompiler compiler,
             EnvironmentExp localEnv, ClassDefinition currentClass, Type returnType) throws ContextualError;
 
-    /**
-     * Generate assembly code for the instruction.
-     * 
-     * @param compiler
-     * @param endIf : useful to store the endIf label in if instructions
-     */
-    protected abstract void codeGenInst(DecacCompiler compiler, Label endIf);
+
 
 
     /**

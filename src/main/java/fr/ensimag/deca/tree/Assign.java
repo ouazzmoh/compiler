@@ -47,12 +47,6 @@ public class Assign extends AbstractBinaryExpr {
         return "=";
     }
 
-    @Override
-    protected void codeGenInst(DecacCompiler compiler, Label label){
-            //Load right_operand(expr), left_operand(lvalue)
-        compiler.addComment("Assigning a variable");
-        this.getRightOperand().codeGenAssign(compiler, (Identifier) this.getLeftOperand());
-    }
 
     @Override
     protected void codeGenInst(DecacCompiler compiler, Label label, GPRegister thisReg){
@@ -65,8 +59,8 @@ public class Assign extends AbstractBinaryExpr {
     }
 
     @Override
-    protected void codeGenPrint(DecacCompiler compiler, boolean hex){
-        this.getRightOperand().codeGenPrint(compiler, hex);
+    protected void codeGenPrint(DecacCompiler compiler, boolean hex, GPRegister thisReg){
+        this.getRightOperand().codeGenPrint(compiler, hex, thisReg);
     }
 
 }

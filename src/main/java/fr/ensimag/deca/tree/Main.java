@@ -56,7 +56,7 @@ public class Main extends AbstractMain {
         compiler.addComment("Generating code for variable declaration");
         declVariables.codeGenListDeclVariable(compiler);
         compiler.addComment("Generating code for instructions");
-        insts.codeGenListInst(compiler);
+        insts.codeGenListInst(compiler, null);
         if (compiler.getOffset() != 0){
             compiler.addInstructionFirst(new ADDSP(compiler.getOffset()-1)); // offset - 1 because we start at 1 and increment after using
             compiler.addInstructionFirst(new BOV(new Label("err_stack_overflow")));

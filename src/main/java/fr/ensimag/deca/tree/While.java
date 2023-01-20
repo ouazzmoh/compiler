@@ -6,6 +6,7 @@ import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.GPRegister;
 import fr.ensimag.ima.pseudocode.Label;
 import fr.ensimag.ima.pseudocode.Register;
 import fr.ensimag.ima.pseudocode.instructions.BRA;
@@ -70,7 +71,7 @@ public class While extends AbstractInst {
     }
 
     @Override
-    protected void codeGenInst(DecacCompiler compiler, Label label) {
+    protected void codeGenInst(DecacCompiler compiler, Label label, GPRegister thisReg) {
         compiler.addComment("Generating While code");
         Label startWhile = new Label("startWhile.l" + getLocation().getLine() +
                 ".c" + getLocation().getPositionInLine());
@@ -78,7 +79,7 @@ public class While extends AbstractInst {
                 ".c" + getLocation().getPositionInLine());
         compiler.addInstruction(new BRA(condWhile));
         compiler.addLabel(startWhile);
-        body.codeGenListInst(compiler);
+        body.codeGenListInst(compiler, thisReg);
         compiler.addLabel(condWhile);
         condition.codeGenBranch(compiler, true, startWhile);
     }

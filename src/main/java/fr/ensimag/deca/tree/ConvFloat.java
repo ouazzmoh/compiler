@@ -42,7 +42,7 @@ public class ConvFloat extends AbstractUnaryExpr {
 
 
     @Override
-    protected void codeGenPrint(DecacCompiler compiler, boolean hex){
+    protected void codeGenPrint(DecacCompiler compiler, boolean hex, GPRegister thisReg){
         GPRegister valueReg = (GPRegister) codeGenLoad(compiler);
         compiler.addInstruction(new LOAD(valueReg, Register.R1));
         compiler.freeReg();
