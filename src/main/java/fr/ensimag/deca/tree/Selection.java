@@ -12,7 +12,7 @@ import fr.ensimag.deca.context.FieldDefinition;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.tools.IndentPrintStream;
 
-public class Selection extends AbstractExpr {
+public class Selection extends AbstractLValue {
 	private AbstractExpr exp;
 	private AbstractIdentifier ident;
 	
