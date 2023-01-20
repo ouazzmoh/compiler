@@ -1,8 +1,13 @@
 package fr.ensimag.deca.context;
 
 import fr.ensimag.deca.DecacCompiler;
+import fr.ensimag.deca.context.EnvironmentExp.DoubleDefException;
+
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
 import fr.ensimag.deca.tree.Location;
 
@@ -56,6 +61,42 @@ public class EnvironmentType {
     
     public void declareClass(Symbol s, ClassDefinition def) {
     	envTypes.put(s, def);
+    }
+    
+    public boolean subType(Type t, Type t2) {
+    	if(t.sameType(t2)) {
+    		return true;
+    	}
+    	Set<Symbol> s = envTypes.keySet();
+    	Iterator<Symbol> i = s.iterator();
+    	ClassDefinition def = null;
+    	while(i.hasNext()) {
+    		Symbol m = i.next();
+    		if(defOfType(m).isClass()) {
+        		def = (ClassDefinition) defOfType(m);
+        		if(def.getType().sameType(t)) {
+        	    	ClassDefinition superClass = def.getSuperClass();
+        	    	while(superClass != null) {
+        	    		if(superClass.getType().sameType(t2)) {
+        	    			return true;
+        	    		}
+        	    		superClass = superClass.getSuperClass();
+        	    	}
+        		}
+    		}
+    	}
+    	return false;
+    }
+    
+    public void Empilement(EnvironmentType env){
+    	Set<Symbol> s = envTypes.keySet();
+    	Iterator<Symbol> i = s.iterator();
+    	while(i.hasNext()) {
+    		Symbol verif = i.next();
+    		if(env.defOfType(verif) == null) {
+    			env.declareClass(verif, (ClassDefinition) envTypes.get(verif));
+    		}
+    	}
     }
     
     

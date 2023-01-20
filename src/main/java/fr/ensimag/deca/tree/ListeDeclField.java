@@ -1,6 +1,7 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.DecacCompiler;
+import fr.ensimag.deca.DecacFatalError;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
@@ -20,13 +21,15 @@ public class ListeDeclField extends TreeList<AbstractDeclField> {
 	 */
 	
     void verifyListDeclField(DecacCompiler compiler, Symbol className,
-            Symbol superClass, EnvironmentExp env) throws ContextualError {
+            Symbol superClass, EnvironmentExp env) throws ContextualError, DecacFatalError {
     	int j = 0;
+    	int k = ((ClassDefinition )compiler.environmentType.defOfType(superClass)).getNumberOfFields();
         for (AbstractDeclField i : getList()) {
-        	EnvironmentExp envr = i.verifyDeclField(compiler, className, superClass, j);
+        	EnvironmentExp envr = i.verifyDeclField(compiler, className, superClass, j+k+1);
         	j++;
-        	envr.empilement(env);
+        	envr.UnionDisjoint(env);
         }
+        ((ClassDefinition) compiler.environmentType.defOfType(className)).setNumberOfFields(k+j);
     }
     
     void verifyListFields(DecacCompiler compiler, EnvironmentExp env, Symbol ClassName) throws ContextualError {

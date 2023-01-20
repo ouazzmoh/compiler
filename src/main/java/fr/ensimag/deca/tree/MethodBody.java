@@ -2,7 +2,14 @@ package fr.ensimag.deca.tree;
 
 import java.io.PrintStream;
 
+import fr.ensimag.deca.DecacCompiler;
+import fr.ensimag.deca.context.ClassDefinition;
+import fr.ensimag.deca.context.ContextualError;
+import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.deca.context.Type;
+import fr.ensimag.deca.context.VoidType;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.deca.tools.SymbolTable.Symbol;
 
 public class MethodBody extends AbstractMethodBody {
 	
@@ -35,6 +42,15 @@ public class MethodBody extends AbstractMethodBody {
 		// TODO Auto-generated method stub
         declVariables.iter(f);
         insts.iter(f);		
+	}
+
+	@Override
+	protected void verifyBody(DecacCompiler compiler, EnvironmentExp env, EnvironmentExp envExpParam, Symbol className,
+			Type returnType) throws ContextualError {
+		// TODO Auto-generated method stub
+        declVariables.verifyListDeclVariable(compiler, envExpParam, (ClassDefinition) compiler.environmentType.defOfType(className));
+        env.Empilement(envExpParam);
+        insts.verifyListInst(compiler, envExpParam, (ClassDefinition) compiler.environmentType.defOfType(className), returnType);
 	}
 
 }

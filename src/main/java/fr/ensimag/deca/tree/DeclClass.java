@@ -3,8 +3,10 @@ package fr.ensimag.deca.tree;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ClassType;
 import fr.ensimag.deca.DecacCompiler;
+import fr.ensimag.deca.DecacFatalError;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.deca.context.EnvironmentType;
 import fr.ensimag.deca.context.FieldDefinition;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
@@ -69,17 +71,29 @@ public class DeclClass extends AbstractDeclClass {
     protected void verifyClassMembers(DecacCompiler compiler)
             throws ContextualError {
         //throw new UnsupportedOperationException("not yet implemented");
-    	EnvironmentExp env = new EnvironmentExp(null);
     	Symbol supe = null;
     	//if (superClass != null) {
     	supe = superClass.getName();
+    	ClassDefinition defCourante  = (ClassDefinition) compiler.environmentType.defOfType(className.getName());
+    	EnvironmentExp env = defCourante.getMembers();
     	ClassDefinition def  = (ClassDefinition) compiler.environmentType.defOfType(supe);
     	if (def == null) {
     		throw new ContextualError("problems with verifyClassMembers", this.getLocation());
     	}
     	//}
+    	EnvironmentExp ee = new EnvironmentExp(null);
     	EnvironmentExp env_exp_super = def.getMembers();
-    	declfields.verifyListDeclField(compiler, className.getName(), supe , env);
+    	try {
+			declfields.verifyListDeclField(compiler, className.getName(), supe , ee);
+			declmethods.verifyListDeclMethod(compiler, className.getName(), supe, ee);
+			ee.Empilement(env);
+			EnvironmentType neww = new EnvironmentType(compiler);
+			neww.declareClass(className.getName(), defCourante);
+			compiler.environmentType.Empilement(neww);
+		} catch (DecacFatalError e) {
+			// TODO Auto-generated catch block
+			throw new ContextualError("environment are not disjoint", this.getLocation());
+		}
     	
     }
     
@@ -90,6 +104,7 @@ public class DeclClass extends AbstractDeclClass {
     	ClassDefinition def = (ClassDefinition) compiler.environmentType.defOfType(s);
     	EnvironmentExp env = def.getMembers();
     	declfields.verifyListFields(compiler, env, s);
+    	declmethods.verifyListMethod(compiler, env, s);
     }
 
 

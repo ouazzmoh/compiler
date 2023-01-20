@@ -12,6 +12,7 @@ import org.apache.commons.lang.Validate;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
+import fr.ensimag.deca.context.Definition;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.context.EnvironmentExp.DoubleDefException;
 import fr.ensimag.deca.context.FieldDefinition;
@@ -66,17 +67,23 @@ public class DeclField extends AbstractDeclField {
 		Type t = type.verifyType(compiler);
 		type.setType(t);
     	this.type.setDefinition(compiler.environmentType.defOfType(type.getName()));
-		Symbol name = varName.getName();
 		if (t.sameType(compiler.environmentType.VOID)) {
 			throw new ContextualError("void type can't be a field", type.getLocation());
 		}
+		Symbol name = varName.getName();
 		ClassDefinition def = (ClassDefinition) compiler.environmentType.defOfType(superClass);
+		EnvironmentExp env = def.getMembers();
+		Definition defField = env.get(name);
+		if (defField != null) {
+			if(!defField.isField()) {
+				throw new ContextualError("declaring an attribut already in superClass and is not a Field ", this.getLocation());
+			}
+		}
+		Definition defField2 = new FieldDefinition(t,this.getLocation(), v, (ClassDefinition) compiler.environmentType.defOfType(className), j);  
 		EnvironmentExp envi = new EnvironmentExp(null);
-		FieldDefinition defField = new FieldDefinition(t,this.getLocation(), v, (ClassDefinition) compiler.environmentType.defOfType(className), j);
 		try {
-			envi.declare(name, defField);
-			def.getMembers().declare(name, defField);
-    		varName.setDefinition(defField);
+			envi.declare(name, (FieldDefinition) defField2);
+    		varName.setDefinition((FieldDefinition) defField2);
     		varName.setType(t);
 		} catch (DoubleDefException e1) {
 			throw new ContextualError("Something went wrong in fields", this.getLocation());
@@ -93,6 +100,7 @@ public class DeclField extends AbstractDeclField {
 	}
 
 
+
 	@Override
 	protected void codeGenDeclField(DecacCompiler compiler){
 		compiler.addComment("Initialization of field  " + varName.getName().getName());
@@ -102,6 +110,7 @@ public class DeclField extends AbstractDeclField {
 		compiler.addInstruction(new STORE(Register.R1, new RegisterOffset(1, Register.R1)));
 		compiler.addInstruction(new RTS());
 	}
+
 	
 	
 }

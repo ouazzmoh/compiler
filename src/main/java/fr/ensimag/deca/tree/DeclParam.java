@@ -2,7 +2,14 @@ package fr.ensimag.deca.tree;
 
 import java.io.PrintStream;
 
+import fr.ensimag.deca.DecacCompiler;
+import fr.ensimag.deca.context.ContextualError;
+import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.deca.context.EnvironmentExp.DoubleDefException;
+import fr.ensimag.deca.context.ParamDefinition;
+import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.deca.tools.SymbolTable.Symbol;
 
 public class DeclParam extends AbstractDeclParam {
 	final private AbstractIdentifier type;
@@ -32,5 +39,31 @@ public class DeclParam extends AbstractDeclParam {
 	protected void iterChildren(TreeFunction f) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	protected Type verifyDeclParam(DecacCompiler compiler) throws ContextualError {
+		// TODO Auto-generated method stub
+		Type t = type.verifyType(compiler);
+		if (t.isVoid()) {
+			throw new ContextualError("parametre can't be void type", type.getLocation());
+		}
+		return t;
+	}
+
+	@Override
+	protected EnvironmentExp verifyParam(DecacCompiler compiler) throws ContextualError {
+		// TODO Auto-generated method stub
+		Symbol name = this.name.getName();
+		Type t = this.type.verifyType(compiler);
+		ParamDefinition param = new ParamDefinition(t, this.name.getLocation());
+		EnvironmentExp res = new EnvironmentExp(null);
+		try {
+			res.declare(name, param);
+		} catch (DoubleDefException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return res;
 	}
 }
