@@ -41,6 +41,9 @@ public class ListDeclClass extends TreeList<AbstractDeclClass> {
      */
     public void verifyListClassMembers(DecacCompiler compiler) throws ContextualError {
         //throw new UnsupportedOperationException("not yet implemented");
+        for (AbstractDeclClass e : getList()) {
+        	e.verifyClassMembers(compiler);
+        }
     }
     
     /**
@@ -48,7 +51,31 @@ public class ListDeclClass extends TreeList<AbstractDeclClass> {
      */
     public void verifyListClassBody(DecacCompiler compiler) throws ContextualError {
         //throw new UnsupportedOperationException("not yet implemented");
+        for (AbstractDeclClass e : getList()) {
+        	e.verifyClassBody(compiler);
+        }
     }
+
+    /**
+     * First Pass Generating CodeGen for Virtual Table
+     */
+    public void codeGenListVirtualTable(DecacCompiler compiler){
+        for(AbstractDeclClass e : this.getList()){
+            e.codeGenVirtualTable(compiler);
+        }
+    }
+
+
+    /**
+     * Generate the methods to initialize the fields and define the functions
+     * @param compiler
+     */
+    public void codeGenListFieldsMethods(DecacCompiler compiler){
+        for(AbstractDeclClass e : this.getList()){
+            e.codeGenFieldsMethods(compiler);
+        }
+    }
+
 
 
 }

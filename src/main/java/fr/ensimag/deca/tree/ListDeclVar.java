@@ -48,12 +48,9 @@ public class ListDeclVar extends TreeList<AbstractDeclVar> {
     }
 
     public void codeGenListDeclVariable(DecacCompiler compiler){
-        int d1 = getList().size();
-        compiler.addInstruction(new ADDSP(d1));
-        int varOffset = 1;
         for (AbstractDeclVar d : getList()){
-            d.codeGenDeclVariable(compiler, varOffset);
-            varOffset++;
+            d.codeGenDeclVariable(compiler, compiler.getOffset());
+            compiler.incOffset(1);
         }
 
 

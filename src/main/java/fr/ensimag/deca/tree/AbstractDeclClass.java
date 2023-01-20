@@ -31,5 +31,13 @@ public abstract class AbstractDeclClass extends Tree {
      */
     protected abstract void verifyClassBody(DecacCompiler compiler)
             throws ContextualError;
+    /*
+     * First Pass [CodeGen]. Generate Virtual Table Assembly Code in the beginning
+     * of the .ass file
+     */
+
+    protected abstract void codeGenVirtualTable(DecacCompiler compiler);
+
+    protected abstract void codeGenFieldsMethods(DecacCompiler compiler);
 
 }

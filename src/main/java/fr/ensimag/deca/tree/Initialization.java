@@ -9,6 +9,9 @@ import fr.ensimag.deca.tools.IndentPrintStream;
 import java.io.PrintStream;
 
 import fr.ensimag.ima.pseudocode.DAddr;
+import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
 import org.apache.commons.lang.Validate;
 
 /**
@@ -40,7 +43,7 @@ public class Initialization extends AbstractInitialization {
         //throw new UnsupportedOperationException("not yet implemented");
     	
     	AbstractExpr exp = expression.verifyRValue(compiler, localEnv, currentClass, t);
-    	exp.verifyExpr(compiler, localEnv, currentClass);
+    	//exp.verifyExpr(compiler, localEnv, currentClass);
     	this.setExpression(exp);
     	
     	/*
@@ -79,5 +82,13 @@ public class Initialization extends AbstractInitialization {
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
         expression.codeGenInit(compiler, adr);
+    }
+
+    @Override
+    protected void codeGenInitField(DecacCompiler compiler){
+        GPRegister result = (GPRegister) expression.codeGenLoad(compiler);
+        //TODO: optimize this
+        compiler.addInstruction(new LOAD(result, Register.R0));
+        compiler.freeReg();
     }
 }

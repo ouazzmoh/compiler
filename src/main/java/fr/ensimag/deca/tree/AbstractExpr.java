@@ -132,6 +132,14 @@ public abstract class AbstractExpr extends AbstractInst {
         throw new DecacInternalError("expression cannot be printed");
     }
 
+    /**
+     * Generate code to print the expression
+     * @param compiler
+     */
+    protected void codeGenPrint(DecacCompiler compiler, boolean hex, GPRegister thisReg) {
+        throw new DecacInternalError("expression cannot be printed");
+    }
+
 
     /**
      * Generate the code corresponding to the instruction
@@ -185,6 +193,23 @@ public abstract class AbstractExpr extends AbstractInst {
     protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
         throw new DecacInternalError("Expression cannot be used for boolean expressions");
     }
+
+
+    /**
+     * Sets the adress of a field when using it inside a method
+     * if the expression is not a field it doesn't do anything
+     * @param compiler
+     * @param adr: Can be a register ofsset, we are intersted in the register and we use the index
+     *           to get to the adress if it is actually a field
+     */
+    protected void setAdrField(DecacCompiler compiler, DAddr adr){
+
+    }
+
+
+
+
+
 
 
 

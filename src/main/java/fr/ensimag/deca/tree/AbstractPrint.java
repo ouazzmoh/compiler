@@ -9,6 +9,7 @@ import fr.ensimag.deca.tools.IndentPrintStream;
 
 import java.io.PrintStream;
 
+import fr.ensimag.ima.pseudocode.GPRegister;
 import fr.ensimag.ima.pseudocode.Label;
 import fr.ensimag.ima.pseudocode.instructions.BRA;
 import org.apache.commons.lang.Validate;
@@ -53,8 +54,14 @@ public abstract class AbstractPrint extends AbstractInst {
     protected void codeGenInst(DecacCompiler compiler, Label label) {
         for (AbstractExpr a : getArguments().getList()) {
             a.codeGenPrint(compiler, printHex);
+        }
     }
 
+    @Override
+    protected void codeGenInst(DecacCompiler compiler, Label label, GPRegister thisReg){
+        for (AbstractExpr a : getArguments().getList()) {
+            a.codeGenPrint(compiler, printHex, thisReg);
+        }
     }
 
     private boolean getPrintHex() {

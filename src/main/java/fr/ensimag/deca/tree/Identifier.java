@@ -234,6 +234,29 @@ public class Identifier extends AbstractIdentifier {
 
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean hex){
+
+        if (this.getType().isInt()) {
+            compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
+            compiler.addInstruction(new WINT());
+        } else if (this.getType().isFloat()) {
+            compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
+            if (hex) {
+                compiler.addInstruction(new WFLOATX());
+            }
+            else {
+                compiler.addInstruction(new WFLOAT());
+            }
+        }
+        else{
+            throw new DecacInternalError("Cannot print expression");
+        }
+
+    }
+
+
+    @Override
+    protected void codeGenPrint(DecacCompiler compiler, boolean hex, GPRegister thisReg){
+        setAdrField(compiler, new RegisterOffset(0, thisReg));
         if (this.getType().isInt()) {
             compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
             compiler.addInstruction(new WINT());
@@ -281,9 +304,20 @@ public class Identifier extends AbstractIdentifier {
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
         GPRegister reg = compiler.getFreeReg();
-        //implicit use and free
-        compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), reg));
+        setAdrField(compiler, adr);
+        compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
         compiler.addInstruction(new STORE(reg, adr));
     }
+
+    @Override
+    protected void setAdrField(DecacCompiler compiler, DAddr adr){
+        //implicit use and free
+        if (definition.isField()){
+            RegisterOffset registerOffset = (RegisterOffset) adr;
+            int index = ((FieldDefinition)definition).getIndex();
+            getExpDefinition().setOperand(new RegisterOffset(index, registerOffset.getRegister()));
+        }
+    }
+
 
 }

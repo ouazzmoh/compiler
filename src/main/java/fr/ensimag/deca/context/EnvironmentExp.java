@@ -1,8 +1,11 @@
 package fr.ensimag.deca.context;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
+import fr.ensimag.deca.DecacFatalError;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
 
 /**
@@ -27,7 +30,7 @@ public class EnvironmentExp {
     // environnement (association nom -> définition, avec possibilité
     // d'empilement).
 
-    EnvironmentExp parentEnvironment;
+    public EnvironmentExp parentEnvironment;
     private final Map<Symbol, ExpDefinition> envTypes = new HashMap<Symbol, ExpDefinition>();
     
     public EnvironmentExp(EnvironmentExp parentEnvironment) {
@@ -45,11 +48,13 @@ public class EnvironmentExp {
     @SuppressWarnings("finally")
 	public ExpDefinition get(Symbol key) {
         //throw new UnsupportedOperationException("not yet implemented");
-    	try {
+    	if (envTypes.get(key) != null) {
     		return envTypes.get(key);
-    	} catch (Exception e) {
+    	}
+    	else if (this.parentEnvironment != null) {
     		return this.parentEnvironment.get(key);
     	}
+    	return null;
     }
 
     /**
@@ -74,5 +79,51 @@ public class EnvironmentExp {
     	}
     	envTypes.put(name, def);
     }
+    
+    public ExpDefinition getCurrent(Symbol key) {
+    	return envTypes.get(key);
+    }
+
+	public Map<Symbol, ExpDefinition> getEnvTypes() {
+		return envTypes;
+	}
+
+	public void Empilement(EnvironmentExp env) {
+    	Set<Symbol> s = envTypes.keySet();
+    	Iterator<Symbol> i = s.iterator();
+    	while(i.hasNext()) {
+    		Symbol verif = i.next();
+    		if(env.getCurrent(verif) == null) {
+    			try {
+					env.declare(verif, envTypes.get(verif));
+				} catch (DoubleDefException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
+    	}
+    }
+    
+    
+    public void UnionDisjoint(EnvironmentExp env) throws DecacFatalError {
+    	Set<Symbol> s = envTypes.keySet();
+    	Iterator<Symbol> i = s.iterator();
+    	while(i.hasNext()) {
+    		Symbol verif = i.next();
+    		if (env.getCurrent(verif) != null) {
+    			throw new DecacFatalError("internal error");
+    		}
+    		else {
+    			ExpDefinition def = envTypes.get(verif);
+    			try {
+					env.declare(verif, def);
+				} catch (DoubleDefException e) {
+					e.printStackTrace();
+				}
+    		}	
+    	}
+    }
+    
+    
 
 }
