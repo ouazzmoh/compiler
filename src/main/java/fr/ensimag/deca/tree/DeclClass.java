@@ -138,10 +138,10 @@ public class DeclClass extends AbstractDeclClass {
 	@Override
 	protected void codeGenVirtualTable(DecacCompiler compiler){
 		compiler.addComment("Virtual Table of methodes of "+ this.className.getName().getName()+" class");
-		if(superClass.getName().getName().equals("object")){
-			superClass.getClassDefinition().setStackIndex(1);
-			//TODO: SET THIS IN PARSING
-		}
+//		if(superClass.getName().getName().equals("object")){
+//			superClass.getClassDefinition().setStackIndex(1);
+//			//TODO: SET THIS IN PARSING
+//		}
 		//Store @superClass, stackIndex of new class
 		//Store inherited methods in, stakIndex + methodIndex for new class
 		compiler.addInstruction(new LEA(new RegisterOffset(superClass.getClassDefinition().getStackIndex(), Register.GB), Register.R0));
@@ -152,8 +152,8 @@ public class DeclClass extends AbstractDeclClass {
 		LabelOperand oLabelOperand = new LabelOperand(objectLabel);
 		compiler.addInstruction(new LOAD(oLabelOperand, Register.R0));
 		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(), Register.GB)));
-		compiler.incOffset(1+declmethods.size());
-		declmethods.codeGenListVtableMethods(compiler,className.getName().getName(),superClass.getClassDefinition().getStackIndex());
+		compiler.incOffset(1+declmethods.size()); //TODO: this or numberOfMethods
+		declmethods.codeGenListVtableMethods(compiler,className.getName().getName(), className.getClassDefinition().getStackIndex());
 	}
 
 	@Override

@@ -70,7 +70,7 @@ public class New extends AbstractExpr {
 //		STORE R2, 7 (GB)
 		GPRegister reg = compiler.getFreeReg();
 //		compiler.addInstruction(new NEW(1 + ident.getClassDefinition().getNumberOfFields(), reg));
-		compiler.addInstruction(new NEW(1 + 1, reg));
+		compiler.addInstruction(new NEW(1 + ident.getClassDefinition().getNumberOfFields(), reg));
 		compiler.useReg();
 		//TODO: BOV tas plein
 		DAddr dGB = new RegisterOffset(ident.getClassDefinition().getStackIndex(), Register.GB);

@@ -64,9 +64,9 @@ public class Program extends AbstractProgram {
             //The first class will necessarily have object as superclass
             //STORE null, 1(GB)
             //STORE code.Object.equals, 2(GB)
-            Label objectLabel = new Label("code.Object.equals");
-            LabelOperand operandObjectLabel = new LabelOperand(objectLabel);
-            compiler.addComment("Virtual Table of methods for Object class");
+            Label objectEqLabel = new Label("code.Object.equals");
+            LabelOperand operandObjectLabel = new LabelOperand(objectEqLabel);
+            compiler.addComment("Vtable construction for Object");
             compiler.addInstruction(new LOAD(new NullOperand(),Register.R0));
             compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(),Register.GB)));
             compiler.incOffset(1);

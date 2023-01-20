@@ -42,7 +42,7 @@ public class ClassDefinition extends TypeDefinition {
 
     private int numberOfFields = 0;
     private int numberOfMethods = 0;
-    private int stackIndex;
+    private int stackIndex = 1;
     
     @Override
     public boolean isClass() {
