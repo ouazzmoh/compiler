@@ -420,10 +420,12 @@ select_expr returns[AbstractExpr tree]
     | e1=select_expr DOT i=ident {
             assert($e1.tree != null);
             assert($i.tree != null);
+            $tree = new Selection($e1.tree, $i.tree);
         }
         (o=OPARENT args=list_expr CPARENT {
             // we matched "e1.i(args)"
             assert($args.tree != null);
+            $tree = new MethodCall($e1.tree, $i.tree, $args.tree);
         }
         | /* epsilon */ {
             // we matched "e.i"
@@ -439,9 +441,8 @@ primary_expr returns[AbstractExpr tree]
         }
     | m=ident OPARENT args=list_expr CPARENT {
             assert($args.tree != null);
-            if ($m.tree != null) {
-            	throw new InvalidMethod(this, $ctx);
-            }
+            $tree = new MethodCall($m.tree, $args.tree);
+            setLocation($tree, $ident.start);
         }
     | OPARENT expr CPARENT {
             assert($expr.tree != null);
@@ -519,9 +520,8 @@ literal returns[AbstractExpr tree]
     	setLocation($tree, $FALSE);
         }
     | THIS {
-    	if ($THIS != null) {
-            throw new InvalidMethod(this, $ctx);
-            }
+    	$tree = new This();
+    	setLocation($tree, $THIS);
         }
     | NULL {
     	 if ($NULL != null) {
@@ -667,4 +667,6 @@ param returns[AbstractDeclParam tree]
     		setLocation($tree, $type.start);
         }
     ;
+
+
 
