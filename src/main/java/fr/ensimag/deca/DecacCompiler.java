@@ -64,6 +64,10 @@ public class DecacCompiler {
 
     //Number of temporaries reserved in stack, in the main program(Push=> +1, Pop=> -1)
     private int tempStack;
+
+    //Number max of register used inside a methode to PULL PUSH them before entering 
+    int maxRegisterUsed;
+
     
 
 
@@ -88,6 +92,7 @@ public class DecacCompiler {
         this.offset = 1;
         //
         this.tempStack = 0;
+        this.maxRegisterUsed = 2;
 
     }
 
@@ -103,10 +108,11 @@ public class DecacCompiler {
 
         this.regMax = regMax - 1;
         //
-        this.currRegNum = 2;
+        this.currRegNum = 1;
         this.offset = 1;
 
         this.tempStack = 1;
+        this.maxRegisterUsed = 2 ;
 
     }
 
@@ -141,6 +147,21 @@ public class DecacCompiler {
 
     public int getCurrRegNum(){
         return this.currRegNum;
+    }
+    /**
+     * Integer to count how many register are used in a methode body so we can push pop them before entering the body
+     * @param maxRegisterUsed
+     */
+    public void updateMaxRegisterUsed(){
+        if(this.maxRegisterUsed < (this.currRegNum-1)){
+            this.maxRegisterUsed = (this.currRegNum-1);
+        }
+    }
+    public int getMaxRegisterUsed(){
+        return this.maxRegisterUsed;
+    }
+    public void resetMaxRegisterUsed(){
+        this.maxRegisterUsed = 2;
     }
     /**
      * @see
@@ -198,6 +219,22 @@ public class DecacCompiler {
     public void addInstructionFirst(Instruction instruction, String comment) {
         program.addInstruction(instruction, comment);
     }
+    /** 
+     * @see
+     * IMAProgram#addHere(Instruction, int index)
+    */
+    public void addHere(Instruction instruction, int index){
+        program.addHere(instruction, index);
+    }
+
+    /** 
+     * @see
+     * IMAProgram#addCommentHere(Instruction,
+     * java.lang.String)
+    */
+    public void addCommentHere(String s, int index){
+        program.addCommentHere(s, index);
+    }
     
     /**
      * @see 
@@ -213,6 +250,10 @@ public class DecacCompiler {
      * The main program. Every instruction generated will eventually end up here.
      */
     private final IMAProgram program = new IMAProgram();
+
+    public int getIndexLineProgram(){
+        return this.program.getIndexLineProgram();
+    }
  
 
     /** The global environment for types (and the symbolTable) */
