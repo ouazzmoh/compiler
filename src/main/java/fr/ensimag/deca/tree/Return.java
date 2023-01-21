@@ -7,6 +7,7 @@ import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.context.Type;
+import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.Label;
 
@@ -24,7 +25,10 @@ public class Return extends AbstractInst {
 	protected void verifyInst(DecacCompiler compiler, EnvironmentExp localEnv, ClassDefinition currentClass,
 			Type returnType) throws ContextualError {
 		// TODO Auto-generated method stub
-		
+		if (returnType.isVoid()) {
+			throw new ContextualError("impossible d'appler return lorsque le type est void", this.getLocation());
+		}
+		expression.verifyRValue(compiler, localEnv, currentClass, returnType);
 	}
 
 	@Override
@@ -50,7 +54,9 @@ public class Return extends AbstractInst {
 	@Override
 	protected void iterChildren(TreeFunction f) {
 		// TODO Auto-generated method stub
-		
+		//throw new DecacInternalError("not implemented yet");
+		expression.iter(f);
 	}
 
 }
+
