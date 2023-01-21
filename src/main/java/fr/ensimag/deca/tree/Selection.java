@@ -36,7 +36,7 @@ public class Selection extends AbstractLValue {
 		ExpDefinition t2 = env2.get(ident.getName());
     	
 		if(t2 == null) {
-			throw new ContextualError("Selection type problem", this.getLocation());
+			throw new ContextualError("field not found", this.getLocation());
 		}
 		if (t2.isField()) {
 			FieldDefinition res = t2.asFieldDefinition(null, getLocation());

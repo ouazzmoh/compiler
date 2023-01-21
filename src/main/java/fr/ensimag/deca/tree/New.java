@@ -27,9 +27,9 @@ public class New extends AbstractExpr {
 		Type t = ident.verifyType(compiler);
 		ident.setType(t);
 		ClassType type = (ClassType) compiler.environmentType.defOfType(ident.getName()).getType();
-		if (!type.sameType(t)) {
+		/*if (!type.sameType(t)) {
 			throw new ContextualError("instanciation impo", this.getLocation());
-		}
+		}*/
 		Definition def = compiler.environmentType.defOfType(ident.getName());
 		this.setType(type);
 		ident.setDefinition(def);

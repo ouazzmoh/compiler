@@ -61,7 +61,7 @@ public class MethodCall extends AbstractExpr  {
 	public void rvalue(DecacCompiler compiler, EnvironmentExp env,ClassDefinition currentClass,
 			Signature s) throws ContextualError {
 		if(args.getList().size() != s.size()) {
-			throw new ContextualError("number of param not valid", args.getLocation());
+			throw new ContextualError("number of param not valid", this.getLocation());
 		}
 		int i = 0;
 		for(AbstractExpr e: this.args.getList()) {

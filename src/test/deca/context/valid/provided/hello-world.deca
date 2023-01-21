@@ -20,8 +20,6 @@
         boolean aaa;
         boolean bbb = true;
         
-        string s;
-        string ss = "ok";
         
         int d = a+b;
         int dd = a-b;
@@ -41,7 +39,7 @@
         aaa = false;
         
         
-        println(a,b,aa,bb,s,ss);
+        println(a,b,aa,bb,"oo","ok");
         
         while (a<=3) {
         println("ooo");
