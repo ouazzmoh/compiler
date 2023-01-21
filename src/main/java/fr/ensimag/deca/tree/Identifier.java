@@ -264,6 +264,7 @@ public class Identifier extends AbstractIdentifier {
         DVal toLoad = getExpDefinition().getOperand();
         compiler.addInstruction(new LOAD(toLoad, registerToUse));
         compiler.useReg();
+        compiler.updateMaxRegisterUsed();
         return registerToUse;
     }
 

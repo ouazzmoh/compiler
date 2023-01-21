@@ -95,6 +95,7 @@ public class FloatLiteral extends AbstractExpr {
         ImmediateFloat toLoad = new ImmediateFloat(value);
         compiler.addInstruction(new LOAD(toLoad, registerToUse));
         compiler.useReg();
+        compiler.updateMaxRegisterUsed();
         return registerToUse;
     }
 

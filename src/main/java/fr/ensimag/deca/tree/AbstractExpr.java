@@ -160,16 +160,17 @@ public abstract class AbstractExpr extends AbstractInst {
      */
     protected void codeGenAssign(DecacCompiler compiler, AbstractLValue left){
         if (left.isIdent()){
-            this.codeGenInit(compiler, ((Identifier)left).getVariableDefinition().getOperand());
+            this.codeGenInit(compiler, ((Identifier)left).getExpDefinition().getOperand());
         }
         else {
            //In this case it is a selection
             Selection sel = (Selection)left;
             GPRegister reg = (GPRegister) compiler.getFreeReg();
             compiler.useReg();
+            compiler.updateMaxRegisterUsed();
             //TODO: BEQ DEREFER
 
-            compiler.addInstruction(new LOAD(((Identifier)sel.getExp()).getVariableDefinition().getOperand(), reg));
+            compiler.addInstruction(new LOAD(((Identifier)sel.getExp()).getExpDefinition().getOperand(), reg));
 //            LOAD 7(GB), R2
 //            CMP #null, R2 ; objet null dans sélection de champ ?
 //            BEQ dereferencement.null

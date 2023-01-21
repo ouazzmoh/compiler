@@ -34,6 +34,7 @@ public abstract class AbstractReadExpr extends AbstractExpr {
         GPRegister reg = compiler.getFreeReg();
         compiler.addInstruction(new LOAD(Register.R1, reg));
         compiler.useReg();
+        compiler.updateMaxRegisterUsed();
         return reg;
     }
 

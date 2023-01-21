@@ -113,6 +113,7 @@ public class Selection extends AbstractLValue {
 		Identifier left = (Identifier)exp;
 		compiler.addInstruction(new LOAD(left.getExpDefinition().getOperand(), reg));
 		compiler.useReg();
+		compiler.updateMaxRegisterUsed();
 		ident.getFieldDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(),reg));
 		ident.codeGenPrint(compiler, printHex, null);
 		ident.getFieldDefinition().setOperand(null);
@@ -129,6 +130,7 @@ public class Selection extends AbstractLValue {
 		Identifier left = (Identifier)exp;
 		compiler.addInstruction(new LOAD(left.getExpDefinition().getOperand(), reg));
 		compiler.useReg();
+		compiler.updateMaxRegisterUsed();
 		ident.getFieldDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(),reg));
 
 		GPRegister registerToReturn = (GPRegister) ident.codeGenLoad(compiler);

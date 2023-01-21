@@ -112,6 +112,7 @@ public class BooleanLiteral extends AbstractExpr {
         }
         compiler.addInstruction(new LOAD(toLoad, registerToUse));
         compiler.useReg();
+        compiler.updateMaxRegisterUsed();
         return registerToUse;
     }
 

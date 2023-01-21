@@ -44,6 +44,7 @@ public class UnaryMinus extends AbstractUnaryExpr {
         GPRegister valueReg = (GPRegister) getOperand().codeGenLoad(compiler);
         compiler.addInstruction(new OPP(valueReg, valueReg));
         compiler.useReg();
+		compiler.updateMaxRegisterUsed();
         return valueReg;
     }
 

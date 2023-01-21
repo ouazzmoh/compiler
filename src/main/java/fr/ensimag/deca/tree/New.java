@@ -71,6 +71,7 @@ public class New extends AbstractExpr {
 		GPRegister reg = compiler.getFreeReg();
 		compiler.addInstruction(new NEW(1 + ident.getClassDefinition().getNumberOfFields(), reg));
 		compiler.useReg();
+		compiler.updateMaxRegisterUsed();
 		//TODO: BOV tas plein
 		DAddr dGB = new RegisterOffset(ident.getClassDefinition().getStackIndex(), Register.GB);
 		compiler.addInstruction(new LEA(dGB, Register.R0));

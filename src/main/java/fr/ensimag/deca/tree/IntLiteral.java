@@ -76,6 +76,7 @@ public class IntLiteral extends AbstractExpr {
         GPRegister registerToUse = compiler.getFreeReg();
         compiler.addInstruction(new LOAD(value, registerToUse));
         compiler.useReg();
+        compiler.updateMaxRegisterUsed();
         return registerToUse;
     }
 
