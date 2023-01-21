@@ -3,6 +3,9 @@ package fr.ensimag.deca;
 
 import java.io.File;
 import org.apache.log4j.Logger;
+
+import net.bytebuddy.asm.Advice.Exit;
+
 import java.util.concurrent.*;
 
 
@@ -86,7 +89,7 @@ public class DecacMain {
                 try {
                     f.get();
                 } catch (ExecutionException | CancellationException | InterruptedException ex){
-                    ex.printStackTrace();
+                    System.exit(1);
                 }
             }
         } else {
