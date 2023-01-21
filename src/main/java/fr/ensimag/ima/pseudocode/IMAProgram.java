@@ -21,6 +21,10 @@ public class IMAProgram {
         lines.add(new Line(s));
     }
 
+    public void addCommentHere(String s, int index){
+        lines.add(index, new Line(s));
+    }
+
     public void addLabel(Label l) {
         lines.add(new Line(l));
     }
@@ -50,6 +54,13 @@ public class IMAProgram {
     }
 
     /**
+     * Add a line in a specific index
+     */
+    public void addHere(Instruction i, int index){
+        lines.add(index, new Line(i));
+    }
+
+    /**
      * Display the program in a textual form readable by IMA to stream s.
      */
     public void display(PrintStream s) {
@@ -74,5 +85,9 @@ public class IMAProgram {
     
     public void addFirst(Instruction i, String comment) {
         addFirst(new Line(null, i, comment));
+    }
+
+    public int getIndexLineProgram(){
+        return this.lines.size();
     }
 }
