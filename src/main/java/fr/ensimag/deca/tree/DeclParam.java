@@ -64,6 +64,8 @@ public class DeclParam extends AbstractDeclParam {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		this.name.setDefinition(param);
+		type.setType(t);
 		return res;
 	}
 }
