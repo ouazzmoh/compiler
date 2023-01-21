@@ -236,10 +236,20 @@ public class Identifier extends AbstractIdentifier {
 
 
     @Override
-    protected void codeGenPrint(DecacCompiler compiler, boolean hex, GPRegister thisReg){
-        if (thisReg!=null){
-            setAdrField(compiler, new RegisterOffset(0, thisReg));
+    protected void codeGenPrint(DecacCompiler compiler, boolean hex){
+
+        //todo: here the adress is null when it's a field !!!!
+        boolean cancelAdress = false;
+        if (this.getExpDefinition().getOperand() == null){
+            //In this case it is a field in the scope of a class
+            GPRegister thisReg = compiler.getFreeReg();
+            compiler.useReg();
+            compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), thisReg));
+            int index = getFieldDefinition().getIndex();
+            getExpDefinition().setOperand(new RegisterOffset(index, thisReg));
+            cancelAdress = true;
         }
+
         if (this.getType().isInt()) {
             compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
             compiler.addInstruction(new WINT());
@@ -255,17 +265,30 @@ public class Identifier extends AbstractIdentifier {
         else{
             throw new DecacInternalError("Cannot print expression");
         }
+        if (cancelAdress){
+            //In the case we printed a field with a method inside a class, we turn its field to null and free the thisReg
+            getExpDefinition().setOperand(null);
+            compiler.freeReg();
+        }
 
     }
 
 
     @Override
     protected DVal codeGenLoad(DecacCompiler compiler){
-        GPRegister registerToUse = compiler.getFreeReg();
-        DVal toLoad = getExpDefinition().getOperand();
-        compiler.addInstruction(new LOAD(toLoad, registerToUse));
-        compiler.useReg();
-        return registerToUse;
+        //This means that we are calling this inside a class for a field
+        //TODO: this.x
+        GPRegister thisReg = compiler.getFreeReg();
+        compiler.useReg();//Using thisReg
+
+        compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), thisReg));
+        //We don't need to change the adress because this is just temporary
+        DVal identAdr = new RegisterOffset(this.getFieldDefinition().getIndex(), thisReg);
+
+
+        compiler.addInstruction(new LOAD(identAdr, thisReg));
+
+        return thisReg;
     }
 
 
@@ -286,16 +309,14 @@ public class Identifier extends AbstractIdentifier {
 
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-        GPRegister reg = compiler.getFreeReg();
-        setAdrField(compiler, adr);
-        compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
+        GPRegister reg = (GPRegister) codeGenLoad(compiler);
         compiler.addInstruction(new STORE(reg, adr));
     }
 
     @Override
     protected void setAdrField(DecacCompiler compiler, DAddr adr){
         //implicit use and free
-        if (definition.isField()){
+        if (definition.isField() && getExpDefinition().getOperand() != null){
             RegisterOffset registerOffset = (RegisterOffset) adr;
             int index = ((FieldDefinition)definition).getIndex();
             getExpDefinition().setOperand(new RegisterOffset(index, registerOffset.getRegister()));

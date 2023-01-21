@@ -46,7 +46,7 @@ public class MethodAsmBody extends AbstractMethodBody {
 
 
 	@Override
-	protected void codeGenBodyMethod(DecacCompiler compiler, ListDeclParam parametres, GPRegister thisReg) {
+	protected void codeGenBodyMethod(DecacCompiler compiler, GPRegister thisReg) {
 		// TODO
 	}
 }

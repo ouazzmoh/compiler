@@ -58,7 +58,7 @@ public class ReadInt extends AbstractReadExpr {
 
 
     @Override
-    protected void codeGenPrint(DecacCompiler compiler, boolean hex, GPRegister thisReg){
+    protected void codeGenPrint(DecacCompiler compiler, boolean hex){
         compiler.addInstruction(new WINT());
     }
 

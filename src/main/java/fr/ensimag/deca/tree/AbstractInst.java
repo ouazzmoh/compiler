@@ -38,10 +38,9 @@ public abstract class AbstractInst extends Tree {
      *
      * @param compiler
      * @param endIf : useful to store the endIf label in if instructions
-     * @param thisReg : contains the object of the class
      */
-    protected void codeGenInst(DecacCompiler compiler, Label endIf, GPRegister thisReg){
-        throw new DecacInternalError("Not yet abtracted");
+    protected void codeGenInst(DecacCompiler compiler, Label endIf){
+        throw new DecacInternalError("Not yet implemented");
     }
 
 
@@ -55,8 +54,6 @@ public abstract class AbstractInst extends Tree {
         decompile(s);
     }
 
-    protected void codeGenInstIf(DecacCompiler compiler, Label label){
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+
 
 }

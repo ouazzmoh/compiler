@@ -11,6 +11,9 @@ import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.GPRegister;
 import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
 
 public class Return extends AbstractInst {
 	private AbstractExpr expression;
@@ -33,9 +36,8 @@ public class Return extends AbstractInst {
 	}
 
 	@Override
-	protected void codeGenInst(DecacCompiler compiler, Label endIf, GPRegister thisReg) {
-		// TODO Auto-generated method stub
-		
+	protected void codeGenInst(DecacCompiler compiler, Label endIf) {
+		expression.codeGenReturn(compiler);
 	}
 
 	@Override

@@ -79,7 +79,7 @@ public class FloatLiteral extends AbstractExpr {
     }
 
     @Override
-    protected void codeGenPrint(DecacCompiler compiler, boolean hex, GPRegister thisReg){
+    protected void codeGenPrint(DecacCompiler compiler, boolean hex){
         compiler.addInstruction(new LOAD(new ImmediateFloat(value), Register.R1));
         if (hex) {
             compiler.addInstruction(new WFLOATX());
@@ -96,6 +96,11 @@ public class FloatLiteral extends AbstractExpr {
         compiler.addInstruction(new LOAD(toLoad, registerToUse));
         compiler.useReg();
         return registerToUse;
+    }
+
+    @Override
+    protected void codeGenReturn(DecacCompiler compiler){
+        compiler.addInstruction(new LOAD(new ImmediateFloat(value), Register.R0));
     }
 
 }

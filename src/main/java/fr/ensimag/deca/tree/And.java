@@ -27,6 +27,8 @@ public class And extends AbstractOpBool {
 
     @Override
     protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
+        //TODO: Set adress for operands when they re fields
+
         if (!b){
             getLeftOperand().codeGenBranch(compiler, b, label);
             getRightOperand().codeGenBranch(compiler, b, label);

@@ -26,7 +26,7 @@ public class NoOperation extends AbstractInst {
     }
 
     @Override
-    protected void codeGenInst(DecacCompiler compiler, Label label, GPRegister thisReg) {}
+    protected void codeGenInst(DecacCompiler compiler, Label label) {}
 
     @Override
     public void decompile(IndentPrintStream s) {

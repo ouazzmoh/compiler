@@ -6,6 +6,8 @@ import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.*;
 
+import java.awt.peer.ComponentPeer;
+
 /**
  * Arithmetic binary operations (+, -, /, ...)
  * 
@@ -55,9 +57,6 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 	@Override
 	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
 
-		getRightOperand().setAdrField(compiler, adr);
-		getLeftOperand().setAdrField(compiler, adr);
-
 		GPRegister result = (GPRegister) codeGenLoad(compiler);
 		compiler.addInstruction(new STORE(result, adr));
 		compiler.freeReg();
@@ -85,8 +84,23 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 		if (getRightOperand() instanceof IntLiteral){
 			opRight = new ImmediateInteger(((IntLiteral)getRightOperand()).getValue());
 		}
+
 		else if (getRightOperand() instanceof Identifier){
-			opRight = ((Identifier)getRightOperand()).getVariableDefinition().getOperand();
+			if (((Identifier)getRightOperand()).getExpDefinition().getOperand() == null){
+				//In this case the right operand is a field inside the class
+				GPRegister thisReg = compiler.getFreeReg();
+				compiler.useReg();
+				compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), thisReg));
+				int index = ((Identifier)getRightOperand()).getFieldDefinition().getIndex();
+				((Identifier)getRightOperand()).getExpDefinition().setOperand(new RegisterOffset(index, thisReg));
+				opRight = ((Identifier)getRightOperand()).getExpDefinition().getOperand();
+				//Set adress to null after using it
+				((Identifier) getRightOperand()).getExpDefinition().setOperand(null);
+				compiler.freeReg();
+			}
+			else {
+				opRight = ((Identifier)getRightOperand()).getExpDefinition().getOperand();
+			}
 		}
 		else if (getRightOperand() instanceof FloatLiteral){
 			opRight = new ImmediateFloat(((FloatLiteral)getRightOperand()).getValue());
@@ -165,7 +179,7 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 
 
 	@Override
-	protected void codeGenPrint(DecacCompiler compiler, boolean hex, GPRegister thisReg){
+	protected void codeGenPrint(DecacCompiler compiler, boolean hex){
 		GPRegister reg = (GPRegister) codeGenLoad(compiler);
 		compiler.addInstruction(new LOAD(reg, Register.R1));
 		Type typeLeft = this.getLeftOperand().getType();

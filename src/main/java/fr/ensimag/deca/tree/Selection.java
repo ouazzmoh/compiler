@@ -10,6 +10,7 @@ import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.context.ExpDefinition;
 import fr.ensimag.deca.context.FieldDefinition;
 import fr.ensimag.deca.context.Type;
+import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.DVal;
 import fr.ensimag.ima.pseudocode.GPRegister;
@@ -98,27 +99,40 @@ public class Selection extends AbstractLValue {
 		
 	}
 
-	/**
-	 * Generate assignment code for the expression
-	 * @param compiler
-	 * @param left: can be either identifier or selection
-	 */
-	protected void codeGenAssign(DecacCompiler compiler, AbstractLValue left){
 
-	}
-
-	@Override
-	protected void codeGenPrint(DecacCompiler compiler, boolean printHex, GPRegister thisReg){
-		GPRegister reg = compiler.getFreeReg();
-		Identifier left = (Identifier)exp;
-		compiler.addInstruction(new LOAD(left.getExpDefinition().getOperand(), reg));
-		compiler.useReg();
-		ident.getFieldDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(),reg));
-		ident.codeGenPrint(compiler, printHex, null);
-		ident.getFieldDefinition().setOperand(null);
-		compiler.freeReg();
-
-	}
+//	@Override
+//	protected void codeGenPrint(DecacCompiler compiler, boolean printHex){
+//		//TODO: thisReg
+//
+//		if (thisReg == null) {//Outside scope of class
+//			GPRegister reg = compiler.getFreeReg();
+//			if (!((AbstractLValue)exp).isIdent()){
+//				throw new DecacInternalError("The left of the DOT should be an identifier or the object register shouldn't be null");
+//			}
+//			Identifier left = (Identifier) exp;
+//			compiler.addInstruction(new LOAD(left.getExpDefinition().getOperand(), reg));
+//			compiler.useReg();
+//			ident.getFieldDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(),reg));
+//		}
+//		else {
+//			ident.getFieldDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(),thisReg));
+//		}
+//
+//
+//		ident.codeGenPrint(compiler, printHex, null);
+//
+//
+//		if (thisReg == null) {//Outside scope of class, we keep the
+//			ident.getFieldDefinition().setOperand(null);
+//			compiler.freeReg();
+//		}
+//		/*
+//		Here we have two possibilities, either the thiReg is not null, which means this instruction was called
+//		with a specified register containing the adress of the object, which means the adress of the field should
+//		be set with respect to thisReg. Otherwise the left part is the instance
+//		 */
+//
+//	}
 
 
 	@Override

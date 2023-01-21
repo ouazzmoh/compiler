@@ -127,7 +127,7 @@ public abstract class AbstractExpr extends AbstractInst {
      * Generate code to print the expression
      * @param compiler
      */
-    protected void codeGenPrint(DecacCompiler compiler, boolean hex, GPRegister thisReg) {
+    protected void codeGenPrint(DecacCompiler compiler, boolean hex) {
         throw new DecacInternalError("expression cannot be printed");
     }
 
@@ -137,10 +137,9 @@ public abstract class AbstractExpr extends AbstractInst {
      * Generate the code corresponding to the instruction
      * @param compiler
      * @param endIf : useful to store the endIf label in if instructions
-     * @param thisReg : register used when there is an object
      */
     @Override
-    protected void codeGenInst(DecacCompiler compiler, Label endIf, GPRegister thisReg) {
+    protected void codeGenInst(DecacCompiler compiler, Label endIf) {
         throw new UnsupportedOperationException("no available code generation for this instruction");
     }
 
@@ -157,32 +156,10 @@ public abstract class AbstractExpr extends AbstractInst {
      * Generate assignment code for the expression
      * @param compiler
      * @param left: can be either identifier or selection
+     *
      */
-    protected void codeGenAssign(DecacCompiler compiler, AbstractLValue left){
-        if (left.isIdent()){
-            this.codeGenInit(compiler, ((Identifier)left).getVariableDefinition().getOperand());
-        }
-        else {
-           //In this case it is a selection
-            Selection sel = (Selection)left;
-            GPRegister reg = (GPRegister) compiler.getFreeReg();
-            compiler.useReg();
-            //TODO: BEQ DEREFER
-
-            compiler.addInstruction(new LOAD(((Identifier)sel.getExp()).getVariableDefinition().getOperand(), reg));
-//            LOAD 7(GB), R2
-//            CMP #null, R2 ; objet null dans sélection de champ ?
-//            BEQ dereferencement.null
-//            Set the adress for the needed field: field.getFieldDef.SetOperand(1(R2))
-             FieldDefinition fieldDef =  sel.getIdent().getFieldDefinition();
-             fieldDef.setOperand(new RegisterOffset(fieldDef.getIndex(), reg));
-             this.codeGenInit(compiler, fieldDef.getOperand());
-             //TODO: Check this again
-             fieldDef.setOperand(null); //Because the register is now free
-//            LOAD #2, R3
-//            STORE R3, 1(R2)
-
-        }
+    protected void codeGenAssign(DecacCompiler compiler, AbstractIdentifier left){
+        this.codeGenInit(compiler, left.getExpDefinition().getOperand());
     }
 
 
@@ -196,6 +173,17 @@ public abstract class AbstractExpr extends AbstractInst {
         throw new DecacInternalError("Cannot load the expression");
     }
 
+
+    /**
+     * Loads the value of the expression in R0,
+     * Used as a return in assembly
+     * @param compiler
+     */
+    protected void codeGenReturn(DecacCompiler compiler){
+        GPRegister reg = (GPRegister) codeGenLoad(compiler);
+        compiler.addInstruction(new LOAD(reg, Register.R0));
+        compiler.freeReg();
+    }
 
 
 

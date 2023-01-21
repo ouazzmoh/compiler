@@ -140,11 +140,19 @@ public class DeclMethod extends AbstractDeclMethod {
 
 		Label startMethod = new Label("code."+className+"."+name.getName().getName());
 		compiler.addLabel(startMethod);
-		//We load the object in a register
-		GPRegister thisReg = compiler.getFreeReg();
-		compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), thisReg));
-		compiler.useReg();
-		body.codeGenBodyMethod(compiler, parametres, thisReg);
+
+
+		//Set the adresses for the parameters
+		int paramOffset = -3; //The first paramter is in -3(LB)
+		for(AbstractDeclParam d : parametres.getList()){
+			d.setParamOperand(paramOffset);
+			paramOffset--;
+			//TODO: Make their adress null after ?
+		}
+		//Generating the code for the body by using the (No-Object) sublanguage functions
+		body.codeGenBodyMethod(compiler, null);
+		//
+
 		Label endMethod = new Label("fin."+className+"."+name.getName().getName());
 		compiler.addLabel(endMethod);
 		compiler.addComment("Restoring Registers");

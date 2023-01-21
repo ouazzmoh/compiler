@@ -52,9 +52,9 @@ public abstract class AbstractPrint extends AbstractInst {
 
 
     @Override
-    protected void codeGenInst(DecacCompiler compiler, Label label, GPRegister thisReg){
+    protected void codeGenInst(DecacCompiler compiler, Label label){
         for (AbstractExpr a : getArguments().getList()) {
-            a.codeGenPrint(compiler, printHex, thisReg);
+            a.codeGenPrint(compiler, printHex);
         }
     }
 

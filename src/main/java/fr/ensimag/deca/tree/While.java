@@ -71,7 +71,7 @@ public class While extends AbstractInst {
     }
 
     @Override
-    protected void codeGenInst(DecacCompiler compiler, Label label, GPRegister thisReg) {
+    protected void codeGenInst(DecacCompiler compiler, Label label) {
         compiler.addComment("Generating While code");
         Label startWhile = new Label("startWhile.l" + getLocation().getLine() +
                 ".c" + getLocation().getPositionInLine());
@@ -79,7 +79,7 @@ public class While extends AbstractInst {
                 ".c" + getLocation().getPositionInLine());
         compiler.addInstruction(new BRA(condWhile));
         compiler.addLabel(startWhile);
-        body.codeGenListInst(compiler, thisReg);
+        body.codeGenListInst(compiler);
         compiler.addLabel(condWhile);
         condition.codeGenBranch(compiler, true, startWhile);
     }

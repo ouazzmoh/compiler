@@ -10,6 +10,8 @@ import fr.ensimag.deca.context.ParamDefinition;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
+import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.RegisterOffset;
 
 public class DeclParam extends AbstractDeclParam {
 	final private AbstractIdentifier type;
@@ -67,5 +69,11 @@ public class DeclParam extends AbstractDeclParam {
 		this.name.setDefinition(param);
 		type.setType(t);
 		return res;
+	}
+
+
+	@Override
+	public void setParamOperand(int paramOffset){
+		name.getExpDefinition().setOperand(new RegisterOffset(paramOffset, Register.LB));
 	}
 }

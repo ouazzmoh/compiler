@@ -8,9 +8,11 @@ import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.GPRegister;
 
 public class This extends AbstractExpr {
-	
+
+
 
 	@Override
 	public Type verifyExpr(DecacCompiler compiler, EnvironmentExp localEnv, ClassDefinition currentClass)
@@ -45,5 +47,7 @@ public class This extends AbstractExpr {
     String prettyPrintNode() {
         return "this ";
     }
+
+
 
 }

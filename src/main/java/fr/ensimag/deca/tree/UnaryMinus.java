@@ -48,7 +48,7 @@ public class UnaryMinus extends AbstractUnaryExpr {
     }
 
     @Override
-    protected void codeGenPrint(DecacCompiler compiler, boolean hex, GPRegister thisReg){
+    protected void codeGenPrint(DecacCompiler compiler, boolean hex){
         GPRegister valueReg = (GPRegister) codeGenLoad(compiler);
         compiler.addInstruction(new LOAD(valueReg, Register.R1));
         compiler.freeReg();
