@@ -1,15 +1,14 @@
 package fr.ensimag.deca.tree;
 
-import fr.ensimag.deca.context.Type;
+import fr.ensimag.deca.context.*;
 import fr.ensimag.deca.DecacCompiler;
-import fr.ensimag.deca.context.ClassDefinition;
-import fr.ensimag.deca.context.ContextualError;
-import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.*;
 
 import java.io.PrintStream;
+
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
 import org.apache.commons.lang.Validate;
 
 /**
@@ -157,10 +156,33 @@ public abstract class AbstractExpr extends AbstractInst {
     /**
      * Generate assignment code for the expression
      * @param compiler
-     * @param identifier
+     * @param left: can be either identifier or selection
      */
-    protected void codeGenAssign(DecacCompiler compiler, Identifier identifier){
-        this.codeGenInit(compiler, identifier.getExpDefinition().getOperand());
+    protected void codeGenAssign(DecacCompiler compiler, AbstractLValue left){
+        if (left.isIdent()){
+            this.codeGenInit(compiler, ((Identifier)left).getVariableDefinition().getOperand());
+        }
+        else {
+           //In this case it is a selection
+            Selection sel = (Selection)left;
+            GPRegister reg = (GPRegister) compiler.getFreeReg();
+            compiler.useReg();
+            //TODO: BEQ DEREFER
+
+            compiler.addInstruction(new LOAD(((Identifier)sel.getExp()).getVariableDefinition().getOperand(), reg));
+//            LOAD 7(GB), R2
+//            CMP #null, R2 ; objet null dans sélection de champ ?
+//            BEQ dereferencement.null
+//            Set the adress for the needed field: field.getFieldDef.SetOperand(1(R2))
+             FieldDefinition fieldDef =  sel.getIdent().getFieldDefinition();
+             fieldDef.setOperand(new RegisterOffset(fieldDef.getIndex(), reg));
+             this.codeGenInit(compiler, fieldDef.getOperand());
+             //TODO: Check this again
+             fieldDef.setOperand(null); //Because the register is now free
+//            LOAD #2, R3
+//            STORE R3, 1(R2)
+
+        }
     }
 
 

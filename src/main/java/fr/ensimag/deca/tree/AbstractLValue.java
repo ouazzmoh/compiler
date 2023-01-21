@@ -13,4 +13,6 @@ import fr.ensimag.deca.context.EnvironmentExp;
  * @date 01/01/2023
  */
 public abstract class AbstractLValue extends AbstractExpr {
+
+    public abstract boolean isIdent();
 }

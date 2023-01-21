@@ -69,7 +69,6 @@ public class New extends AbstractExpr {
 //		POP R2
 //		STORE R2, 7 (GB)
 		GPRegister reg = compiler.getFreeReg();
-//		compiler.addInstruction(new NEW(1 + ident.getClassDefinition().getNumberOfFields(), reg));
 		compiler.addInstruction(new NEW(1 + ident.getClassDefinition().getNumberOfFields(), reg));
 		compiler.useReg();
 		//TODO: BOV tas plein

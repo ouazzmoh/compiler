@@ -51,11 +51,14 @@ public class Assign extends AbstractBinaryExpr {
     @Override
     protected void codeGenInst(DecacCompiler compiler, Label label, GPRegister thisReg){
         //Load right_operand(expr), left_operand(lvalue)
-        AbstractIdentifier ident = (Identifier)getLeftOperand();
-        if (ident.getExpDefinition().getOperand() == null){
-            ident.getExpDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(),thisReg));
+        //TODO: Left operand is a selection, shoould set the operand
+        if (getLeftOperand().isIdent()){//For variable assignment and field assignment inside class
+            AbstractIdentifier ident = (Identifier)getLeftOperand();
+            if (ident.getVariableDefinition().getOperand() == null){
+                ident.getVariableDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(),thisReg));
+            }
         }
-        this.getRightOperand().codeGenAssign(compiler, (Identifier) this.getLeftOperand());
+        this.getRightOperand().codeGenAssign(compiler, this.getLeftOperand());
     }
 
     @Override

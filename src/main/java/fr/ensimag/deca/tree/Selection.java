@@ -11,12 +11,22 @@ import fr.ensimag.deca.context.ExpDefinition;
 import fr.ensimag.deca.context.FieldDefinition;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.DVal;
+import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
 
-public class Selection extends AbstractExpr {
+public class Selection extends AbstractLValue {
 	private AbstractExpr exp;
 	private AbstractIdentifier ident;
-	
-	
+
+	public AbstractExpr getExp() {
+		return exp;
+	}
+
+	public AbstractIdentifier getIdent() {
+		return ident;
+	}
 
 	public Selection(AbstractExpr exp, AbstractIdentifier ident) {
 		super();
@@ -87,5 +97,56 @@ public class Selection extends AbstractExpr {
         ident.iter(f);
 		
 	}
+
+	/**
+	 * Generate assignment code for the expression
+	 * @param compiler
+	 * @param left: can be either identifier or selection
+	 */
+	protected void codeGenAssign(DecacCompiler compiler, AbstractLValue left){
+
+	}
+
+	@Override
+	protected void codeGenPrint(DecacCompiler compiler, boolean printHex, GPRegister thisReg){
+		GPRegister reg = compiler.getFreeReg();
+		Identifier left = (Identifier)exp;
+		compiler.addInstruction(new LOAD(left.getExpDefinition().getOperand(), reg));
+		compiler.useReg();
+		ident.getFieldDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(),reg));
+		ident.codeGenPrint(compiler, printHex, null);
+		ident.getFieldDefinition().setOperand(null);
+		compiler.freeReg();
+
+	}
+
+
+	@Override
+	protected DVal codeGenLoad(DecacCompiler compiler){
+
+
+		GPRegister reg = compiler.getFreeReg();
+		Identifier left = (Identifier)exp;
+		compiler.addInstruction(new LOAD(left.getExpDefinition().getOperand(), reg));
+		compiler.useReg();
+		ident.getFieldDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(),reg));
+
+		GPRegister registerToReturn = (GPRegister) ident.codeGenLoad(compiler);
+		//TODO: Problem when limiting registers
+		ident.getFieldDefinition().setOperand(null);
+		compiler.freeReg();
+
+
+		return registerToReturn;
+
+	}
+
+
+	@Override
+	public boolean isIdent(){
+		return false;
+	}
+
+
 
 }

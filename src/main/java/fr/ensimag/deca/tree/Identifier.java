@@ -236,7 +236,9 @@ public class Identifier extends AbstractIdentifier {
 
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean hex, GPRegister thisReg){
-        setAdrField(compiler, new RegisterOffset(0, thisReg));
+        if (thisReg!=null){
+            setAdrField(compiler, new RegisterOffset(0, thisReg));
+        }
         if (this.getType().isInt()) {
             compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
             compiler.addInstruction(new WINT());
@@ -269,7 +271,7 @@ public class Identifier extends AbstractIdentifier {
     @Override
     protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
         GPRegister reg = compiler.getFreeReg();
-        compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), reg));
+        compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
         compiler.addInstruction(new CMP(0, reg));
         if (b){
             compiler.addInstruction(new BNE(label));
@@ -297,6 +299,12 @@ public class Identifier extends AbstractIdentifier {
             int index = ((FieldDefinition)definition).getIndex();
             getExpDefinition().setOperand(new RegisterOffset(index, registerOffset.getRegister()));
         }
+    }
+
+
+    @Override
+    public boolean isIdent(){
+        return true;
     }
 
 
