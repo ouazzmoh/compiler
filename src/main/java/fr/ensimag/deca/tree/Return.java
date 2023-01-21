@@ -40,7 +40,9 @@ public class Return extends AbstractInst {
 	@Override
 	public void decompile(IndentPrintStream s) {
 		// TODO Auto-generated method stub
-		throw new DecacInternalError("not implemented yet");
+		s.print("return ");
+		this.expression.decompile(s);
+		s.print(";");	
 	}
 
 	@Override
@@ -57,3 +59,4 @@ public class Return extends AbstractInst {
 	}
 
 }
+

@@ -80,7 +80,14 @@ public class MethodCall extends AbstractExpr  {
 	@Override
 	public void decompile(IndentPrintStream s) {
 		// TODO Auto-generated method stub
-		
+		if(this.exp != null){
+		    this.exp.decompile(s);
+		    s.print(".");
+		}
+		this.ident.decompile(s);
+		s.print("(");
+		this.args.decompile(s);
+		s.print(")");
 	}
 
 	@Override

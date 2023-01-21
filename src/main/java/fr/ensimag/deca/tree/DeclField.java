@@ -57,6 +57,13 @@ public class DeclField extends AbstractDeclField {
 	@Override
 	public void decompile(IndentPrintStream s) {
 		// TODO Auto-generated method stub
+        s.print(v + "");
+        s.print(" ");
+		this.type.decompile(s);
+        s.print(" ");
+        this.varName.decompile(s);
+        this.initialization.decompile(s);
+        s.print(";");
 	}
 
 
@@ -100,3 +107,4 @@ public class DeclField extends AbstractDeclField {
 	
 	
 }
+

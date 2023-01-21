@@ -64,7 +64,9 @@ public class Selection extends AbstractLValue {
 	@Override
 	public void decompile(IndentPrintStream s) {
 		// TODO Auto-generated method stub
-		
+		this.exp.decompile(s);
+		s.print(".");
+		this.ident.decompile(s);		
 	}
     @Override
     String prettyPrintNode() {

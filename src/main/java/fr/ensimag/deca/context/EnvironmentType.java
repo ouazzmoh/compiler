@@ -119,3 +119,4 @@ public class EnvironmentType {
     public final BooleanType BOOLEAN;
     public final ClassType OBJECT;
 }
+

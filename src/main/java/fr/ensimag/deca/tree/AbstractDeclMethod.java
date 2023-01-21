@@ -16,4 +16,3 @@ public abstract class AbstractDeclMethod extends Tree {
 			EnvironmentExp env) throws ContextualError;
 
 }
-
