@@ -148,7 +148,7 @@ public class MethodCall extends AbstractExpr  {
 
 			int paramPosition = -1;
 			for (AbstractExpr arg : args.getList()) {
-				GPRegister regParam = (GPRegister) exp.codeGenLoad(compiler);
+				GPRegister regParam = (GPRegister) arg.codeGenLoad(compiler);
 				compiler.addInstruction(new STORE(regParam, new RegisterOffset(paramPosition, Register.SP)));
 				compiler.freeReg();
 				paramPosition--;
@@ -163,7 +163,19 @@ public class MethodCall extends AbstractExpr  {
 			compiler.addInstruction(new BSR(new RegisterOffset(ident.getMethodDefinition().getIndex(), reg)));
 			compiler.addInstruction(new SUBSP(1 + args.size()));
 
-
 	}
 
+
+	@Override
+	protected DVal codeGenLoad(DecacCompiler compiler){
+		codeGenInst(compiler, null);
+		return Register.R0;
+	}
+
+	@Override
+	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+		codeGenInst(compiler, null);
+		compiler.addInstruction(new STORE(Register.R0, adr));
+	}
 }
+

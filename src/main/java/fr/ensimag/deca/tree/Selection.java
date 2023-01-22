@@ -109,22 +109,6 @@ public class Selection extends AbstractLValue {
 	}
 
 
-
-//	@Override
-//	protected DVal codeGenLoad(DecacCompiler compiler){
-//		GPRegister reg = compiler.getFreeReg();
-//		Identifier left = (Identifier)exp;
-//		compiler.addInstruction(new LOAD(left.getExpDefinition().getOperand(), reg));
-//		compiler.useReg();
-//		ident.getFieldDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(),reg));
-//		//todo: ident can be a method
-//		GPRegister registerToReturn = (GPRegister) ident.codeGenLoad(compiler);
-//		//TODO: Problem when limiting registers
-//		ident.getFieldDefinition().setOperand(null);
-//		compiler.freeReg();
-//		return registerToReturn;
-//	}
-
 	@Override
 	protected DVal codeGenLoad(DecacCompiler compiler){
 		boolean set = setAdrField(compiler, null);

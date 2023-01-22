@@ -162,6 +162,7 @@ public abstract class AbstractExpr extends AbstractInst {
         if (left.isIdent()){
             this.codeGenInit(compiler, ((Identifier)left).getExpDefinition().getOperand());
         }
+        //todo:
     }
 
 
