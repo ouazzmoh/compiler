@@ -15,7 +15,20 @@ class A {
 
 }
 
+class B extends A {
+	void setA(int k){
+		setA(k);
+		this.setA(k);
+	}
+	int getA() {
+		return this.a;
+	}
+}
+
 {
+    A objet0 = new A();
+    B objet = new B();
+
     float pp = 3.2;
     int r, m = 5;
     float k = 3;
@@ -73,6 +86,8 @@ class A {
     r = readInt();
     cc = readFloat();
     
+    objet = (B) (objet0);
+    
     ;
     println("Hello world!");      
     printx("hhhhhhh");
@@ -84,4 +99,6 @@ class A {
     println();
     
     println("hello", "", "world");
+    
+
 }

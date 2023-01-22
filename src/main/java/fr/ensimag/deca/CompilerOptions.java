@@ -62,6 +62,16 @@ public class CompilerOptions {
     	else if (s.equals("-p")) {
     		optionp = true;
     	}
+    	else if (s.equals("-r")) {
+    		optionr = true;
+    	}
+    }
+    
+    public void setNb(int d) throws CLIException {
+    	if (!optionr) {
+    		throw new CLIException("L'option -r doit etre suivi d'un nombre");
+    	}
+    	this.nbRegistre = d;
     }
     
     
@@ -76,6 +86,8 @@ public class CompilerOptions {
     private boolean printBanner = false;
     private boolean optionv = false;
     private boolean optionp = false;
+    private boolean optionr = false;
+    int nbRegistre = 0;
     private List<File> sourceFiles = new ArrayList<File>();
 
     /**
@@ -124,16 +136,22 @@ public class CompilerOptions {
         	String s;
         	while (j < i) {
         		s = args[j];
-        		if (set.contains(s)) {
-        			Settings(s, i);
+        		try {
+        			int d = Integer.parseInt(s);
+        			this.setNb(d);
         		}
-        		else if (s.contains(".deca")) {
-                    File currSource = new File(s);
-                    sourceFiles.add(currSource);
+        		catch (NumberFormatException ex) {
+            		if (set.contains(s)) {
+            			Settings(s, i);
+            		}
+            		else if (s.contains(".deca")) {
+                        File currSource = new File(s);
+                        sourceFiles.add(currSource);
+            		}
+            		else {
+            			throw new CLIException("L'option" + s+ " is incorrect"); 
+        			}
         		}
-        		else {
-        			throw new CLIException("L'option" + s+ " is incorrect"); 
-    			}
     			j++;
         	}
         }

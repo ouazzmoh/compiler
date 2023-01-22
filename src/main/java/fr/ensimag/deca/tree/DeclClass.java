@@ -48,8 +48,8 @@ public class DeclClass extends AbstractDeclClass {
         	}
     	}
     	else {
-    		superClass = new Identifier(compiler.createSymbol("object"));
-    		superClas = (ClassDefinition) compiler.environmentType.defOfType(compiler.createSymbol("object"));
+    		superClass = new Identifier(compiler.createSymbol("Object"));
+    		superClas = (ClassDefinition) compiler.environmentType.defOfType(compiler.createSymbol("Object"));
     	}
 		superClass.setDefinition(superClas);
 		superClass.setLocation(superClas.getLocation());

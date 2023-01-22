@@ -49,6 +49,7 @@ RETURN: 'return';
 INSTANCEOF: 'intanceof';
 THIS: 'this';
 NEW: 'new';
+NULL: 'null';
 
 
 COMMENTMONO: '//' (~('\n'))* { skip(); };

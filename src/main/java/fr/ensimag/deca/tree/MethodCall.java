@@ -47,13 +47,16 @@ public class MethodCall extends AbstractExpr  {
 		}
 		else {
 			if(currentClass == null) {
-				throw new ContextualError("method can't be called in main without an object", args.getLocation());
+				throw new ContextualError("method can't be called in main without an object", this.getLocation());
 			}
 			env2 = localEnv;
 		}
 		MethodDefinition res = this.methodIdent(env2);
+		if (res == null) {
+			throw new ContextualError("Object doesn't have this method", this.getLocation());
+		}
 		ident.setDefinition(res);
-		rvalue(compiler, env2, currentClass, res.getSignature());
+		rvalue(compiler, localEnv, currentClass, res.getSignature());
 		this.setType(res.getType());
 		return this.getType();
 

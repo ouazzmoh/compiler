@@ -467,9 +467,8 @@ primary_expr returns[AbstractExpr tree]
     | cast=OPARENT type CPARENT OPARENT expr CPARENT {
             assert($type.tree != null);
             assert($expr.tree != null);
-            if ($type.tree != null) {
-            	throw new InvalidMethod(this, $ctx);
-            }
+            $tree = new CastExpr($expr.tree, $type.tree);
+            setLocation($tree, $type.start);
         }
     | literal {
             assert($literal.tree != null);
@@ -526,9 +525,8 @@ literal returns[AbstractExpr tree]
     	setLocation($tree, $THIS);
         }
     | NULL {
-    	 if ($NULL != null) {
-            throw new InvalidMethod(this, $ctx);
-            }
+    	 $tree = new Null();
+    	 setLocation($tree, $NULL);
         }
     ;
 

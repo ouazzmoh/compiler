@@ -190,6 +190,7 @@ public class Identifier extends AbstractIdentifier {
     public Type verifyType(DecacCompiler compiler) throws ContextualError {
         //throw new UnsupportedOperationException("not yet implemented");
     	try {
+    		this.setDefinition(compiler.environmentType.defOfType(name));
     		this.setType(compiler.environmentType.defOfType(name).getType());
     		return this.getType();
     	} catch (Exception e) {
