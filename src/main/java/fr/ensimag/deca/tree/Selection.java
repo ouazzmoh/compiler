@@ -108,9 +108,10 @@ public class Selection extends AbstractLValue {
 	}
 
 	@Override
-	protected void codeGenPrint(DecacCompiler compiler, boolean printHex, Identifier ident){
-		throw new DecacInternalError("Print for selection is not implemented");
+	protected void codeGenPrint(DecacCompiler compiler, boolean printHex, Identifier identRight){
+		//Left side is either a this or an ident, right side is ident
 	}
+
 
 
 

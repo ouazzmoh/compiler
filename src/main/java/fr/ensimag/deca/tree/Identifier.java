@@ -237,10 +237,8 @@ public class Identifier extends AbstractIdentifier {
 
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean hex){
-
-        //todo: here the adress is null when it's a field !!!!
         boolean cancelAdress = false;
-        if (this.getExpDefinition().getOperand() == null){
+        if (getExpDefinition().isField() && getExpDefinition().getOperand() == null){
             //In this case it is a field in the scope of a class
             GPRegister thisReg = compiler.getFreeReg();
             compiler.useReg();
@@ -277,7 +275,7 @@ public class Identifier extends AbstractIdentifier {
     @Override
     protected DVal codeGenLoad(DecacCompiler compiler){
 
-        if (getExpDefinition().isField()){
+        if (getExpDefinition().isField() && getExpDefinition().getOperand() == null){
             //This means that we are calling this inside a class for a field
             //TODO: this.x
             GPRegister thisReg = compiler.getFreeReg();
@@ -286,10 +284,7 @@ public class Identifier extends AbstractIdentifier {
             compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), thisReg));
             //We don't need to change the adress because this is just temporary
             DVal identAdr = new RegisterOffset(this.getFieldDefinition().getIndex(), thisReg);
-
-
             compiler.addInstruction(new LOAD(identAdr, thisReg));
-
             return thisReg;
         }
         else {
@@ -332,7 +327,7 @@ public class Identifier extends AbstractIdentifier {
 
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean printHex, Identifier ident){
-        //This means this is an instance of a class  and the ident is a field
+        //This means this is an instance of a class  and the ident is a field (Coming from a selection)
         if (!getExpDefinition().isField()){
             //When it isn't a field its adress has already been set
             GPRegister reg = compiler.getFreeReg();
@@ -365,8 +360,6 @@ public class Identifier extends AbstractIdentifier {
             getExpDefinition().setOperand(null);
             compiler.freeReg();
         }
-
-
 
     }
 
