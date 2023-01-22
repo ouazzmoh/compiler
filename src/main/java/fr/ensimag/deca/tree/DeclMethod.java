@@ -129,10 +129,12 @@ public class DeclMethod extends AbstractDeclMethod {
 
 	@Override
 	protected void  codeGenDeclMethod(DecacCompiler compiler, String className){
+		IMAProgram program2 = new IMAProgram();
+		IMAProgram program = compiler.getImaProgram();
 		int oldRegNum = compiler.getCurrRegNum();
 		Label startMethod = new Label("code."+className+"."+name.getName().getName());
 		compiler.addLabel(startMethod);
-		int line = compiler.getIndexLineProgram();
+		compiler.setImaProgram(program2);
 		compiler.setCurrRegNum(2);
 		compiler.resetMaxRegisterUsed();
 		//We load the object in a register
@@ -142,16 +144,11 @@ public class DeclMethod extends AbstractDeclMethod {
 		compiler.updateMaxRegisterUsed();
 		body.codeGenBodyMethod(compiler, parametres, thisReg);
 		compiler.setCurrRegNum(oldRegNum);
-		compiler.addHere(new TSTO(compiler.getMaxRegisterUsed()-1),line);
-		line+=1;
-		compiler.addHere(new BOV(new Label("err_stack_overflow")),line);
-		line+=1;
-		compiler.addCommentHere("Sauvegarde des registres",line);
-		line+=1;
-		for(int i=2; i<= compiler.getMaxRegisterUsed(); i++){
-			compiler.addHere(new PUSH(Register.getR(i)),line);
-			line+=1;
+		for(int i=compiler.getMaxRegisterUsed(); i>= 2; i--){
+			compiler.addInstructionFirst(new PUSH(Register.getR(i)));
 		}
+		compiler.addInstructionFirst(new BOV(new Label("err_stack_overflow")));
+		compiler.addInstructionFirst(new TSTO(compiler.getMaxRegisterUsed()-1));
 		Label endMethod = new Label("fin."+className+"."+name.getName().getName());
 		compiler.addLabel(endMethod);
 		compiler.addComment("Restoring Registers");
@@ -159,6 +156,8 @@ public class DeclMethod extends AbstractDeclMethod {
 			compiler.addInstruction(new POP(Register.getR(i)));
 		}
 		compiler.addInstruction(new RTS());
+		program.append(program2);
+		compiler.setImaProgram(program);
 
 	}
 

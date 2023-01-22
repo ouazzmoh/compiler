@@ -182,12 +182,18 @@ public class DeclClass extends AbstractDeclClass {
 		compiler.addComment("--------------------------------------------------");
 		//Code for fields.initializations
 		compiler.addLabel(new Label("init."+ className.getName().getName()));
-		//TODO : TSTO
+		int oldRegNum = compiler.getCurrRegNum();
+		compiler.setCurrRegNum(2);
+		compiler.resetMaxRegisterUsed();
 		//TODO: Avec superclass, tous les nv champs, initialiser les champs heritees, init explicit des nv champs
 		for (AbstractDeclField d : declfields.getList()){
 			d.codeGenDeclField(compiler);
 		}
-
+		compiler.setCurrRegNum(oldRegNum);
+		// compiler.addHere(new TSTO(compiler.getMaxRegisterUsed()-1),line);
+		// line+=1;
+		// compiler.addHere(new BOV(new Label("err_stack_overflow")),line);
+		// line+=1;
 		for (AbstractDeclMethod m : declmethods.getList()){
 			m.codeGenDeclMethod(compiler, className.getName().getName());
 		}
