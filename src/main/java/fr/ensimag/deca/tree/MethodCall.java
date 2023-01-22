@@ -13,6 +13,11 @@ import fr.ensimag.deca.context.Signature;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
+import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.instructions.*;
 
 public class MethodCall extends AbstractExpr  {
 	private AbstractExpr exp;
@@ -101,6 +106,51 @@ public class MethodCall extends AbstractExpr  {
 		}
         ident.iter(f);
 		args.iter(f);
+	}
+
+
+	@Override
+	protected void codeGenInst(DecacCompiler compiler, Label endIf) {
+//		p1.diag(1);
+//		ADDSP #2
+//		; empile p1
+//		LOAD 9 (GB), R2
+//		STORE R2, 0 (SP)
+//		; empile 1
+//		LOAD #1, R2
+//		STORE R2, -1 (SP)
+//		; appel de méthode
+//		LOAD 0 (SP), R2
+//				; objet null dans
+//		; appel de methode ?
+//				CMP #null, R2
+//		BEQ dereferencement_null
+//				; adresse de la
+//		; méthode diag de p1.
+//		LOAD 0 (R2), R2
+//		BSR 2 (R2)
+//		SUBSP #2
+		compiler.addInstruction(new ADDSP(1 + args.size()));
+		GPRegister regThis = (GPRegister) exp.codeGenLoad(compiler);
+		compiler.addInstruction(new STORE(regThis, new RegisterOffset(0, Register.SP)));
+		compiler.freeReg();
+
+		int paramPosition = -1;
+		for (AbstractExpr arg : args.getList()){
+			GPRegister regParam = (GPRegister) exp.codeGenLoad(compiler);
+			compiler.addInstruction(new STORE(regParam, new RegisterOffset(paramPosition, Register.SP)));
+			compiler.freeReg();
+			paramPosition--;
+		}
+
+		//Calling the method
+		GPRegister reg = compiler.getFreeReg();
+		compiler.useReg();
+		compiler.addInstruction(new LOAD(new RegisterOffset(0, Register.SP), reg));
+		//TODO: Derefer null
+		compiler.addInstruction(new LOAD(new RegisterOffset(0, reg), reg));
+		compiler.addInstruction(new BSR(new RegisterOffset(ident.getMethodDefinition().getIndex(), reg)));
+		compiler.addInstruction(new SUBSP(1 + args.size()));
 	}
 
 }

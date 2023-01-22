@@ -144,7 +144,7 @@ public class DeclClass extends AbstractDeclClass {
 		LabelOperand oLabelOperand = new LabelOperand(objectLabel);
 		compiler.addInstruction(new LOAD(oLabelOperand, Register.R0));
 		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(), Register.GB)));
-		compiler.incOffset(1 + declmethods.size()); //TODO: this or numberOfMethods
+		compiler.incOffset(declmethods.size() + 1); //TODO: this or numberOfMethods
 
 		//Creating the table:
 		//Structure will hold the methods to add
@@ -169,7 +169,7 @@ public class DeclClass extends AbstractDeclClass {
 			LabelOperand opMethodLabel = new LabelOperand(methodLabel);
 			compiler.addInstruction(new LOAD(opMethodLabel, Register.R0));
 			compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(className.getClassDefinition().getStackIndex() +
-					couple.getKey() + 1, Register.GB)));
+					couple.getKey(), Register.GB)));
 		}
 
 	}

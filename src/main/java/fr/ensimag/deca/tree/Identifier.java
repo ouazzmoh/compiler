@@ -276,19 +276,28 @@ public class Identifier extends AbstractIdentifier {
 
     @Override
     protected DVal codeGenLoad(DecacCompiler compiler){
-        //This means that we are calling this inside a class for a field
-        //TODO: this.x
-        GPRegister thisReg = compiler.getFreeReg();
-        compiler.useReg();//Using thisReg
 
-        compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), thisReg));
-        //We don't need to change the adress because this is just temporary
-        DVal identAdr = new RegisterOffset(this.getFieldDefinition().getIndex(), thisReg);
+        if (getExpDefinition().isField()){
+            //This means that we are calling this inside a class for a field
+            //TODO: this.x
+            GPRegister thisReg = compiler.getFreeReg();
+            compiler.useReg();//Using thisReg
+
+            compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), thisReg));
+            //We don't need to change the adress because this is just temporary
+            DVal identAdr = new RegisterOffset(this.getFieldDefinition().getIndex(), thisReg);
 
 
-        compiler.addInstruction(new LOAD(identAdr, thisReg));
+            compiler.addInstruction(new LOAD(identAdr, thisReg));
 
-        return thisReg;
+            return thisReg;
+        }
+        else {
+            GPRegister reg = compiler.getFreeReg();
+            compiler.useReg();//Using thisReg
+            compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
+            return reg;
+        }
     }
 
 
