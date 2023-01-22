@@ -86,6 +86,10 @@ public class DecacCompiler {
      */
     private static final String nl = System.getProperty("line.separator", "\n");
 
+    public IMAProgram getProgram() {
+        return program;
+    }
+
     public DecacCompiler(CompilerOptions compilerOptions, File source) {
         super();
         this.compilerOptions = compilerOptions;
@@ -225,10 +229,15 @@ public class DecacCompiler {
     
     private final CompilerOptions compilerOptions;
     private final File source;
+
+    public void setProgram(IMAProgram program) {
+        this.program = program;
+    }
+
     /**
      * The main program. Every instruction generated will eventually end up here.
      */
-    private final IMAProgram program = new IMAProgram();
+    private IMAProgram program = new IMAProgram();
  
 
     /** The global environment for types (and the symbolTable) */

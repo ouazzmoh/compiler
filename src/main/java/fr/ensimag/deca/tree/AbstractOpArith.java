@@ -207,11 +207,8 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 	 * @param compiler
 	 */
 	protected void addArithErrors(DecacCompiler compiler){
-//		Type typeLeft = this.getLeftOperand().getType();
 		Type typeRight = this.getRightOperand().getType();
-//		if (typeLeft.isInt() && typeLeft.isInt()){
-//			compiler.addError(ovLabelInt, "Erreur : Division entiere par 0");
-//		}
+		compiler.addError(ovLabelInt, "Erreur : Division entiere par 0");
 		compiler.addError(ovLabel, "Erreur: debordement arithmetique --> non codable ou division par 0.0");
 	}
 

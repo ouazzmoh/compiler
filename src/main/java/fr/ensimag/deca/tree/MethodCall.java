@@ -130,7 +130,6 @@ public class MethodCall extends AbstractExpr  {
 //		LOAD 0 (R2), R2
 //		BSR 2 (R2)
 //		SUBSP #2
-
 			//Call with an explicit instance
 			compiler.addError(deferLabel, "Erreur : dereferencement de null");
 			compiler.addInstruction(new ADDSP(1 + args.size()));
@@ -177,5 +176,27 @@ public class MethodCall extends AbstractExpr  {
 		codeGenInst(compiler, null);
 		compiler.addInstruction(new STORE(Register.R0, adr));
 	}
+
+	@Override
+	protected void codeGenPrint(DecacCompiler compiler, boolean printHex){
+		codeGenInst(compiler, null);
+		compiler.addInstruction(new LOAD(Register.R0, Register.R1));
+		compiler.addInstruction(new WINT());
+		Label lab = new Label("float_print_for_return" + getLocation().getLine() + ".c" + getLocation().getPositionInLine());
+		Label end = new Label("end_print_return" + getLocation().getLine() + ".c" + getLocation().getPositionInLine());
+		compiler.addInstruction(new BOV(lab));
+		compiler.addInstruction(new BRA(end));
+		compiler.addLabel(lab);
+		if (!printHex){
+			compiler.addInstruction(new WFLOAT());
+		}
+		else {
+			compiler.addInstruction(new WFLOATX());
+		}
+		compiler.addLabel(end);
+	}
+
+
+
 }
 
