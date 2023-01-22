@@ -64,7 +64,13 @@ public class DecacMain {
             throw new UnsupportedOperationException("Parallel build not yet implemented");
         } else {
             for (File source : options.getSourceFiles()) {
-                DecacCompiler compiler = new DecacCompiler(options, source);
+            	DecacCompiler compiler;
+            	if (options.getOptionr()){
+            		compiler = new DecacCompiler(options, source, options.nbRegistre);
+            	}
+            	else {
+            		compiler = new DecacCompiler(options, source);
+            	}
                 if (compiler.compile()) {
                     error = true;
                 }

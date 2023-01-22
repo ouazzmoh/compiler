@@ -42,6 +42,10 @@ public class CompilerOptions {
         return optionv;
     }
     
+    public boolean getOptionr() {
+        return optionr;
+    }
+    
     public boolean getOptionp() throws DecacFatalError {
     	if (optionv && optionp) {
     		throw new DecacFatalError("L'option -p et -v ne sont pas compatibles");
@@ -70,6 +74,11 @@ public class CompilerOptions {
     public void setNb(int d) throws CLIException {
     	if (!optionr) {
     		throw new CLIException("L'option -r doit etre suivi d'un nombre");
+    	}
+    	try {
+            assert(d<= 16 && d >= 4);
+    	} catch(java.lang.AssertionError e) {
+    		throw new CLIException("L'option -r doit etre suivi d'un nombre entre 4 et 16");
     	}
     	this.nbRegistre = d;
     }
@@ -101,6 +110,7 @@ public class CompilerOptions {
     	set.add("-p");
     	set.add("-v");
     	set.add("-b");
+    	set.add("-r");
         Logger logger = Logger.getRootLogger();
         // map command-line debug option to log4j's level.
         switch (getDebug()) {
@@ -149,7 +159,7 @@ public class CompilerOptions {
                         sourceFiles.add(currSource);
             		}
             		else {
-            			throw new CLIException("L'option" + s+ " is incorrect"); 
+            			throw new CLIException("L'option" + s + " is incorrect"); 
         			}
         		}
     			j++;
