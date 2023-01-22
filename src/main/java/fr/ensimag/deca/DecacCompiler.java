@@ -64,7 +64,19 @@ public class DecacCompiler {
 
     //Number of temporaries reserved in stack, in the main program(Push=> +1, Pop=> -1)
     private int tempStack;
-    
+
+    //The maximum number of registers used in a block: we reset this at the beginning of each block
+    private int blocRegMax;
+
+    public int getBlocRegMax() {
+        return blocRegMax;
+    }
+
+    public void resetBlocRegMax(){
+        blocRegMax = 0;
+    }
+
+
 
 
 
@@ -74,6 +86,10 @@ public class DecacCompiler {
      */
     private static final String nl = System.getProperty("line.separator", "\n");
 
+    public IMAProgram getProgram() {
+        return program;
+    }
+
     public DecacCompiler(CompilerOptions compilerOptions, File source) {
         super();
         this.compilerOptions = compilerOptions;
@@ -82,12 +98,14 @@ public class DecacCompiler {
 
         this.errorsMap = new HashMap<String, String>();
 
-        this.regMax = 15;
+        this.regMax = 3;
         //
         this.currRegNum = 2;
         this.offset = 1;
         //
         this.tempStack = 0;
+        //
+        this.blocRegMax = 0;
 
     }
 
@@ -107,6 +125,8 @@ public class DecacCompiler {
         this.offset = 1;
 
         this.tempStack = 1;
+
+        this.blocRegMax = 0;
 
     }
 
@@ -209,10 +229,15 @@ public class DecacCompiler {
     
     private final CompilerOptions compilerOptions;
     private final File source;
+
+    public void setProgram(IMAProgram program) {
+        this.program = program;
+    }
+
     /**
      * The main program. Every instruction generated will eventually end up here.
      */
-    private final IMAProgram program = new IMAProgram();
+    private IMAProgram program = new IMAProgram();
  
 
     /** The global environment for types (and the symbolTable) */
@@ -368,6 +393,7 @@ public class DecacCompiler {
     public void useReg(){
         assert(currRegNum <= regMax);
         currRegNum += 1;
+        blocRegMax += 1;
     }
 
 
