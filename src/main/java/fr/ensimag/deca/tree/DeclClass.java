@@ -184,8 +184,31 @@ public class DeclClass extends AbstractDeclClass {
 		compiler.addLabel(new Label("init."+ className.getName().getName()));
 		//TODO : TSTO
 		//TODO: Avec superclass, tous les nv champs, initialiser les champs heritees, init explicit des nv champs
-		for (AbstractDeclField d : declfields.getList()){
-			d.codeGenDeclField(compiler);
+		if (superClass.getName().getName().equals("object")){
+			for (AbstractDeclField d : declfields.getList()){
+				d.codeGenDeclField(compiler);
+			}
+		}
+		else {
+			//r1 = -2(LB), initialize all new fields to 0, push r1, BSR init.Superclass, Subsp, effective init to new ones
+			compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), Register.R1));
+			compiler.addInstruction(new LOAD(0, Register.R0));
+			//init to 0 all fields
+			for (AbstractDeclField d : declfields.getList()){
+				compiler.addInstruction(new STORE(Register.R0,
+						new RegisterOffset(d.getVarName().getFieldDefinition().getIndex(), Register.R1)));
+			}
+			//Push object
+			compiler.addInstruction(new PUSH(Register.R1));
+			compiler.addInstruction(new BSR(new LabelOperand(new Label("init." + superClass.getName().getName()))));
+			compiler.addInstruction(new SUBSP(1));
+			for (AbstractDeclField d : declfields.getList()){
+				//If the declaration is not explicit, it was already done before
+				if (d.getInitialization().isExplicit()){
+					d.codeGenDeclField(compiler);
+				}
+			}
+
 		}
 		compiler.addInstruction(new RTS()); //Return for the fields declarations
 

@@ -88,11 +88,11 @@ public class Initialization extends AbstractInitialization {
     @Override
     protected void codeGenInitField(DecacCompiler compiler){
 
-        if (expression.getType().isInt()){
+        if (expression instanceof IntLiteral){
 
             compiler.addInstruction(new LOAD(((IntLiteral)expression).getValue(), Register.R0));
         }
-        else if (expression.getType().isFloat()){
+        else if (expression instanceof FloatLiteral){
             compiler.addInstruction(new LOAD(new ImmediateFloat(((FloatLiteral)expression).getValue()), Register.R0));
         }
        else {
@@ -101,4 +101,11 @@ public class Initialization extends AbstractInitialization {
             compiler.freeReg();
         }
     }
+
+
+    public boolean isExplicit(){
+        return true;
+    }
+
+
 }

@@ -332,15 +332,42 @@ public class Identifier extends AbstractIdentifier {
 
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean printHex, Identifier ident){
-        //This means this is an instance of a class and the ident is a field
-        GPRegister reg = compiler.getFreeReg();
-        compiler.useReg();
-        compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
-        //ident is null
-        ident.getExpDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(), reg));
-        ident.codeGenPrint(compiler, printHex);
-        ident.getExpDefinition().setOperand(null);
-        compiler.freeReg();
+        //This means this is an instance of a class  and the ident is a field
+        if (!getExpDefinition().isField()){
+            //When it isn't a field its adress has already been set
+            GPRegister reg = compiler.getFreeReg();
+            compiler.useReg();
+            compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
+            //ident adress is null
+            ident.getExpDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(), reg));
+            ident.codeGenPrint(compiler, printHex);
+            ident.getExpDefinition().setOperand(null);
+            compiler.freeReg();
+        }
+        else {
+            //this is a field we should set the adress by using -2(LB)
+            GPRegister thisReg = compiler.getFreeReg();
+            compiler.useReg();
+            compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), thisReg));
+            getExpDefinition().setOperand(new RegisterOffset(getFieldDefinition().getIndex(), thisReg));
+
+            //todo: push pop
+
+            GPRegister reg = compiler.getFreeReg();
+            compiler.useReg();
+            compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
+            //ident adress is null
+            ident.getExpDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(), reg));
+            ident.codeGenPrint(compiler, printHex);
+            ident.getExpDefinition().setOperand(null);
+            compiler.freeReg();
+            //setting the adress of this to null
+            getExpDefinition().setOperand(null);
+            compiler.freeReg();
+        }
+
+
+
     }
 
 

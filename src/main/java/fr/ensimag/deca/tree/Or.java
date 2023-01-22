@@ -60,4 +60,27 @@ public class Or extends AbstractOpBool {
         compiler.addInstruction(new STORE(reg, adr));
     }
 
+
+    @Override
+    protected DVal codeGenLoad(DecacCompiler compiler){
+        //boolean a = true && true;
+        Label trueOr = new Label("trueOr"+ getLocation().getLine() +
+                ".c" + getLocation().getPositionInLine());
+        Label endOr = new Label("endOr.l" + getLocation().getLine() +
+                ".c" + getLocation().getPositionInLine());
+        codeGenBranch(compiler, true, trueOr);
+        GPRegister reg = compiler.getFreeReg();
+        compiler.useReg();
+
+        //return 0 if false
+        compiler.addInstruction(new LOAD(0, reg));
+        compiler.addInstruction(new BRA(endOr));
+        compiler.addLabel(trueOr);
+        //return 1 if true
+        compiler.addInstruction(new LOAD(1, reg));
+        compiler.addInstruction(new BRA(endOr));
+        compiler.addLabel(endOr);
+        return reg;
+    }
+
 }

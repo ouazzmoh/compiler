@@ -102,7 +102,15 @@ public class DeclField extends AbstractDeclField {
 		
 	}
 
+	@Override
+	public AbstractInitialization getInitialization() {
+		return initialization;
+	}
 
+	@Override
+	public AbstractIdentifier getVarName() {
+		return varName;
+	}
 
 	@Override
 	protected void codeGenDeclField(DecacCompiler compiler){
