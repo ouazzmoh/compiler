@@ -130,18 +130,21 @@ public class DeclMethod extends AbstractDeclMethod {
 	@Override
 	protected void  codeGenDeclMethod(DecacCompiler compiler, String className){
 		int oldRegNum = compiler.getCurrRegNum();
-
-
-		compiler.addComment("Saving registers");
-		while (compiler.getCurrRegNum()>2){
-			compiler.addInstruction(new PUSH(Register.getR(compiler.getCurrRegNum()-1)));//-1 because currRegNum is the next free Register
-			compiler.freeReg();
-		}
-
+		compiler.setCurrRegNum(2);
 		Label startMethod = new Label("code."+className+"."+name.getName().getName());
 		compiler.addLabel(startMethod);
 
+		compiler.addComment("Saving registers");
+//		while (compiler.getCurrRegNum()>2){
+//			compiler.addInstruction(new PUSH(Register.getR(compiler.getCurrRegNum()-1)));//-1 because currRegNum is the next free Register
+//			compiler.freeReg();
+//		}
+		IMAProgram virtualProg = new IMAProgram();
 
+
+
+
+		compiler.resetBlocRegMax();
 		//Set the adresses for the parameters
 		int paramOffset = -3; //The first paramter is in -3(LB)
 		for(AbstractDeclParam d : parametres.getList()){
@@ -156,11 +159,23 @@ public class DeclMethod extends AbstractDeclMethod {
 		Label endMethod = new Label("fin."+className+"."+name.getName().getName());
 		compiler.addLabel(endMethod);
 		compiler.addComment("Restoring Registers");
-		while (compiler.getCurrRegNum()< oldRegNum){
-			compiler.addInstruction(new POP(Register.getR(compiler.getCurrRegNum())));
-			compiler.useReg();
-		}
+//		while (compiler.getCurrRegNum()< oldRegNum){
+//			compiler.addInstruction(new POP(Register.getR(compiler.getCurrRegNum())));
+//			compiler.useReg();
+//		}
 		compiler.addInstruction(new RTS());
+
+		compiler.addComment("Restoring registers");
+		for (int i = compiler.getBlocRegMax()+2; i >= 2; i--){
+			compiler.addInstruction(new POP(Register.getR(i)));
+			compiler.addInstructionFirst(new PUSH(Register.getR(i)));
+		}
+
+
+
+
+
+
 
 	}
 
