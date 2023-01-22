@@ -130,29 +130,38 @@ public class MethodCall extends AbstractExpr  {
 //		LOAD 0 (R2), R2
 //		BSR 2 (R2)
 //		SUBSP #2
-		compiler.addError(deferLabel, "Erreur : dereferencement de null");
-		compiler.addInstruction(new ADDSP(1 + args.size()));
-		GPRegister regThis = (GPRegister) exp.codeGenLoad(compiler);
-		compiler.addInstruction(new STORE(regThis, new RegisterOffset(0, Register.SP)));
-		compiler.freeReg();
 
-		int paramPosition = -1;
-		for (AbstractExpr arg : args.getList()){
-			GPRegister regParam = (GPRegister) exp.codeGenLoad(compiler);
-			compiler.addInstruction(new STORE(regParam, new RegisterOffset(paramPosition, Register.SP)));
+			//Call with an explicit instance
+			compiler.addError(deferLabel, "Erreur : dereferencement de null");
+			compiler.addInstruction(new ADDSP(1 + args.size()));
+			GPRegister regThis;
+			if (exp != null) {
+				regThis = (GPRegister) exp.codeGenLoad(compiler);
+			}
+			else {
+				regThis = compiler.getFreeReg();
+				compiler.useReg();
+				compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), regThis));
+			}
+			compiler.addInstruction(new STORE(regThis, new RegisterOffset(0, Register.SP)));
 			compiler.freeReg();
-			paramPosition--;
-		}
-		//Calling the method
-		GPRegister reg = compiler.getFreeReg();
-		compiler.useReg();
-		compiler.addInstruction(new LOAD(new RegisterOffset(0, Register.SP), reg));
-		compiler.addInstruction(new CMP(new NullOperand(), reg));
-		compiler.addInstruction(new BEQ(new Label(deferLabel)));
-		compiler.addInstruction(new LOAD(new RegisterOffset(0, reg), reg));
-		compiler.addInstruction(new BSR(new RegisterOffset(ident.getMethodDefinition().getIndex(), reg)));
-		compiler.addInstruction(new SUBSP(1 + args.size()));
 
+			int paramPosition = -1;
+			for (AbstractExpr arg : args.getList()) {
+				GPRegister regParam = (GPRegister) exp.codeGenLoad(compiler);
+				compiler.addInstruction(new STORE(regParam, new RegisterOffset(paramPosition, Register.SP)));
+				compiler.freeReg();
+				paramPosition--;
+			}
+			//Calling the method
+			GPRegister reg = compiler.getFreeReg();
+			compiler.useReg();
+			compiler.addInstruction(new LOAD(new RegisterOffset(0, Register.SP), reg));
+			compiler.addInstruction(new CMP(new NullOperand(), reg));
+			compiler.addInstruction(new BEQ(new Label(deferLabel)));
+			compiler.addInstruction(new LOAD(new RegisterOffset(0, reg), reg));
+			compiler.addInstruction(new BSR(new RegisterOffset(ident.getMethodDefinition().getIndex(), reg)));
+			compiler.addInstruction(new SUBSP(1 + args.size()));
 
 
 	}
