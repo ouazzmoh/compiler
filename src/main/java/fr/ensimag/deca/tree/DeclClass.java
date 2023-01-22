@@ -187,6 +187,7 @@ public class DeclClass extends AbstractDeclClass {
 		for (AbstractDeclField d : declfields.getList()){
 			d.codeGenDeclField(compiler);
 		}
+		compiler.addInstruction(new RTS()); //Return for the fields declarations
 
 		for (AbstractDeclMethod m : declmethods.getList()){
 			m.codeGenDeclMethod(compiler, className.getName().getName());

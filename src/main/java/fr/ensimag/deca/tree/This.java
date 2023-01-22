@@ -9,6 +9,9 @@ import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
 
 public class This extends AbstractExpr {
 
@@ -49,5 +52,17 @@ public class This extends AbstractExpr {
     }
 
 
+	@Override
+	protected void codeGenPrint(DecacCompiler compiler, boolean printHex, Identifier ident){
+		//the ident is a field inside the scope of a class
+		GPRegister reg = compiler.getFreeReg();
+		compiler.useReg();
+		compiler.addInstruction(new LOAD(new RegisterOffset(-2 , Register.LB), reg));
+		//ident is null
+		ident.getExpDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(), reg));
+		ident.codeGenPrint(compiler, printHex);
+		ident.getExpDefinition().setOperand(null);
+		compiler.freeReg();
+	}
 
 }

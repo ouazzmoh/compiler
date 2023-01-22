@@ -13,16 +13,16 @@ import fr.ensimag.deca.context.Signature;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
-import fr.ensimag.ima.pseudocode.GPRegister;
-import fr.ensimag.ima.pseudocode.Label;
-import fr.ensimag.ima.pseudocode.Register;
-import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.*;
+import org.mockito.internal.matchers.Null;
 
 public class MethodCall extends AbstractExpr  {
 	private AbstractExpr exp;
 	private AbstractIdentifier ident;
 	private ListExpr args;
+
+	protected String deferLabel = "err_dereferencement_null";
 
 	public MethodCall(AbstractExpr exp, AbstractIdentifier ident, ListExpr args) {
 		super();
@@ -58,7 +58,7 @@ public class MethodCall extends AbstractExpr  {
 		}
 		MethodDefinition res = this.methodIdent(env2);
 		ident.setDefinition(res);
-		rvalue(compiler, env2, currentClass, res.getSignature());
+		rvalue(compiler, localEnv, currentClass, res.getSignature());
 		this.setType(res.getType());
 		return this.getType();
 
@@ -130,6 +130,7 @@ public class MethodCall extends AbstractExpr  {
 //		LOAD 0 (R2), R2
 //		BSR 2 (R2)
 //		SUBSP #2
+		compiler.addError(deferLabel, "Erreur : dereferencement de null");
 		compiler.addInstruction(new ADDSP(1 + args.size()));
 		GPRegister regThis = (GPRegister) exp.codeGenLoad(compiler);
 		compiler.addInstruction(new STORE(regThis, new RegisterOffset(0, Register.SP)));
@@ -142,15 +143,18 @@ public class MethodCall extends AbstractExpr  {
 			compiler.freeReg();
 			paramPosition--;
 		}
-
 		//Calling the method
 		GPRegister reg = compiler.getFreeReg();
 		compiler.useReg();
 		compiler.addInstruction(new LOAD(new RegisterOffset(0, Register.SP), reg));
-		//TODO: Derefer null
+		compiler.addInstruction(new CMP(new NullOperand(), reg));
+		compiler.addInstruction(new BEQ(new Label(deferLabel)));
 		compiler.addInstruction(new LOAD(new RegisterOffset(0, reg), reg));
 		compiler.addInstruction(new BSR(new RegisterOffset(ident.getMethodDefinition().getIndex(), reg)));
 		compiler.addInstruction(new SUBSP(1 + args.size()));
+
+
+
 	}
 
 }

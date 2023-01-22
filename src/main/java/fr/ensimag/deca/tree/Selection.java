@@ -103,8 +103,15 @@ public class Selection extends AbstractLValue {
 	@Override
 	protected void codeGenPrint(DecacCompiler compiler, boolean printHex){
 		//TODO : Print for selection
+		exp.codeGenPrint(compiler, printHex, (Identifier) ident);
 
 	}
+
+	@Override
+	protected void codeGenPrint(DecacCompiler compiler, boolean printHex, Identifier ident){
+		throw new DecacInternalError("Print for selection is not implemented");
+	}
+
 
 
 	@Override
@@ -121,11 +128,10 @@ public class Selection extends AbstractLValue {
 		//TODO: Problem when limiting registers
 		ident.getFieldDefinition().setOperand(null);
 		compiler.freeReg();
-
-
 		return registerToReturn;
 
 	}
+
 
 
 	@Override

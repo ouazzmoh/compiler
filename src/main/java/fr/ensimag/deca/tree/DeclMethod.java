@@ -157,7 +157,7 @@ public class DeclMethod extends AbstractDeclMethod {
 		compiler.addLabel(endMethod);
 		compiler.addComment("Restoring Registers");
 		while (compiler.getCurrRegNum()< oldRegNum){
-			compiler.addInstruction(new POP(Register.getR(compiler.getCurrRegNum()-1)));
+			compiler.addInstruction(new POP(Register.getR(compiler.getCurrRegNum())));
 			compiler.useReg();
 		}
 		compiler.addInstruction(new RTS());

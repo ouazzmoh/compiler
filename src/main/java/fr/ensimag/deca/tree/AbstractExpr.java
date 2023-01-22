@@ -200,16 +200,16 @@ public abstract class AbstractExpr extends AbstractInst {
 
 
     /**
-     * Sets the adress of a field when using it inside a method
-     * if the expression is not a field it doesn't do anything
+     *  Generate code to print ident depending on the type of the expression
+     *  Useful for println(this.x) for example
+     *  the expression in this case can be :
      * @param compiler
-     * @param adr: Can be a register ofsset, we are intersted in the register and we use the index
-     *           to get to the adress if it is actually a field
+     * @param printHex
+     * @param ident
      */
-    protected void setAdrField(DecacCompiler compiler, DAddr adr){
-
+    protected void codeGenPrint(DecacCompiler compiler, boolean printHex, Identifier ident){
+        throw new DecacInternalError("Not implemented yet");
     }
-
 
 
 

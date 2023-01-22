@@ -110,7 +110,7 @@ public class DeclField extends AbstractDeclField {
 		initialization.codeGenInitField(compiler);
 		compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), Register.R1));
 		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(varName.getFieldDefinition().getIndex(), Register.R1)));
-		compiler.addInstruction(new RTS());
+
 	}
 
 	

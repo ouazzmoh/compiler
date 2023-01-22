@@ -322,20 +322,25 @@ public class Identifier extends AbstractIdentifier {
         compiler.addInstruction(new STORE(reg, adr));
     }
 
-    @Override
-    protected void setAdrField(DecacCompiler compiler, DAddr adr){
-        //implicit use and free
-        if (definition.isField() && getExpDefinition().getOperand() != null){
-            RegisterOffset registerOffset = (RegisterOffset) adr;
-            int index = ((FieldDefinition)definition).getIndex();
-            getExpDefinition().setOperand(new RegisterOffset(index, registerOffset.getRegister()));
-        }
-    }
 
 
     @Override
     public boolean isIdent(){
         return true;
+    }
+
+
+    @Override
+    protected void codeGenPrint(DecacCompiler compiler, boolean printHex, Identifier ident){
+        //This means this is an instance of a class and the ident is a field
+        GPRegister reg = compiler.getFreeReg();
+        compiler.useReg();
+        compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
+        //ident is null
+        ident.getExpDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(), reg));
+        ident.codeGenPrint(compiler, printHex);
+        ident.getExpDefinition().setOperand(null);
+        compiler.freeReg();
     }
 
 
