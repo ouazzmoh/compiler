@@ -12,9 +12,7 @@ import fr.ensimag.deca.context.FieldDefinition;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
-import fr.ensimag.ima.pseudocode.DVal;
-import fr.ensimag.ima.pseudocode.GPRegister;
-import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
 
 public class Selection extends AbstractLValue {
@@ -102,36 +100,59 @@ public class Selection extends AbstractLValue {
 
 	@Override
 	protected void codeGenPrint(DecacCompiler compiler, boolean printHex){
-		//TODO : Print for selection
-		exp.codeGenPrint(compiler, printHex, (Identifier) ident);
-
+		boolean set = setAdrField(compiler, null);
+		ident.codeGenPrint(compiler, printHex);
+		if (set){
+			compiler.freeReg();
+			ident.getExpDefinition().setOperand(null);
+		}
 	}
 
-	@Override
-	protected void codeGenPrint(DecacCompiler compiler, boolean printHex, Identifier identRight){
-		//Left side is either a this or an ident, right side is ident
-	}
 
 
-
+//	@Override
+//	protected DVal codeGenLoad(DecacCompiler compiler){
+//		GPRegister reg = compiler.getFreeReg();
+//		Identifier left = (Identifier)exp;
+//		compiler.addInstruction(new LOAD(left.getExpDefinition().getOperand(), reg));
+//		compiler.useReg();
+//		ident.getFieldDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(),reg));
+//		//todo: ident can be a method
+//		GPRegister registerToReturn = (GPRegister) ident.codeGenLoad(compiler);
+//		//TODO: Problem when limiting registers
+//		ident.getFieldDefinition().setOperand(null);
+//		compiler.freeReg();
+//		return registerToReturn;
+//	}
 
 	@Override
 	protected DVal codeGenLoad(DecacCompiler compiler){
-
-
-		GPRegister reg = compiler.getFreeReg();
-		Identifier left = (Identifier)exp;
-		compiler.addInstruction(new LOAD(left.getExpDefinition().getOperand(), reg));
-		compiler.useReg();
-		ident.getFieldDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(),reg));
-		//todo: ident can be a method
+		boolean set = setAdrField(compiler, null);
+		//TODO: Push Pop
 		GPRegister registerToReturn = (GPRegister) ident.codeGenLoad(compiler);
-		//TODO: Problem when limiting registers
-		ident.getFieldDefinition().setOperand(null);
-		compiler.freeReg();
+		if (set) {
+			ident.getFieldDefinition().setOperand(null);
+			compiler.freeReg();
+		}
 		return registerToReturn;
-
 	}
+
+
+	@Override
+	protected boolean setAdrField(DecacCompiler compiler, GPRegister refReg){
+		//If the left operand is this, we call ident.setAdrField()
+		//If the left operand is an Identifier (x) and not a field, we store @x in reg and do ident.setAdrField(reg)
+		//If the left operand is an Identifier (x) and a field, we get reg, do x.ident(reg), and we use it to set for ident
+		//If the left operand is a selection, we call for a recursion
+		return exp.setAdrField(compiler, refReg, (Identifier) ident);
+	}
+
+
+	@Override
+	protected boolean setAdrField(DecacCompiler compiler, GPRegister refReg, Identifier ident){
+		return exp.setAdrField(compiler, refReg, (Identifier) ident);
+	}
+
 
 
 
@@ -139,6 +160,8 @@ public class Selection extends AbstractLValue {
 	public boolean isIdent(){
 		return false;
 	}
+
+
 
 
 

@@ -158,8 +158,10 @@ public abstract class AbstractExpr extends AbstractInst {
      * @param left: can be either identifier or selection
      *
      */
-    protected void codeGenAssign(DecacCompiler compiler, AbstractIdentifier left){
-        this.codeGenInit(compiler, left.getExpDefinition().getOperand());
+    protected void codeGenAssign(DecacCompiler compiler, AbstractLValue left){
+        if (left.isIdent()){
+            this.codeGenInit(compiler, ((Identifier)left).getExpDefinition().getOperand());
+        }
     }
 
 
@@ -212,7 +214,35 @@ public abstract class AbstractExpr extends AbstractInst {
     }
 
 
+    /**
+     * Sets the adresses of the expressions when necessary
+     * case1: field in the form of : x (inside the scope of a class) -> use -2(LB) and index of field
+     * case2: Selection this.x: same as case1
+     * case3: c.x with c not a field, -> use @(c) and index of field
+     * case4: c.x with c a field -> use -2(LB) and index of c and set @(C), use @(C) and index of field
+     * The selection can be recursive
+     * Should be called before using any function that uses the adresses of operands:
+     * -->codeGenPrint, codeGenLoad, codeGenAssign, codeGenBranch, codeGenInit
+     * !!This function locks a register if refReg is null, we need to use freeReg() after
+     * @param compiler
+     * @param refReg: Is the reference register use to construct the adress, if it's null we get a free register
+     * @return if it has set the adress it returns true
+     */
+    protected boolean setAdrField(DecacCompiler compiler, GPRegister refReg){
+        return false;
+    }
 
+
+    /**
+     * Called when we are in a selection, useful for recursion
+     * @param compiler
+     * @param refReg
+     * @param ident
+     * @return
+     */
+    protected boolean setAdrField(DecacCompiler compiler, GPRegister refReg, Identifier ident){
+        return false;
+    }
 
 
 

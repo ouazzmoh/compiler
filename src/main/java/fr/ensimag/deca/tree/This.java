@@ -65,4 +65,11 @@ public class This extends AbstractExpr {
 		compiler.freeReg();
 	}
 
+
+	@Override
+	protected boolean setAdrField(DecacCompiler compiler, GPRegister refReg, Identifier ident){
+		return ident.setAdrField(compiler, refReg);
+	}
+
+
 }

@@ -237,17 +237,7 @@ public class Identifier extends AbstractIdentifier {
 
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean hex){
-        boolean cancelAdress = false;
-        if (getExpDefinition().isField() && getExpDefinition().getOperand() == null){
-            //In this case it is a field in the scope of a class
-            GPRegister thisReg = compiler.getFreeReg();
-            compiler.useReg();
-            compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), thisReg));
-            int index = getFieldDefinition().getIndex();
-            getExpDefinition().setOperand(new RegisterOffset(index, thisReg));
-            cancelAdress = true;
-        }
-
+        boolean set = setAdrField(compiler, null);//Sets the adress of the identifier when it is a field, returns true if it does
         if (this.getType().isInt()) {
             compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
             compiler.addInstruction(new WINT());
@@ -263,41 +253,29 @@ public class Identifier extends AbstractIdentifier {
         else{
             throw new DecacInternalError("Cannot print expression");
         }
-        if (cancelAdress){
-            //In the case we printed a field with a method inside a class, we turn its field to null and free the thisReg
-            getExpDefinition().setOperand(null);
-            compiler.freeReg();
+        if (set){
+            getExpDefinition().setOperand(null);//This means that the fields adress is no longer useful to keep
+            compiler.freeReg();//We free the register storing the adress
         }
-
     }
 
 
     @Override
     protected DVal codeGenLoad(DecacCompiler compiler){
+        GPRegister reg = compiler.getFreeReg();
+        compiler.useReg();//Using thisReg
+        boolean set = setAdrField(compiler, reg);
+        compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
+        return reg;
 
-        if (getExpDefinition().isField() && getExpDefinition().getOperand() == null){
-            //This means that we are calling this inside a class for a field
-            //TODO: this.x
-            GPRegister thisReg = compiler.getFreeReg();
-            compiler.useReg();//Using thisReg
-
-            compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), thisReg));
-            //We don't need to change the adress because this is just temporary
-            DVal identAdr = new RegisterOffset(this.getFieldDefinition().getIndex(), thisReg);
-            compiler.addInstruction(new LOAD(identAdr, thisReg));
-            return thisReg;
-        }
-        else {
-            GPRegister reg = compiler.getFreeReg();
-            compiler.useReg();//Using thisReg
-            compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
-            return reg;
-        }
     }
+
 
 
     @Override
     protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
+        boolean set = setAdrField(compiler, null);
+        //TODO: push pop
         GPRegister reg = compiler.getFreeReg();
         compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
         compiler.addInstruction(new CMP(0, reg));
@@ -308,6 +286,10 @@ public class Identifier extends AbstractIdentifier {
             compiler.addInstruction(new BEQ(label));
         }
 
+        if (set){
+            getExpDefinition().setOperand(null);//This means that the fields adress is no longer useful to keep
+            compiler.freeReg();//We free the register storing the adress
+        }
     }
 
 
@@ -328,7 +310,7 @@ public class Identifier extends AbstractIdentifier {
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean printHex, Identifier ident){
         //This means this is an instance of a class  and the ident is a field (Coming from a selection)
-        if (!getExpDefinition().isField()){
+        if (!getExpDefinition().isField() | getExpDefinition().getOperand()!=null){
             //When it isn't a field its adress has already been set
             GPRegister reg = compiler.getFreeReg();
             compiler.useReg();
@@ -362,6 +344,50 @@ public class Identifier extends AbstractIdentifier {
         }
 
     }
+
+    @Override
+    protected boolean setAdrField(DecacCompiler compiler, GPRegister refReg){
+        if (getExpDefinition().isField() && getExpDefinition().getOperand() == null){
+            if (refReg == null) {
+                GPRegister thisReg = compiler.getFreeReg();
+                compiler.useReg();
+                compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), thisReg));
+                getExpDefinition().setOperand(new RegisterOffset(getFieldDefinition().getIndex(), thisReg));
+            }
+            else {
+                compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), refReg));
+                getExpDefinition().setOperand(new RegisterOffset(getFieldDefinition().getIndex(), refReg));
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean setAdrField(DecacCompiler compiler, GPRegister refReg, Identifier ident){
+        //This function is only called from a selection, so we are sure that
+        if (!getExpDefinition().isField()){
+            GPRegister reg = compiler.getFreeReg();
+            compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
+            compiler.useReg();
+            //TODO: USING THE SAME REGISTER
+            ident.getExpDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(), reg));
+        }
+        else {
+            GPRegister reg = compiler.getFreeReg();
+            compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), reg));
+            compiler.useReg();
+            DAddr leftFieldAdr = new RegisterOffset(getFieldDefinition().getIndex(), reg);
+            compiler.addInstruction(new LOAD(leftFieldAdr, reg));
+            ident.getExpDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(), reg));
+        }
+        return true;
+    }
+
+
+
+
+
 
 
 }
