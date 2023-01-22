@@ -45,14 +45,14 @@ public class Selection extends AbstractLValue {
 		ExpDefinition t2 = env2.get(ident.getName());
     	
 		if(t2 == null) {
-			throw new ContextualError("Selection type problem", this.getLocation());
+			throw new ContextualError("field not found", this.getLocation());
 		}
 		if (t2.isField()) {
 			FieldDefinition res = t2.asFieldDefinition(null, getLocation());
 			ident.setDefinition(res);
 	    	ident.setType(res.getType());
 			if(res.getVisibility() == Visibility.PUBLIC) {
-
+				this.setType(t2.getType());
 				return t2.getType();
 			}
 			else {
@@ -61,6 +61,7 @@ public class Selection extends AbstractLValue {
 				}
 				if(compiler.environmentType.subType(t, currentClass.getType())){
 					if(compiler.environmentType.subType(currentClass.getType(), res.getContainingClass().getType())) {
+						this.setType(t2.getType());
 						return t2.getType();
 					}
 				}
@@ -73,7 +74,9 @@ public class Selection extends AbstractLValue {
 	@Override
 	public void decompile(IndentPrintStream s) {
 		// TODO Auto-generated method stub
-		
+		this.exp.decompile(s);
+		s.print(".");
+		this.ident.decompile(s);		
 	}
     @Override
     String prettyPrintNode() {

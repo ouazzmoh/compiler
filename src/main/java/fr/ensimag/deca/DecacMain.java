@@ -92,7 +92,7 @@ public class DecacMain {
             for (File source : options.getSourceFiles()) {
                 DecacCompiler compiler;
                 //Checking how many register to use
-                if (options.getCustomNumReg() >= 4 && options.getCustomNumReg() <= 16){
+                if (options.getOptionr()){
                     compiler = new DecacCompiler(options, source, options.getCustomNumReg());
                 }
                 else {

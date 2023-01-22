@@ -90,6 +90,9 @@ public abstract class AbstractExpr extends AbstractInst {
     	if (expectedType.isFloat() && t.isInt()) {
     		return new ConvFloat(this);
     	}
+    	if (compiler.environmentType.subType(t, expectedType)) {
+    		return this;
+    	}
     	throw new ContextualError("Assignment Error", this.getLocation());
     }
     

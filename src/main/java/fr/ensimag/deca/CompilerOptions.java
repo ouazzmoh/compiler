@@ -42,6 +42,10 @@ public class CompilerOptions {
         return optionv;
     }
     
+    public boolean getOptionr() {
+        return optionr;
+    }
+    
     public boolean getOptionp() throws DecacFatalError {
     	if (optionv && optionp) {
     		throw new DecacFatalError("L'option -p et -v ne sont pas compatibles");
@@ -62,6 +66,21 @@ public class CompilerOptions {
     	else if (s.equals("-p")) {
     		optionp = true;
     	}
+    	else if (s.equals("-r")) {
+    		optionr = true;
+    	}
+    }
+    
+    public void setNb(int d) throws CLIException {
+    	if (!optionr) {
+    		throw new CLIException("L'option -r doit etre suivi d'un nombre");
+    	}
+    	try {
+            assert(d<= 16 && d >= 4);
+    	} catch(java.lang.AssertionError e) {
+    		throw new CLIException("L'option -r doit etre suivi d'un nombre entre 4 et 16");
+    	}
+    	this.customNumReg = d;
     }
 
     public int getCustomNumReg() {
@@ -79,6 +98,7 @@ public class CompilerOptions {
     private boolean optionv = false;
 
     private boolean optionp = false;
+    private boolean optionr = false;
 
     private int customNumReg = 0;
     private List<File> sourceFiles = new ArrayList<File>();
@@ -94,6 +114,7 @@ public class CompilerOptions {
     	set.add("-p");
     	set.add("-v");
     	set.add("-b");
+    	set.add("-r");
         Logger logger = Logger.getRootLogger();
         // map command-line debug option to log4j's level.
         switch (getDebug()) {
@@ -128,16 +149,22 @@ public class CompilerOptions {
         	String s;
         	while (j < i) {
         		s = args[j];
-        		if (set.contains(s)) {
-        			Settings(s, i);
+        		try {
+        			int d = Integer.parseInt(s);
+        			this.setNb(d);
         		}
-        		else if (s.contains(".deca")) {
-                    File currSource = new File(s);
-                    sourceFiles.add(currSource);
+        		catch (NumberFormatException ex) {
+            		if (set.contains(s)) {
+            			Settings(s, i);
+            		}
+            		else if (s.contains(".deca")) {
+                        File currSource = new File(s);
+                        sourceFiles.add(currSource);
+            		}
+            		else {
+            			throw new CLIException("L'option" + s + " is incorrect"); 
+        			}
         		}
-        		else {
-        			throw new CLIException("L'option" + s+ " is incorrect"); 
-    			}
     			j++;
         	}
         }

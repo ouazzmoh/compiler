@@ -117,8 +117,6 @@ public class DecacCompiler {
 
         this.errorsMap = new HashMap<String, String>();
 
-        assert(regMax<= 16 && regMax >= 4);
-
         this.regMax = regMax - 1;
         //
         this.currRegNum = 2;

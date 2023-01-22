@@ -1,11 +1,14 @@
 // Description:
-//    extend fichier inexistant
+//    Class au lieu de class
 //
 // Resultats:
 //    Une erreur de compilation
 //
 // Historique:
 //    cree le 04/01/2023
-class Pangolin_a_queu extends Animal{
+
+class A extends class B {
 
 }
+
+

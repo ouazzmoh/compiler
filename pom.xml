@@ -174,7 +174,7 @@
                                         <limit>
                                             <counter>INSTRUCTION</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.75</minimum>
+                                            <minimum>0.850</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
@@ -294,6 +294,16 @@
                         <id>tes</id>
                         <configuration>
                         <executable>./src/test/script/tes.sh</executable>
+                        </configuration>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>test_decompile</id>
+                        <configuration>
+                        <executable>./src/test/script/test_decompile.sh</executable>
                         </configuration>
                         <phase>test</phase>
                         <goals>
