@@ -18,4 +18,8 @@ public abstract class AbstractDeclField extends Tree {
 
 	protected abstract void codeGenDeclField(DecacCompiler compiler);
 
+	public abstract AbstractIdentifier getVarName();
+
+	public abstract AbstractInitialization getInitialization();
+
 }

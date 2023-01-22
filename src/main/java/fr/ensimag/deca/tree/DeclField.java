@@ -35,6 +35,9 @@ public class DeclField extends AbstractDeclField {
         this.initialization = initialization;
 		this.v = v;
     }
+    public Visibility getVisibility() {
+    	return v;
+    }
     
 
 	@Override
@@ -99,7 +102,15 @@ public class DeclField extends AbstractDeclField {
 		
 	}
 
+	@Override
+	public AbstractInitialization getInitialization() {
+		return initialization;
+	}
 
+	@Override
+	public AbstractIdentifier getVarName() {
+		return varName;
+	}
 
 	@Override
 	protected void codeGenDeclField(DecacCompiler compiler){
@@ -107,7 +118,7 @@ public class DeclField extends AbstractDeclField {
 		initialization.codeGenInitField(compiler);
 		compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), Register.R1));
 		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(varName.getFieldDefinition().getIndex(), Register.R1)));
-		compiler.addInstruction(new RTS());
+
 	}
 
 	

@@ -10,6 +10,7 @@ import java.io.PrintStream;
 
 import fr.ensimag.ima.pseudocode.DAddr;
 import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.ImmediateFloat;
 import fr.ensimag.ima.pseudocode.Register;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
 import org.apache.commons.lang.Validate;
@@ -86,9 +87,25 @@ public class Initialization extends AbstractInitialization {
 
     @Override
     protected void codeGenInitField(DecacCompiler compiler){
-        GPRegister result = (GPRegister) expression.codeGenLoad(compiler);
-        //TODO: optimize this
-        compiler.addInstruction(new LOAD(result, Register.R0));
-        compiler.freeReg();
+
+        if (expression instanceof IntLiteral){
+
+            compiler.addInstruction(new LOAD(((IntLiteral)expression).getValue(), Register.R0));
+        }
+        else if (expression instanceof FloatLiteral){
+            compiler.addInstruction(new LOAD(new ImmediateFloat(((FloatLiteral)expression).getValue()), Register.R0));
+        }
+       else {
+            GPRegister result = (GPRegister) expression.codeGenLoad(compiler);
+            compiler.addInstruction(new LOAD(result, Register.R0));
+            compiler.freeReg();
+        }
     }
+
+
+    public boolean isExplicit(){
+        return true;
+    }
+
+
 }

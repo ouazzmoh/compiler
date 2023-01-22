@@ -98,4 +98,9 @@ public class FloatLiteral extends AbstractExpr {
         return registerToUse;
     }
 
+    @Override
+    protected void codeGenReturn(DecacCompiler compiler){
+        compiler.addInstruction(new LOAD(new ImmediateFloat(value), Register.R0));
+    }
+
 }

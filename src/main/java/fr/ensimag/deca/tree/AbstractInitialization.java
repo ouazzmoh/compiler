@@ -33,4 +33,7 @@ public abstract class AbstractInitialization extends Tree {
     protected abstract void codeGenInit(DecacCompiler compiler, DAddr adr);
 
     protected abstract void codeGenInitField(DecacCompiler compiler);
+
+    public abstract boolean isExplicit();
+
 }

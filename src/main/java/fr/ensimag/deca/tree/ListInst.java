@@ -33,15 +33,10 @@ public class ListInst extends TreeList<AbstractInst> {
         }
     }
 
+
     public void codeGenListInst(DecacCompiler compiler) {
         for (AbstractInst i : getList()) {
             i.codeGenInst(compiler, null);
-        }
-    }
-
-    public void codeGenListInst(DecacCompiler compiler, GPRegister thisReg) {
-        for (AbstractInst i : getList()) {
-            i.codeGenInst(compiler, null, thisReg);
         }
     }
 

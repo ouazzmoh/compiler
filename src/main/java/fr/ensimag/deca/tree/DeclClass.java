@@ -56,7 +56,8 @@ public class DeclClass extends AbstractDeclClass {
 		superClass.setDefinition(superClas);
 		superClass.setLocation(superClas.getLocation());
     	ClassType type = new ClassType(name, this.getLocation(), superClas);
-    	ClassDefinition def = new ClassDefinition(type, this.getLocation(), superClas);
+    	//ClassDefinition def = new ClassDefinition(type, this.getLocation(), superClas);
+    	ClassDefinition def = type.getDefinition();
     	compiler.environmentType.declareClass(name, def);
     	className.setDefinition(def);
     }
@@ -143,7 +144,7 @@ public class DeclClass extends AbstractDeclClass {
 		LabelOperand oLabelOperand = new LabelOperand(objectLabel);
 		compiler.addInstruction(new LOAD(oLabelOperand, Register.R0));
 		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(), Register.GB)));
-		compiler.incOffset(1 + declmethods.size()); //TODO: this or numberOfMethods
+		compiler.incOffset(declmethods.size() + 1); //TODO: this or numberOfMethods
 
 		//Creating the table:
 		//Structure will hold the methods to add
@@ -168,7 +169,7 @@ public class DeclClass extends AbstractDeclClass {
 			LabelOperand opMethodLabel = new LabelOperand(methodLabel);
 			compiler.addInstruction(new LOAD(opMethodLabel, Register.R0));
 			compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(className.getClassDefinition().getStackIndex() +
-					couple.getKey() + 1, Register.GB)));
+					couple.getKey(), Register.GB)));
 		}
 
 	}
@@ -183,9 +184,33 @@ public class DeclClass extends AbstractDeclClass {
 		compiler.addLabel(new Label("init."+ className.getName().getName()));
 		//TODO : TSTO
 		//TODO: Avec superclass, tous les nv champs, initialiser les champs heritees, init explicit des nv champs
-		for (AbstractDeclField d : declfields.getList()){
-			d.codeGenDeclField(compiler);
+		if (superClass.getName().getName().equals("object")){
+			for (AbstractDeclField d : declfields.getList()){
+				d.codeGenDeclField(compiler);
+			}
 		}
+		else {
+			//r1 = -2(LB), initialize all new fields to 0, push r1, BSR init.Superclass, Subsp, effective init to new ones
+			compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), Register.R1));
+			compiler.addInstruction(new LOAD(0, Register.R0));
+			//init to 0 all fields
+			for (AbstractDeclField d : declfields.getList()){
+				compiler.addInstruction(new STORE(Register.R0,
+						new RegisterOffset(d.getVarName().getFieldDefinition().getIndex(), Register.R1)));
+			}
+			//Push object
+			compiler.addInstruction(new PUSH(Register.R1));
+			compiler.addInstruction(new BSR(new LabelOperand(new Label("init." + superClass.getName().getName()))));
+			compiler.addInstruction(new SUBSP(1));
+			for (AbstractDeclField d : declfields.getList()){
+				//If the declaration is not explicit, it was already done before
+				if (d.getInitialization().isExplicit()){
+					d.codeGenDeclField(compiler);
+				}
+			}
+
+		}
+		compiler.addInstruction(new RTS()); //Return for the fields declarations
 
 		for (AbstractDeclMethod m : declmethods.getList()){
 			m.codeGenDeclMethod(compiler, className.getName().getName());

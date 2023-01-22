@@ -61,4 +61,9 @@ public class NoInitialization extends AbstractInitialization {
     protected void codeGenInitField(DecacCompiler compiler){
         compiler.addInstruction(new LOAD(0, Register.R0));
     }
+
+
+    public boolean isExplicit(){
+        return false;
+    }
 }

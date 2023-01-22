@@ -8,7 +8,9 @@ import fr.ensimag.deca.context.VoidType;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import java.io.PrintStream;
 
+import fr.ensimag.ima.pseudocode.GPRegister;
 import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.Register;
 import fr.ensimag.ima.pseudocode.instructions.ADDSP;
 import fr.ensimag.ima.pseudocode.instructions.BOV;
 import fr.ensimag.ima.pseudocode.instructions.TSTO;
@@ -54,7 +56,7 @@ public class Main extends AbstractMain {
     protected void codeGenMain(DecacCompiler compiler) {
         compiler.addComment("Beginning of main instructions:");
         compiler.addComment("Generating code for variable declaration");
-        declVariables.codeGenListDeclVariable(compiler);
+        declVariables.codeGenListDeclVariable(compiler, Register.GB);
         compiler.addComment("Generating code for instructions");
         insts.codeGenListInst(compiler);
         if (compiler.getOffset() != 0){

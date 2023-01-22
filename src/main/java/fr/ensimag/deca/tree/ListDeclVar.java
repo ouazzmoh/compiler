@@ -6,6 +6,7 @@ import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.GPRegister;
 import fr.ensimag.ima.pseudocode.Register;
 import fr.ensimag.ima.pseudocode.instructions.ADDSP;
 import fr.ensimag.ima.pseudocode.instructions.TSTO;
@@ -47,9 +48,9 @@ public class ListDeclVar extends TreeList<AbstractDeclVar> {
         }
     }
 
-    public void codeGenListDeclVariable(DecacCompiler compiler){
+    public void codeGenListDeclVariable(DecacCompiler compiler, Register refReg){
         for (AbstractDeclVar d : getList()){
-            d.codeGenDeclVariable(compiler, compiler.getOffset());
+            d.codeGenDeclVariable(compiler, compiler.getOffset(), refReg);
             compiler.incOffset(1);
         }
 

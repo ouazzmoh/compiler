@@ -82,7 +82,13 @@ public class Program extends AbstractProgram {
 
         compiler.addInstruction(new HALT());
 
-
+        compiler.addComment("Generating code for classes: Fields initializations and methods");
+        if (!classes.isEmpty()){
+            classes.codeGenListFieldsMethods(compiler);
+            compiler.addLabel(new Label("Code.Object.equals"));
+            //TODO: Remove this from here
+            compiler.addInstruction(new RTS());
+        }
 
         compiler.addComment("Generating code for errors");
         Iterator<Map.Entry<String, String>> it = compiler.getErrorsMap().entrySet().iterator();
@@ -93,14 +99,6 @@ public class Program extends AbstractProgram {
             compiler.addInstruction(new WNL());
             compiler.addInstruction(new ERROR());
             it.remove();
-        }
-
-        compiler.addComment("Generating code for classes: Fields initializations and methods");
-        if (!classes.isEmpty()){
-            classes.codeGenListFieldsMethods(compiler);
-            compiler.addLabel(new Label("Code.Object.equals"));
-            //TODO: Remove this from here
-            compiler.addInstruction(new RTS());
         }
 
 

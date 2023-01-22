@@ -41,7 +41,7 @@ CLASS: 'class';
 EXTENDS: 'extends';
 PROTECTED: 'protected';
 ASM: 'asm';
-
+DOT: '.';
 
 READINT: 'readInt';
 READFLOAT: 'readFloat';

@@ -190,7 +190,8 @@ public class Identifier extends AbstractIdentifier {
     public Type verifyType(DecacCompiler compiler) throws ContextualError {
         //throw new UnsupportedOperationException("not yet implemented");
     	try {
-    		return compiler.environmentType.defOfType(name).getType();
+    		this.setType(compiler.environmentType.defOfType(name).getType());
+    		return this.getType();
     	} catch (Exception e) {
     		throw new ContextualError("type not declared in env", this.getLocation());
     	}
@@ -232,9 +233,11 @@ public class Identifier extends AbstractIdentifier {
         }
     }
 
+
+
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean hex){
-
+        boolean set = setAdrField(compiler, null);//Sets the adress of the identifier when it is a field, returns true if it does
         if (this.getType().isInt()) {
             compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
             compiler.addInstruction(new WINT());
@@ -250,46 +253,31 @@ public class Identifier extends AbstractIdentifier {
         else{
             throw new DecacInternalError("Cannot print expression");
         }
-
-    }
-
-
-    @Override
-    protected void codeGenPrint(DecacCompiler compiler, boolean hex, GPRegister thisReg){
-        setAdrField(compiler, new RegisterOffset(0, thisReg));
-        if (this.getType().isInt()) {
-            compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
-            compiler.addInstruction(new WINT());
-        } else if (this.getType().isFloat()) {
-            compiler.addInstruction(new LOAD(this.getExpDefinition().getOperand(), Register.R1));
-            if (hex) {
-                compiler.addInstruction(new WFLOATX());
-            }
-            else {
-                compiler.addInstruction(new WFLOAT());
-            }
+        if (set){
+            getExpDefinition().setOperand(null);//This means that the fields adress is no longer useful to keep
+            compiler.freeReg();//We free the register storing the adress
         }
-        else{
-            throw new DecacInternalError("Cannot print expression");
-        }
-
     }
 
 
     @Override
     protected DVal codeGenLoad(DecacCompiler compiler){
-        GPRegister registerToUse = compiler.getFreeReg();
-        DVal toLoad = getExpDefinition().getOperand();
-        compiler.addInstruction(new LOAD(toLoad, registerToUse));
-        compiler.useReg();
-        return registerToUse;
+        GPRegister reg = compiler.getFreeReg();
+        compiler.useReg();//Using thisReg
+        boolean set = setAdrField(compiler, reg);
+        compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
+        return reg;
+
     }
+
 
 
     @Override
     protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
+        boolean set = setAdrField(compiler, null);
+        //TODO: push pop
         GPRegister reg = compiler.getFreeReg();
-        compiler.addInstruction(new LOAD(getVariableDefinition().getOperand(), reg));
+        compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
         compiler.addInstruction(new CMP(0, reg));
         if (b){
             compiler.addInstruction(new BNE(label));
@@ -298,26 +286,108 @@ public class Identifier extends AbstractIdentifier {
             compiler.addInstruction(new BEQ(label));
         }
 
+        if (set){
+            getExpDefinition().setOperand(null);//This means that the fields adress is no longer useful to keep
+            compiler.freeReg();//We free the register storing the adress
+        }
     }
 
 
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-        GPRegister reg = compiler.getFreeReg();
-        setAdrField(compiler, adr);
-        compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
+        GPRegister reg = (GPRegister) codeGenLoad(compiler);
         compiler.addInstruction(new STORE(reg, adr));
     }
 
+
+
     @Override
-    protected void setAdrField(DecacCompiler compiler, DAddr adr){
-        //implicit use and free
-        if (definition.isField()){
-            RegisterOffset registerOffset = (RegisterOffset) adr;
-            int index = ((FieldDefinition)definition).getIndex();
-            getExpDefinition().setOperand(new RegisterOffset(index, registerOffset.getRegister()));
-        }
+    public boolean isIdent(){
+        return true;
     }
+
+
+    @Override
+    protected void codeGenPrint(DecacCompiler compiler, boolean printHex, Identifier ident){
+        //This means this is an instance of a class  and the ident is a field (Coming from a selection)
+        if (!getExpDefinition().isField() | getExpDefinition().getOperand()!=null){
+            //When it isn't a field its adress has already been set
+            GPRegister reg = compiler.getFreeReg();
+            compiler.useReg();
+            compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
+            //ident adress is null
+            ident.getExpDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(), reg));
+            ident.codeGenPrint(compiler, printHex);
+            ident.getExpDefinition().setOperand(null);
+            compiler.freeReg();
+        }
+        else {
+            //this is a field we should set the adress by using -2(LB)
+            GPRegister thisReg = compiler.getFreeReg();
+            compiler.useReg();
+            compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), thisReg));
+            getExpDefinition().setOperand(new RegisterOffset(getFieldDefinition().getIndex(), thisReg));
+
+            //todo: push pop
+
+            GPRegister reg = compiler.getFreeReg();
+            compiler.useReg();
+            compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
+            //ident adress is null
+            ident.getExpDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(), reg));
+            ident.codeGenPrint(compiler, printHex);
+            ident.getExpDefinition().setOperand(null);
+            compiler.freeReg();
+            //setting the adress of this to null
+            getExpDefinition().setOperand(null);
+            compiler.freeReg();
+        }
+
+    }
+
+    @Override
+    protected boolean setAdrField(DecacCompiler compiler, GPRegister refReg){
+        if (getExpDefinition().isField() && getExpDefinition().getOperand() == null){
+            if (refReg == null) {
+                GPRegister thisReg = compiler.getFreeReg();
+                compiler.useReg();
+                compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), thisReg));
+                getExpDefinition().setOperand(new RegisterOffset(getFieldDefinition().getIndex(), thisReg));
+            }
+            else {
+                compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), refReg));
+                getExpDefinition().setOperand(new RegisterOffset(getFieldDefinition().getIndex(), refReg));
+            }
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    protected boolean setAdrField(DecacCompiler compiler, GPRegister refReg, Identifier ident){
+        //This function is only called from a selection, so we are sure that
+        if (!getExpDefinition().isField()){
+            GPRegister reg = compiler.getFreeReg();
+            compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
+            compiler.useReg();
+            //TODO: USING THE SAME REGISTER
+            ident.getExpDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(), reg));
+        }
+        else {
+            GPRegister reg = compiler.getFreeReg();
+            compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), reg));
+            compiler.useReg();
+            DAddr leftFieldAdr = new RegisterOffset(getFieldDefinition().getIndex(), reg);
+            compiler.addInstruction(new LOAD(leftFieldAdr, reg));
+            ident.getExpDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(), reg));
+        }
+        return true;
+    }
+
+
+
+
+
 
 
 }

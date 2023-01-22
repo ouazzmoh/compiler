@@ -86,4 +86,8 @@ public class IntLiteral extends AbstractExpr {
         compiler.addInstruction(new WINT());
     }
 
+    @Override
+    protected void codeGenReturn(DecacCompiler compiler){
+        compiler.addInstruction(new LOAD(value, Register.R0));
+    }
 }

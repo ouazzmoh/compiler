@@ -11,6 +11,7 @@ import fr.ensimag.deca.context.VoidType;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
 import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.Register;
 
 public class MethodBody extends AbstractMethodBody {
 	
@@ -55,9 +56,9 @@ public class MethodBody extends AbstractMethodBody {
 	}
 
 	@Override
-	protected void codeGenBodyMethod(DecacCompiler compiler, ListDeclParam parametresm, GPRegister thisReg) {
-		declVariables.codeGenListDeclVariable(compiler);
-		insts.codeGenListInst(compiler, thisReg);
+	protected void codeGenBodyMethod(DecacCompiler compiler, GPRegister thisReg) {
+		declVariables.codeGenListDeclVariable(compiler, Register.LB);
+		insts.codeGenListInst(compiler);
 	}
 
 }
