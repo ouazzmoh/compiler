@@ -4,15 +4,16 @@ import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.Label;
-import fr.ensimag.ima.pseudocode.instructions.ERROR;
-import fr.ensimag.ima.pseudocode.instructions.HALT;
+import fr.ensimag.ima.pseudocode.LabelOperand;
+import fr.ensimag.ima.pseudocode.NullOperand;
+import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.instructions.*;
 
 import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.Map;
 
-import fr.ensimag.ima.pseudocode.instructions.WNL;
-import fr.ensimag.ima.pseudocode.instructions.WSTR;
 import org.apache.commons.lang.Validate;
 import org.apache.log4j.Logger;
 
@@ -58,10 +59,37 @@ public class Program extends AbstractProgram {
 
     @Override
     public void codeGenProgram(DecacCompiler compiler) {
+        // todo :Faire les commandes TSTO ADDSP ET BOV
+        if(!this.getClasses().isEmpty()){
+            //The first class will necessarily have object as superclass
+            //STORE null, 1(GB)
+            //STORE code.Object.equals, 2(GB)
+            Label objectEqLabel = new Label("code.Object.equals");
+            LabelOperand operandObjectLabel = new LabelOperand(objectEqLabel);
+            compiler.addComment("Vtable construction for Object");
+            compiler.addInstruction(new LOAD(new NullOperand(),Register.R0));
+            compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(),Register.GB)));
+            compiler.incOffset(1);
+            compiler.addInstruction(new LOAD(operandObjectLabel, Register.R0));
+            compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(), Register.GB)));
+            compiler.incOffset(1);
+            //Construct vTable for clases
+            classes.codeGenListVirtualTable(compiler);
+        }
         compiler.addComment("Main program");
         compiler.getErrorsMap().put("err_stack_overflow", "Erreur: la pile est pleine");
         main.codeGenMain(compiler);
+
         compiler.addInstruction(new HALT());
+
+        compiler.addComment("Generating code for classes: Fields initializations and methods");
+        if (!classes.isEmpty()){
+            classes.codeGenListFieldsMethods(compiler);
+            compiler.addLabel(new Label("Code.Object.equals"));
+            //TODO: Remove this from here
+            compiler.addInstruction(new RTS());
+        }
+
         compiler.addComment("Generating code for errors");
         Iterator<Map.Entry<String, String>> it = compiler.getErrorsMap().entrySet().iterator();
         while(it.hasNext()){

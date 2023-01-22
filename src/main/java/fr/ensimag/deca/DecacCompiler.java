@@ -59,6 +59,12 @@ public class DecacCompiler {
     //The maximal number of registers to use
     private int regMax;
 
+    //Variable Offset: current d in d(GB)
+    private int offset ;
+
+    //Number of temporaries reserved in stack, in the main program(Push=> +1, Pop=> -1)
+    private int tempStack;
+    
 
 
 
@@ -79,6 +85,9 @@ public class DecacCompiler {
         this.regMax = 15;
         //
         this.currRegNum = 2;
+        this.offset = 1;
+        //
+        this.tempStack = 0;
 
     }
 
@@ -93,6 +102,9 @@ public class DecacCompiler {
         this.regMax = regMax - 1;
         //
         this.currRegNum = 2;
+        this.offset = 1;
+
+        this.tempStack = 1;
 
     }
 
@@ -113,6 +125,21 @@ public class DecacCompiler {
         return compilerOptions;
     }
 
+    public int getOffset(){
+        return this.offset;
+    }
+    
+    public void incOffset(int r){
+        this.offset+=r;
+    }
+
+    public void setCurrRegNum(int i){
+        this.currRegNum = i;
+    }
+
+    public int getCurrRegNum(){
+        return this.currRegNum;
+    }
     /**
      * @see
      * IMAProgram#add(AbstractLine)
@@ -267,6 +294,7 @@ public class DecacCompiler {
 //        prog.decompile(out);
 
         addComment("start main program");
+
         prog.codeGenProgram(this);
         addComment("end main program");
         LOG.debug("Generated assembly code:" + nl + program.display());
@@ -326,7 +354,7 @@ public class DecacCompiler {
      * @return
      */
     public GPRegister getFreeReg(){
-        if (useLoad()){
+        if (currRegNum>=2 && currRegNum <= regMax){
             return Register.getR(currRegNum);
         }
         else {
@@ -337,17 +365,38 @@ public class DecacCompiler {
 
     public void useReg(){
         assert(currRegNum <= regMax);
-        currRegNum++;
+        currRegNum += 1;
     }
 
 
     public void freeReg(){
         assert(currRegNum >=2);
-        currRegNum--;
+        currRegNum -= 1;
     }
 
     public boolean useLoad(){
-        return (currRegNum < regMax) && (currRegNum > 1);
+        return (regMax - currRegNum > 0);
+    }
+
+
+    /**
+     * Increment the number of temporary variables, should be called after each PUSH
+     */
+    public void incrTemp(){
+        tempStack++;
+    }
+
+    /**
+     * Decrement the number of temporary variables, should be called after each POP
+      */
+    public void decrTemp(){
+        tempStack--;
+    }
+
+    //TODO: Solution for temporary variables
+
+    public int getTempStack(){
+        return tempStack;
     }
 
 

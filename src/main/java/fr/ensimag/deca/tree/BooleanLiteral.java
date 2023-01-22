@@ -72,21 +72,26 @@ public class BooleanLiteral extends AbstractExpr {
         else{
             valueToAdd = 0;
         }
-        compiler.addInstruction(new LOAD(valueToAdd, Register.R1));
-        compiler.addInstruction(new STORE(Register.R1, adr));
+        GPRegister reg = compiler.getFreeReg();
+        //Implicit use and free for register
+
+        compiler.addInstruction(new LOAD(valueToAdd, reg));
+        compiler.addInstruction(new STORE(reg, adr));
     }
 
 
     @Override
     protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
+        GPRegister reg = compiler.getFreeReg();
+        //Implicit use and free for register
         if (value){
-            compiler.addInstruction(new LOAD(1, Register.R1));
+            compiler.addInstruction(new LOAD(1, reg));
         }
         else {
-            compiler.addInstruction(new LOAD(0, Register.R1));
+            compiler.addInstruction(new LOAD(0, reg));
         }
 
-        compiler.addInstruction(new CMP(0, Register.R1));
+        compiler.addInstruction(new CMP(0, reg));
         if (b){
             compiler.addInstruction(new BNE(label));
         }
@@ -108,16 +113,6 @@ public class BooleanLiteral extends AbstractExpr {
         compiler.addInstruction(new LOAD(toLoad, registerToUse));
         compiler.useReg();
         return registerToUse;
-    }
-
-    @Override
-    protected void codeGenPush(DecacCompiler compiler){
-        int toLoad = 0;
-        if(value){
-            toLoad = 1;
-        }
-        compiler.addInstruction(new LOAD(toLoad, Register.R1));
-        compiler.addInstruction(new PUSH(Register.R1));
     }
 
 }

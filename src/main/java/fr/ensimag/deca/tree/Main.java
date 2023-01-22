@@ -8,7 +8,10 @@ import fr.ensimag.deca.context.VoidType;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import java.io.PrintStream;
 
+import fr.ensimag.ima.pseudocode.GPRegister;
 import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.instructions.ADDSP;
 import fr.ensimag.ima.pseudocode.instructions.BOV;
 import fr.ensimag.ima.pseudocode.instructions.TSTO;
 import org.apache.commons.lang.Validate;
@@ -24,17 +27,7 @@ public class Main extends AbstractMain {
     private ListDeclVar declVariables;
     private ListInst insts;
 
-    private int stackSize;
 
-    @Override
-    public int getStackSize() {
-        return stackSize;
-    }
-
-    @Override
-    public void setStackSize(int stackSize) {
-        this.stackSize = stackSize;
-    }
 
     public Main(ListDeclVar declVariables,
                 ListInst insts) {
@@ -42,7 +35,6 @@ public class Main extends AbstractMain {
         Validate.notNull(insts);
         this.declVariables = declVariables;
         this.insts = insts;
-        this.stackSize = 0;
     }
 
     @Override
@@ -62,17 +54,15 @@ public class Main extends AbstractMain {
 
     @Override
     protected void codeGenMain(DecacCompiler compiler) {
-        // A FAIRE: traiter les déclarations de variables.
         compiler.addComment("Beginning of main instructions:");
         compiler.addComment("Generating code for variable declaration");
-        //TODO: GENERATE CODE FOR VARIABLE DECLARATION
-        declVariables.codeGenListDeclVariable(compiler);
+        declVariables.codeGenListDeclVariable(compiler, Register.GB);
         compiler.addComment("Generating code for instructions");
         insts.codeGenListInst(compiler);
-        stackSize += declVariables.getList().size();
-        if (stackSize != 0){
+        if (compiler.getOffset() != 0){
+            compiler.addInstructionFirst(new ADDSP(compiler.getOffset()-1)); // offset - 1 because we start at 1 and increment after using
             compiler.addInstructionFirst(new BOV(new Label("err_stack_overflow")));
-            compiler.addInstructionFirst(new TSTO(stackSize));
+            compiler.addInstructionFirst(new TSTO(compiler.getOffset()-1 + compiler.getTempStack())); //TODO: Include temporary variables counted at each Push
         }
 
     }

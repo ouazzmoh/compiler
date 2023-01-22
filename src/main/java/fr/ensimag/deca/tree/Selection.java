@@ -10,13 +10,22 @@ import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.context.ExpDefinition;
 import fr.ensimag.deca.context.FieldDefinition;
 import fr.ensimag.deca.context.Type;
+import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.*;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
 
 public class Selection extends AbstractLValue {
 	private AbstractExpr exp;
 	private AbstractIdentifier ident;
-	
-	
+
+	public AbstractExpr getExp() {
+		return exp;
+	}
+
+	public AbstractIdentifier getIdent() {
+		return ident;
+	}
 
 	public Selection(AbstractExpr exp, AbstractIdentifier ident) {
 		super();
@@ -89,5 +98,57 @@ public class Selection extends AbstractLValue {
         ident.iter(f);
 		
 	}
+
+
+	@Override
+	protected void codeGenPrint(DecacCompiler compiler, boolean printHex){
+		boolean set = setAdrField(compiler, null);
+		ident.codeGenPrint(compiler, printHex);
+		if (set){
+			compiler.freeReg();
+			ident.getExpDefinition().setOperand(null);
+		}
+	}
+
+
+	@Override
+	protected DVal codeGenLoad(DecacCompiler compiler){
+		boolean set = setAdrField(compiler, null);
+		//TODO: Push Pop
+		GPRegister registerToReturn = (GPRegister) ident.codeGenLoad(compiler);
+		if (set) {
+			ident.getFieldDefinition().setOperand(null);
+			compiler.freeReg();
+		}
+		return registerToReturn;
+	}
+
+
+	@Override
+	protected boolean setAdrField(DecacCompiler compiler, GPRegister refReg){
+		//If the left operand is this, we call ident.setAdrField()
+		//If the left operand is an Identifier (x) and not a field, we store @x in reg and do ident.setAdrField(reg)
+		//If the left operand is an Identifier (x) and a field, we get reg, do x.ident(reg), and we use it to set for ident
+		//If the left operand is a selection, we call for a recursion
+		return exp.setAdrField(compiler, refReg, (Identifier) ident);
+	}
+
+
+	@Override
+	protected boolean setAdrField(DecacCompiler compiler, GPRegister refReg, Identifier ident){
+		return exp.setAdrField(compiler, refReg, (Identifier) ident);
+	}
+
+
+
+
+	@Override
+	public boolean isIdent(){
+		return false;
+	}
+
+
+
+
 
 }

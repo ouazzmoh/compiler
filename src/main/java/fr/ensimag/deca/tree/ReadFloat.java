@@ -8,6 +8,7 @@ import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.DAddr;
 import fr.ensimag.ima.pseudocode.DVal;
+import fr.ensimag.ima.pseudocode.GPRegister;
 import fr.ensimag.ima.pseudocode.Label;
 import fr.ensimag.ima.pseudocode.instructions.*;
 
@@ -58,11 +59,6 @@ public class ReadFloat extends AbstractReadExpr {
         return super.codeGenLoad(compiler);
     }
 
-    @Override
-    protected void codeGenPush(DecacCompiler compiler){
-        compiler.addInstruction(new RINT());
-        super.codeGenPush(compiler);
-    }
 
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean hex){

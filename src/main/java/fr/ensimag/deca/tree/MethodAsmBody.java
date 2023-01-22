@@ -7,6 +7,7 @@ import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
+import fr.ensimag.ima.pseudocode.GPRegister;
 
 public class MethodAsmBody extends AbstractMethodBody {
 	private StringLiteral string;
@@ -45,4 +46,9 @@ public class MethodAsmBody extends AbstractMethodBody {
 		throw new UnsupportedOperationException("not yet implemented");
 	}
 
+
+	@Override
+	protected void codeGenBodyMethod(DecacCompiler compiler, GPRegister thisReg) {
+		// TODO
+	}
 }

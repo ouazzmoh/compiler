@@ -1,13 +1,16 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.deca.context.Type;
-import fr.ensimag.ima.pseudocode.GPRegister;
-import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.Definition;
 import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.ima.pseudocode.instructions.CMP;
+import fr.ensimag.ima.pseudocode.instructions.LEA;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.PUSH;
 
 /**
  * Assignment, i.e. lvalue = expr.
@@ -46,21 +49,58 @@ public class Assign extends AbstractBinaryExpr {
         return "=";
     }
 
+
     @Override
-    protected void codeGenInst(DecacCompiler compiler, Label label){
-            //Load right_operand(expr), left_operand(lvalue)
-        compiler.addComment("Assigning a variable");
-        this.getRightOperand().codeGenAssign(compiler, (Identifier) this.getLeftOperand());
+    protected void codeGenInst(DecacCompiler compiler, Label label) {
+        //The left operand is either an identifier or a selection
+        if (getLeftOperand().isIdent()) {
+            boolean set = getLeftOperand().setAdrField(compiler, null);
+            this.getRightOperand().codeGenAssign(compiler, getLeftOperand());
+            if (set) {
+                ((Identifier) getLeftOperand()).getExpDefinition().setOperand(null);
+                compiler.freeReg();
+            }
+        } else {
+            boolean set = getLeftOperand().setAdrField(compiler, null);
+            this.getRightOperand().codeGenAssign(compiler, ((Selection)getLeftOperand()).getIdent());
+            if (set) {
+                ((Selection)getLeftOperand()).getIdent().getExpDefinition().setOperand(null);
+                compiler.freeReg();
+            }
+        }
     }
+
+
 
     @Override
     protected void codeGenPrint(DecacCompiler compiler, boolean hex){
         this.getRightOperand().codeGenPrint(compiler, hex);
     }
 
-//    @Override
-//    protected void codeGenLoad(DecacCompiler compiler){
-//        GPRegister  reg = (GPRegister) getRightOperand().codeGenLoad(compiler);
-////        compiler.getRegisterDescriptor().
-//    }
+
+    @Override
+    protected DVal codeGenLoad(DecacCompiler compiler){
+        GPRegister reg = compiler.getFreeReg();
+        compiler.useReg();
+        //The left operand is either an identifier or a selection
+        if (getLeftOperand().isIdent()) {
+            boolean set = getLeftOperand().setAdrField(compiler, null);
+            this.getRightOperand().codeGenAssign(compiler, getLeftOperand());
+            compiler.addInstruction(new LOAD(((Identifier)getLeftOperand()).getExpDefinition().getOperand(), reg));
+            if (set) {
+                ((Identifier) getLeftOperand()).getExpDefinition().setOperand(null);
+                compiler.freeReg();
+            }
+        } else {
+            boolean set = getLeftOperand().setAdrField(compiler, null);
+            this.getRightOperand().codeGenAssign(compiler, ((Selection)getLeftOperand()).getIdent());
+            compiler.addInstruction(new LOAD(((Selection)getLeftOperand()).getIdent().getExpDefinition().getOperand(), reg));
+            if (set) {
+                ((Selection)getLeftOperand()).getIdent().getExpDefinition().setOperand(null);
+                compiler.freeReg();
+            }
+        }
+        return reg;
+    }
+
 }

@@ -1,15 +1,14 @@
 package fr.ensimag.deca.tree;
 
-import fr.ensimag.deca.context.Type;
+import fr.ensimag.deca.context.*;
 import fr.ensimag.deca.DecacCompiler;
-import fr.ensimag.deca.context.ClassDefinition;
-import fr.ensimag.deca.context.ContextualError;
-import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.*;
 
 import java.io.PrintStream;
+
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
 import org.apache.commons.lang.Validate;
 
 /**
@@ -136,6 +135,7 @@ public abstract class AbstractExpr extends AbstractInst {
     }
 
 
+
     /**
      * Generate the code corresponding to the instruction
      * @param compiler
@@ -158,10 +158,14 @@ public abstract class AbstractExpr extends AbstractInst {
     /**
      * Generate assignment code for the expression
      * @param compiler
-     * @param identifier
+     * @param left: can be either identifier or selection
+     *
      */
-    protected void codeGenAssign(DecacCompiler compiler, Identifier identifier){
-        this.codeGenInit(compiler, identifier.getExpDefinition().getOperand());
+    protected void codeGenAssign(DecacCompiler compiler, AbstractLValue left){
+        if (left.isIdent()){
+            this.codeGenInit(compiler, ((Identifier)left).getExpDefinition().getOperand());
+        }
+        //todo:
     }
 
 
@@ -177,13 +181,16 @@ public abstract class AbstractExpr extends AbstractInst {
 
 
     /**
-     * Push the value of the expression in the temporary memory
-     * Use POP(Rm) later to retrieve the value in the Rm register
+     * Loads the value of the expression in R0,
+     * Used as a return in assembly
      * @param compiler
      */
-    protected void codeGenPush(DecacCompiler compiler){
-        throw new DecacInternalError("Cannot push the expression");
+    protected void codeGenReturn(DecacCompiler compiler){
+        GPRegister reg = (GPRegister) codeGenLoad(compiler);
+        compiler.addInstruction(new LOAD(reg, Register.R0));
+        compiler.freeReg();
     }
+
 
 
     /**
@@ -196,6 +203,51 @@ public abstract class AbstractExpr extends AbstractInst {
     protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
         throw new DecacInternalError("Expression cannot be used for boolean expressions");
     }
+
+
+    /**
+     *  Generate code to print ident depending on the type of the expression
+     *  Useful for println(this.x) for example
+     *  the expression in this case can be :
+     * @param compiler
+     * @param printHex
+     * @param ident
+     */
+    protected void codeGenPrint(DecacCompiler compiler, boolean printHex, Identifier ident){
+        throw new DecacInternalError("Not implemented yet");
+    }
+
+
+    /**
+     * Sets the adresses of the expressions when necessary
+     * case1: field in the form of : x (inside the scope of a class) -> use -2(LB) and index of field
+     * case2: Selection this.x: same as case1
+     * case3: c.x with c not a field, -> use @(c) and index of field
+     * case4: c.x with c a field -> use -2(LB) and index of c and set @(C), use @(C) and index of field
+     * The selection can be recursive
+     * Should be called before using any function that uses the adresses of operands:
+     * -->codeGenPrint, codeGenLoad, codeGenAssign, codeGenBranch, codeGenInit
+     * !!This function locks a register if refReg is null, we need to use freeReg() after
+     * @param compiler
+     * @param refReg: Is the reference register use to construct the adress, if it's null we get a free register
+     * @return if it has set the adress it returns true
+     */
+    protected boolean setAdrField(DecacCompiler compiler, GPRegister refReg){
+        return false;
+    }
+
+
+    /**
+     * Called when we are in a selection, useful for recursion
+     * @param compiler
+     * @param refReg
+     * @param ident
+     * @return
+     */
+    protected boolean setAdrField(DecacCompiler compiler, GPRegister refReg, Identifier ident){
+        return false;
+    }
+
 
 
 

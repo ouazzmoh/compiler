@@ -22,12 +22,4 @@ public class Equals extends AbstractOpExactCmp {
         return "==";
     }
 
-//    protected void codeGenMnem(DecacCompiler compiler, Label label){
-//        compiler.addInstruction(new BEQ(label));
-//    }
-//
-//    protected void codeGenMnemOpp(DecacCompiler compiler, Label label){
-//        compiler.addInstruction(new BNE(label));
-//    }
-    
 }

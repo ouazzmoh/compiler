@@ -1,17 +1,19 @@
 package fr.ensimag.deca.tree;
 
-import fr.ensimag.deca.context.ClassDefinition;
-import fr.ensimag.deca.context.ClassType;
+import fr.ensimag.deca.context.*;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.DecacFatalError;
-import fr.ensimag.deca.context.ContextualError;
-import fr.ensimag.deca.context.EnvironmentExp;
-import fr.ensimag.deca.context.EnvironmentType;
-import fr.ensimag.deca.context.FieldDefinition;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.deca.tools.SymbolTable;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
+import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.LabelOperand;
+import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.instructions.*;
 
 import java.io.PrintStream;
+import java.util.*;
 
 /**
  * Declaration of a class (<code>class name extends superClass {members}<code>).
@@ -141,6 +143,93 @@ public class DeclClass extends AbstractDeclClass {
 		s.unindent();
 		s.print("}");
 		
+	}
+
+	@Override
+	protected void codeGenVirtualTable(DecacCompiler compiler) {
+		compiler.addComment("Virtual Table of " + this.className.getName().getName() + " class");
+
+		//Store @superClass, stackIndex of new class
+		//Store inherited methods in, stakIndex + methodIndex for new class
+		compiler.addInstruction(new LEA(new RegisterOffset(superClass.getClassDefinition().getStackIndex(), Register.GB), Register.R0));
+		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(), Register.GB)));
+		this.className.getClassDefinition().setStackIndex(compiler.getOffset());
+		compiler.incOffset(1);
+		Label objectLabel = new Label("code.Object.equals");
+		LabelOperand oLabelOperand = new LabelOperand(objectLabel);
+		compiler.addInstruction(new LOAD(oLabelOperand, Register.R0));
+		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(), Register.GB)));
+		compiler.incOffset(declmethods.size() + 1); //TODO: this or numberOfMethods
+
+		//Creating the table:
+		//Structure will hold the methods to add
+		TreeMap<Integer, String> methodMap = new TreeMap<Integer, String>();//Stores index method
+		ClassDefinition currSuperClass = className.getClassDefinition();
+		while (!currSuperClass.getType().getName().getName().equals("object")){
+			Iterator<Map.Entry<Symbol, ExpDefinition>> it = currSuperClass.getMembers().getEnvTypes().entrySet().iterator();
+			while (it.hasNext()){
+				Map.Entry<Symbol, ExpDefinition> couple = it.next();
+				if (couple.getValue() instanceof MethodDefinition && !methodMap.containsKey(((MethodDefinition) couple.getValue()).getIndex())){
+					//If prioritizes the child class, if the index is the same it doesn't add
+					methodMap.put(((MethodDefinition) couple.getValue()).getIndex(), "code."
+							+ currSuperClass.getType().getName().getName() + "."+ couple.getKey().getName());
+				}
+			}
+			currSuperClass = currSuperClass.getSuperClass();
+		}
+
+		//Stacking the table
+		for (Map.Entry<Integer, String> couple : methodMap.entrySet()){
+			Label methodLabel = new Label(couple.getValue());
+			LabelOperand opMethodLabel = new LabelOperand(methodLabel);
+			compiler.addInstruction(new LOAD(opMethodLabel, Register.R0));
+			compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(className.getClassDefinition().getStackIndex() +
+					couple.getKey(), Register.GB)));
+		}
+
+	}
+
+	@Override
+	protected void codeGenFieldsMethods(DecacCompiler compiler){
+		//TODO: Generate the code of initialization for fields and methods of class
+		compiler.addComment("--------------------------------------------------");
+		compiler.addComment("                 Classe " + className.getName().getName());
+		compiler.addComment("--------------------------------------------------");
+		//Code for fields.initializations
+		compiler.addLabel(new Label("init."+ className.getName().getName()));
+		//TODO : TSTO
+		//TODO: Avec superclass, tous les nv champs, initialiser les champs heritees, init explicit des nv champs
+		if (superClass.getName().getName().equals("object")){
+			for (AbstractDeclField d : declfields.getList()){
+				d.codeGenDeclField(compiler);
+			}
+		}
+		else {
+			//r1 = -2(LB), initialize all new fields to 0, push r1, BSR init.Superclass, Subsp, effective init to new ones
+			compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), Register.R1));
+			compiler.addInstruction(new LOAD(0, Register.R0));
+			//init to 0 all fields
+			for (AbstractDeclField d : declfields.getList()){
+				compiler.addInstruction(new STORE(Register.R0,
+						new RegisterOffset(d.getVarName().getFieldDefinition().getIndex(), Register.R1)));
+			}
+			//Push object
+			compiler.addInstruction(new PUSH(Register.R1));
+			compiler.addInstruction(new BSR(new LabelOperand(new Label("init." + superClass.getName().getName()))));
+			compiler.addInstruction(new SUBSP(1));
+			for (AbstractDeclField d : declfields.getList()){
+				//If the declaration is not explicit, it was already done before
+				if (d.getInitialization().isExplicit()){
+					d.codeGenDeclField(compiler);
+				}
+			}
+
+		}
+		compiler.addInstruction(new RTS()); //Return for the fields declarations
+
+		for (AbstractDeclMethod m : declmethods.getList()){
+			m.codeGenDeclMethod(compiler, className.getName().getName());
+		}
 	}
 
 }

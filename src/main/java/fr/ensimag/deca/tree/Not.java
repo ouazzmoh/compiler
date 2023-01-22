@@ -45,15 +45,6 @@ public class Not extends AbstractUnaryExpr {
     }
 
     @Override
-    protected void codeGenPush(DecacCompiler compiler){
-        getOperand().codeGenPush(compiler);
-        compiler.addInstruction(new POP(Register.R0));
-        compiler.addInstruction(new CMP(0, Register.R0));
-        compiler.addInstruction(new SEQ(Register.R0));
-        compiler.addInstruction(new PUSH(Register.R0));
-    }
-
-    @Override
     protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
         getOperand().codeGenBranch(compiler, !b, label);
     }
@@ -67,15 +58,18 @@ public class Not extends AbstractUnaryExpr {
                 ".c" + getLocation().getPositionInLine());
 
         codeGenBranch(compiler, false, falseNot);
+        GPRegister reg = compiler.getFreeReg();
+        //Implicit use and free of register
+
         //return 1 if true
-        compiler.addInstruction(new LOAD(1, Register.R1));
+        compiler.addInstruction(new LOAD(1, reg));
         compiler.addInstruction(new BRA(endNot));
         compiler.addLabel(falseNot);
         //return 0 if false
-        compiler.addInstruction(new LOAD(0, Register.R1));
+        compiler.addInstruction(new LOAD(0, reg));
         compiler.addInstruction(new BRA(endNot));
         compiler.addLabel(endNot);
-        compiler.addInstruction(new STORE(Register.R1, adr));
+        compiler.addInstruction(new STORE(reg, adr));
     }
 
 }

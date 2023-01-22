@@ -1,6 +1,8 @@
 package fr.ensimag.deca.context;
 
 import fr.ensimag.deca.tree.Location;
+import fr.ensimag.ima.pseudocode.RegisterOffset;
+
 import org.apache.commons.lang.Validate;
 
 /**
@@ -40,12 +42,19 @@ public class ClassDefinition extends TypeDefinition {
 
     private int numberOfFields = 0;
     private int numberOfMethods = 0;
+    private int stackIndex = 1;
     
     @Override
     public boolean isClass() {
         return true;
     }
+    public int getStackIndex(){
+        return stackIndex;
+    }
     
+    public void setStackIndex(int r){
+        this.stackIndex=r;
+    }
     @Override
     public ClassType getType() {
         // Cast succeeds by construction because the type has been correctly set

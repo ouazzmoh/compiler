@@ -1,13 +1,12 @@
 package fr.ensimag.deca.tree;
 
-import fr.ensimag.deca.context.Type;
+import fr.ensimag.deca.context.*;
 import fr.ensimag.deca.DecacCompiler;
-import fr.ensimag.deca.context.ClassDefinition;
-import fr.ensimag.deca.context.ContextualError;
-import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.*;
+
+import java.awt.peer.ComponentPeer;
 
 /**
  * Arithmetic binary operations (+, -, /, ...)
@@ -54,27 +53,30 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
     	}
 
 
+
 	@Override
 	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
 
-		addArithErrors(compiler);
-		//Calculate the result
 		GPRegister result = (GPRegister) codeGenLoad(compiler);
-		//Store result
 		compiler.addInstruction(new STORE(result, adr));
 		compiler.freeReg();
 	}
 
-
-	/**
-	 * Does the operation between the two operands and returns the result in a register
-	 * @param compiler
-	 * @return opLeft with the value of the operation
-	 */
 	@Override
 	protected DVal codeGenLoad(DecacCompiler compiler){
 		addArithErrors(compiler);
-		//Store left in register: If no freeing problems, we are sure there is at least one free register
+		if (!compiler.useLoad() &&!(getRightOperand() instanceof IntLiteral
+				| getRightOperand() instanceof Identifier | getRightOperand() instanceof FloatLiteral)){
+			//Store left operand in register
+			GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
+			compiler.addInstruction(new PUSH(opLeft));
+			compiler.freeReg();
+			GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler);
+			compiler.addInstruction(new POP(Register.R0));
+			codeGenOpMnem(compiler, opRight, Register.R0);
+			compiler.addInstruction(new LOAD(Register.R0, opRight)); //We store the value because R0 is going to be reused
+			return	opRight;
+		}
 		GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
 		//Evaluate right
 		DVal opRight;
@@ -85,28 +87,21 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 		else if (getRightOperand() instanceof Identifier){
 			opRight = ((Identifier)getRightOperand()).getVariableDefinition().getOperand();
 		}
+		else if (getRightOperand() instanceof FloatLiteral){
+			opRight = new ImmediateFloat(((FloatLiteral)getRightOperand()).getValue());
+		}
 		else {
-		//testing if we can use LOAD or we should use PUSH/POP
-			if (!compiler.useLoad()){
-				compiler.addInstruction(new PUSH(opLeft));
-				compiler.freeReg(); //free the left because it is pushed
-				opRight = getRightOperand().codeGenLoad(compiler);
-				compiler.addInstruction(new POP(Register.R0));
-				opLeft = Register.R0;
-			}
-			else {
-				opRight = getRightOperand().codeGenLoad(compiler);
-				compiler.freeReg();
-			}
-
+			opRight = getRightOperand().codeGenLoad(compiler);
+			compiler.freeReg();
 		}
 		//Do the operation
 		codeGenOpMnem(compiler, opRight, opLeft);
-
-
 		return opLeft;
-
 	}
+
+
+
+
 
 	/**
 	 * Generate MNEM(dval1, dval2) corresponding to the operation
@@ -115,7 +110,7 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 	 * @param dval1
 	 * @param dval2
 	 */
-	protected void codeGenOpMnem(DecacCompiler compiler, DVal dval1, GPRegister dval2){
+	protected void codeGenOpMnem(DecacCompiler compiler,DVal dval1, GPRegister dval2){
 		if (getOperatorName().equals("+")){
 			compiler.addInstruction(new ADD(dval1, dval2));
 			compiler.addInstruction(new BOV(new Label(ovLabel)));
@@ -160,11 +155,7 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 	 * @param compiler
 	 */
 	protected void addArithErrors(DecacCompiler compiler){
-		Type typeLeft = this.getLeftOperand().getType();
-		Type typeRight = this.getRightOperand().getType();
-		if (typeLeft.isInt() && typeLeft.isInt()){
-			compiler.addError(ovLabelInt, "Erreur : Division entiere par 0");
-		}
+		compiler.addError(ovLabelInt, "Erreur : Division entiere par 0");
 		compiler.addError(ovLabel, "Erreur: debordement arithmetique --> non codable ou division par 0.0");
 	}
 

@@ -30,16 +30,11 @@ public abstract class AbstractReadExpr extends AbstractExpr {
     }
 
     @Override
-    protected void codeGenPush(DecacCompiler compiler){
-        compiler.addInstruction(new PUSH(Register.R1));
-    }
-
-    @Override
     protected DVal codeGenLoad(DecacCompiler compiler){
-        GPRegister registerToUse = compiler.getFreeReg();
-        compiler.addInstruction(new LOAD(Register.R1, registerToUse));
+        GPRegister reg = compiler.getFreeReg();
+        compiler.addInstruction(new LOAD(Register.R1, reg));
         compiler.useReg();
-        return registerToUse;
+        return reg;
     }
 
 }

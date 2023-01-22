@@ -5,7 +5,9 @@ import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
+import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.GPRegister;
 import fr.ensimag.ima.pseudocode.Label;
 
 /**
@@ -28,13 +30,19 @@ public abstract class AbstractInst extends Tree {
     protected abstract void verifyInst(DecacCompiler compiler,
             EnvironmentExp localEnv, ClassDefinition currentClass, Type returnType) throws ContextualError;
 
+
+
+
     /**
      * Generate assembly code for the instruction.
-     * 
+     *
      * @param compiler
      * @param endIf : useful to store the endIf label in if instructions
      */
-    protected abstract void codeGenInst(DecacCompiler compiler, Label endIf);
+    protected void codeGenInst(DecacCompiler compiler, Label endIf){
+        throw new DecacInternalError("Not yet implemented");
+    }
+
 
 
     /**
@@ -46,8 +54,6 @@ public abstract class AbstractInst extends Tree {
         decompile(s);
     }
 
-    protected void codeGenInstIf(DecacCompiler compiler, Label label){
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
+
 
 }

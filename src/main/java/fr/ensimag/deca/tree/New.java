@@ -11,9 +11,13 @@ import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.context.ExpDefinition;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.*;
+import fr.ensimag.ima.pseudocode.instructions.*;
 
 public class New extends AbstractExpr {
 	private AbstractIdentifier ident;
+
+	protected String heapErr = "err_heap_overflow";
 	
 	public New(AbstractIdentifier ident) {
 		super();
@@ -55,6 +59,44 @@ public class New extends AbstractExpr {
 	protected void iterChildren(TreeFunction f) {
 		// TODO Auto-generated method stub
 		ident.iter(f);
+	}
+
+
+	@Override
+	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+		compiler.addError(heapErr, "Erreur : allocation impossible, tas plein");
+		GPRegister reg = compiler.getFreeReg();
+		compiler.addInstruction(new NEW(1 + ident.getClassDefinition().getNumberOfFields(), reg));
+		compiler.addInstruction(new BOV(new Label(heapErr)));
+		compiler.useReg();
+		DAddr dGB = new RegisterOffset(ident.getClassDefinition().getStackIndex(), Register.GB);
+		compiler.addInstruction(new LEA(dGB, Register.R0));
+		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(0, reg)));
+		compiler.addInstruction(new PUSH(reg));
+		compiler.freeReg();
+		compiler.addInstruction(new BSR(new Label("init." + getType().getName().getName())));
+		compiler.addInstruction(new POP(reg));
+		compiler.addInstruction(new STORE(reg, adr));
+		//Implicit use and free of register
+	}
+
+
+	@Override
+	protected DVal codeGenLoad(DecacCompiler compiler){
+		compiler.addError(heapErr, "Erreur : allocation impossible, tas plein");
+		GPRegister reg = compiler.getFreeReg();
+		compiler.addInstruction(new NEW(1 + ident.getClassDefinition().getNumberOfFields(), reg));
+		compiler.addInstruction(new BOV(new Label(heapErr)));
+		compiler.useReg();
+		DAddr dGB = new RegisterOffset(ident.getClassDefinition().getStackIndex(), Register.GB);
+		compiler.addInstruction(new LEA(dGB, Register.R0));
+		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(0, reg)));
+		compiler.addInstruction(new PUSH(reg));
+		compiler.freeReg();
+		compiler.addInstruction(new BSR(new Label("init." + getType().getName().getName())));
+		compiler.addInstruction(new POP(reg));
+		compiler.useReg();
+		return reg;
 	}
 
 }

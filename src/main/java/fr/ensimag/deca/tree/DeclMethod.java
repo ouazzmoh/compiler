@@ -3,6 +3,15 @@ package fr.ensimag.deca.tree;
 import java.io.PrintStream;
 
 import fr.ensimag.deca.DecacCompiler;
+import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.*;
+import fr.ensimag.ima.pseudocode.instructions.BOV;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.POP;
+import fr.ensimag.ima.pseudocode.instructions.PUSH;
+import fr.ensimag.ima.pseudocode.instructions.RTS;
+import fr.ensimag.ima.pseudocode.instructions.STORE;
+import fr.ensimag.ima.pseudocode.instructions.TSTO;
 import fr.ensimag.deca.DecacFatalError;
 import fr.ensimag.deca.context.ClassDefinition;
 import fr.ensimag.deca.context.ContextualError;
@@ -18,6 +27,11 @@ import fr.ensimag.deca.tools.SymbolTable.Symbol;
 public class DeclMethod extends AbstractDeclMethod {
 	final private AbstractIdentifier type;
 	final private AbstractIdentifier name;
+
+	public AbstractIdentifier getName() {
+		return name;
+	}
+
 	final private ListDeclParam parametres;
 	final private AbstractMethodBody body;
 	
@@ -30,6 +44,7 @@ public class DeclMethod extends AbstractDeclMethod {
 		this.body = body;
 	}
 
+	
 	@Override
 	public void decompile(IndentPrintStream s) {
 		// TODO Auto-generated method stub
@@ -60,7 +75,9 @@ public class DeclMethod extends AbstractDeclMethod {
         body.iter(f);
 	}
 
-	@Override
+
+
+
 	protected EnvironmentExp verifyDeclMethod(DecacCompiler compiler,Symbol className, Symbol superClass, int j) throws ContextualError {
 		// TODO Auto-generated method stub
 		int k = ((ClassDefinition )compiler.environmentType.defOfType(className)).getNumberOfMethods() + 1;
@@ -111,7 +128,52 @@ public class DeclMethod extends AbstractDeclMethod {
 			// TODO Auto-generated catch block
 			throw new ContextualError("body params are invalids", this.getLocation());
 		}
-		
+
 	}
+
+
+
+	@Override
+	protected void  codeGenDeclMethod(DecacCompiler compiler, String className){
+		int oldRegNum = compiler.getCurrRegNum();
+
+
+		compiler.addComment("Saving registers");
+		while (compiler.getCurrRegNum()>2){
+			compiler.addInstruction(new PUSH(Register.getR(compiler.getCurrRegNum()-1)));//-1 because currRegNum is the next free Register
+			compiler.freeReg();
+		}
+
+		Label startMethod = new Label("code."+className+"."+name.getName().getName());
+		compiler.addLabel(startMethod);
+
+
+		//Set the adresses for the parameters
+		int paramOffset = -3; //The first paramter is in -3(LB)
+		for(AbstractDeclParam d : parametres.getList()){
+			d.setParamOperand(paramOffset);
+			paramOffset--;
+			//TODO: Make their adress null after ?
+		}
+		//Generating the code for the body by using the (No-Object) sublanguage functions
+		body.codeGenBodyMethod(compiler, null);
+		//
+
+		Label endMethod = new Label("fin."+className+"."+name.getName().getName());
+		compiler.addLabel(endMethod);
+		compiler.addComment("Restoring Registers");
+		while (compiler.getCurrRegNum()< oldRegNum){
+			compiler.addInstruction(new POP(Register.getR(compiler.getCurrRegNum())));
+			compiler.useReg();
+		}
+		compiler.addInstruction(new RTS());
+
+	}
+
+	@Override
+	protected AbstractIdentifier getMethodeName() {
+		return name;
+	}
+
 
 }

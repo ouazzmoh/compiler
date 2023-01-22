@@ -4,6 +4,11 @@ package fr.ensimag.deca;
 import java.io.File;
 import org.apache.log4j.Logger;
 
+import net.bytebuddy.asm.Advice.Exit;
+
+import java.util.concurrent.*;
+
+
 /**
  * Main class for the command-line Deca compiler.
  *
@@ -56,21 +61,44 @@ public class DecacMain {
 
         }
         if (options.getParallel()) {
-            // A FAIRE : instancier DecacCompiler pour chaque fichier à
-            // compiler, et lancer l'exécution des méthodes compile() de chaque
-            // instance en parallèle. Il est conseillé d'utiliser
-            // java.util.concurrent de la bibliothèque standard Java.
-            //TODO : solve for parallel files
-            throw new UnsupportedOperationException("Parallel build not yet implemented");
+            ExecutorService executor = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+            for(File source : options.getSourceFiles()){
+                Future<Boolean> f = executor.submit(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        Boolean err = false;
+                        DecacCompiler compiler;
+                        //Checking how many register to use
+                        if (options.getCustomNumReg() >= 4 && options.getCustomNumReg() <= 16){
+                            compiler = new DecacCompiler(options, source, options.getCustomNumReg());
+                        }
+                        else {
+                            compiler = new DecacCompiler(options, source);
+                        }
+                        //Beginning of compilation
+                        if (compiler.compile()) {
+                            err = true;
+                        }
+                        return err;
+                    }
+                });
+                try {
+                    f.get();
+                } catch (ExecutionException | CancellationException | InterruptedException ex){
+                    System.exit(1);
+                }
+            }
         } else {
             for (File source : options.getSourceFiles()) {
-            	DecacCompiler compiler;
-            	if (options.getOptionr()){
-            		compiler = new DecacCompiler(options, source, options.nbRegistre);
-            	}
-            	else {
-            		compiler = new DecacCompiler(options, source);
-            	}
+                DecacCompiler compiler;
+                //Checking how many register to use
+                if (options.getOptionr()){
+                    compiler = new DecacCompiler(options, source, options.getCustomNumReg());
+                }
+                else {
+                    compiler = new DecacCompiler(options, source);
+                }
+                //Beginning of compilation
                 if (compiler.compile()) {
                     error = true;
                 }

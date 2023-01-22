@@ -51,6 +51,7 @@ public abstract class AbstractUnaryExpr extends AbstractExpr {
 
     @Override
     protected void codeGenInit(DecacCompiler compiler, DAddr adr) {
+//        getOperand().setAdrField(compiler, adr);
         GPRegister valueReg = (GPRegister) codeGenLoad(compiler);
         compiler.addInstruction(new STORE(valueReg, adr));
         compiler.freeReg();

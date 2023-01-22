@@ -15,4 +15,6 @@ abstract public class AbstractDeclParam extends Tree {
 
 	protected abstract EnvironmentExp verifyParam(DecacCompiler compiler) throws ContextualError;
 
+	public abstract void setParamOperand(int paramOffset);
+
 }
