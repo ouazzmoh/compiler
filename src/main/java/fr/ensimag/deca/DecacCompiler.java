@@ -112,7 +112,7 @@ public class DecacCompiler {
         this.offset = 1;
 
         this.tempStack = 1;
-        this.maxRegisterUsed = 2 ;
+        this.maxRegisterUsed = 0 ;
 
     }
 
@@ -219,22 +219,6 @@ public class DecacCompiler {
     public void addInstructionFirst(Instruction instruction, String comment) {
         program.addInstruction(instruction, comment);
     }
-    /** 
-     * @see
-     * IMAProgram#addHere(Instruction, int index)
-    */
-    public void addHere(Instruction instruction, int index){
-        program.addHere(instruction, index);
-    }
-
-    /** 
-     * @see
-     * IMAProgram#addCommentHere(Instruction,
-     * java.lang.String)
-    */
-    public void addCommentHere(String s, int index){
-        program.addCommentHere(s, index);
-    }
     
     /**
      * @see 
@@ -249,10 +233,19 @@ public class DecacCompiler {
     /**
      * The main program. Every instruction generated will eventually end up here.
      */
-    private final IMAProgram program = new IMAProgram();
+    private IMAProgram program = new IMAProgram();
 
-    public int getIndexLineProgram(){
-        return this.program.getIndexLineProgram();
+    /**
+     * Setter for the IMAProgram
+     */
+    public void setImaProgram(IMAProgram program){
+        this.program = program;
+    }
+    /**
+     * Getter for the IMAProgram
+     */
+    public IMAProgram getImaProgram(){
+        return this.program;
     }
  
 
