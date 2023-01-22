@@ -52,7 +52,7 @@ public class Selection extends AbstractLValue {
 			ident.setDefinition(res);
 	    	ident.setType(res.getType());
 			if(res.getVisibility() == Visibility.PUBLIC) {
-
+				this.setType(t2.getType());
 				return t2.getType();
 			}
 			else {
@@ -61,6 +61,7 @@ public class Selection extends AbstractLValue {
 				}
 				if(compiler.environmentType.subType(t, currentClass.getType())){
 					if(compiler.environmentType.subType(currentClass.getType(), res.getContainingClass().getType())) {
+						this.setType(t2.getType());
 						return t2.getType();
 					}
 				}
