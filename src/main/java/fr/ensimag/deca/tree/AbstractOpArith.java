@@ -62,58 +62,6 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 		compiler.freeReg();
 	}
 
-//	@Override
-//	protected DVal codeGenLoad(DecacCompiler compiler){
-//		addArithErrors(compiler);
-//		if (!compiler.useLoad() &&!(getRightOperand() instanceof IntLiteral
-//				| getRightOperand() instanceof Identifier | getRightOperand() instanceof FloatLiteral)){
-//			//Store left operand in register
-//			GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
-//			compiler.addInstruction(new PUSH(opLeft));
-//			compiler.freeReg();
-//			GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler);
-//			compiler.addInstruction(new POP(Register.R0));
-//			codeGenOpMnem(compiler, opRight, Register.R0);
-//			compiler.addInstruction(new LOAD(Register.R0, opRight)); //We store the value because R0 is going to be reused
-//			return	opRight;
-//		}
-//		GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
-//		//Evaluate right
-//		DVal opRight;
-//		//Using instanceof here allows us to optimize the assembly code generated
-//		if (getRightOperand() instanceof IntLiteral){
-//			opRight = new ImmediateInteger(((IntLiteral)getRightOperand()).getValue());
-//		}
-//
-//		else if (getRightOperand() instanceof Identifier){
-//			if (((Identifier)getRightOperand()).getExpDefinition().getOperand() == null){
-//				//In this case the right operand is a field inside the class
-//				GPRegister thisReg = compiler.getFreeReg();
-//				compiler.useReg();
-//				compiler.addInstruction(new LOAD(new RegisterOffset(-2, Register.LB), thisReg));
-//				int index = ((Identifier)getRightOperand()).getFieldDefinition().getIndex();
-//				((Identifier)getRightOperand()).getExpDefinition().setOperand(new RegisterOffset(index, thisReg));
-//				opRight = ((Identifier)getRightOperand()).getExpDefinition().getOperand();
-//				//Set adress to null after using it
-//				((Identifier) getRightOperand()).getExpDefinition().setOperand(null);
-//				compiler.freeReg();
-//			}
-//			else {
-//				opRight = ((Identifier)getRightOperand()).getExpDefinition().getOperand();
-//			}
-//		}
-//		else if (getRightOperand() instanceof FloatLiteral){
-//			opRight = new ImmediateFloat(((FloatLiteral)getRightOperand()).getValue());
-//		}
-//		else {
-//			opRight = getRightOperand().codeGenLoad(compiler);
-//			compiler.freeReg();
-//		}
-//		//Do the operation
-//		codeGenOpMnem(compiler, opRight, opLeft);
-//		return opLeft;
-//	}
-
 	@Override
 	protected DVal codeGenLoad(DecacCompiler compiler){
 		addArithErrors(compiler);
@@ -207,11 +155,7 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 	 * @param compiler
 	 */
 	protected void addArithErrors(DecacCompiler compiler){
-//		Type typeLeft = this.getLeftOperand().getType();
-		Type typeRight = this.getRightOperand().getType();
-//		if (typeLeft.isInt() && typeLeft.isInt()){
-//			compiler.addError(ovLabelInt, "Erreur : Division entiere par 0");
-//		}
+		compiler.addError(ovLabelInt, "Erreur : Division entiere par 0");
 		compiler.addError(ovLabel, "Erreur: debordement arithmetique --> non codable ou division par 0.0");
 	}
 
