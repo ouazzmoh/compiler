@@ -80,7 +80,27 @@ public class Assign extends AbstractBinaryExpr {
 
     @Override
     protected DVal codeGenLoad(DecacCompiler compiler){
-        return getRightOperand().codeGenLoad(compiler);
+        GPRegister reg = compiler.getFreeReg();
+        compiler.useReg();
+        //The left operand is either an identifier or a selection
+        if (getLeftOperand().isIdent()) {
+            boolean set = getLeftOperand().setAdrField(compiler, null);
+            this.getRightOperand().codeGenAssign(compiler, getLeftOperand());
+            compiler.addInstruction(new LOAD(((Identifier)getLeftOperand()).getExpDefinition().getOperand(), reg));
+            if (set) {
+                ((Identifier) getLeftOperand()).getExpDefinition().setOperand(null);
+                compiler.freeReg();
+            }
+        } else {
+            boolean set = getLeftOperand().setAdrField(compiler, null);
+            this.getRightOperand().codeGenAssign(compiler, ((Selection)getLeftOperand()).getIdent());
+            compiler.addInstruction(new LOAD(((Selection)getLeftOperand()).getIdent().getExpDefinition().getOperand(), reg));
+            if (set) {
+                ((Selection)getLeftOperand()).getIdent().getExpDefinition().setOperand(null);
+                compiler.freeReg();
+            }
+        }
+        return reg;
     }
 
 }
