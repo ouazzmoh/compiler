@@ -88,17 +88,18 @@ public class DeclMethod extends AbstractDeclMethod {
 		Signature s = parametres.verifyListDeclParam(compiler);
 		ClassDefinition def = (ClassDefinition) compiler.environmentType.defOfType(superClass);
 		EnvironmentExp env_exp_super = def.getMembers();
-		MethodDefinition defname = (MethodDefinition) env_exp_super.get(name);
+		ExpDefinition defname = env_exp_super.get(name);
 		if (defname != null) {
-			Signature sig2 = defname.getSignature();
-			Type t2 = defname.getType();
+			MethodDefinition p = defname.asMethodDefinition("can't redefine a field as a method", getLocation());
+			Signature sig2 = p.getSignature();
+			Type t2 = p.getType();
 			if (!s.sameSignature(sig2)) {
 				throw new ContextualError("this method's signature doesn't match the one in superclass", this.getLocation());
 			}
 			if(!compiler.environmentType.subType(t, t2)) {
 				throw new ContextualError(t + " is not a subtype of " + t2, this.getLocation());
 			}
-			k = defname.getIndex();
+			k = p.getIndex();
 		}
 		else {
 			((ClassDefinition )compiler.environmentType.defOfType(className)).setNumberOfMethods(k);;
