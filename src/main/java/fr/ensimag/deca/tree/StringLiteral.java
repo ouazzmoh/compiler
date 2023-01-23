@@ -11,6 +11,8 @@ import fr.ensimag.ima.pseudocode.ImmediateString;
 import fr.ensimag.ima.pseudocode.instructions.WSTR;
 import java.io.PrintStream;
 import org.apache.commons.lang.Validate;
+import fr.ensimag.arm.pseudocode.*;
+import fr.ensimag.arm.pseudocode.instructions.*;
 
 /**
  * String literal
@@ -64,6 +66,18 @@ public class StringLiteral extends AbstractStringLiteral {
     @Override
     String prettyPrintNode() {
         return "StringLiteral (" + value + ")";
+    }
+
+
+
+    @Override
+    protected void codeGenPrintArm(DecacCompiler compiler, boolean hex) {
+        LabelArm lab = new LabelArm("message1");
+        compiler.data.put(lab,(new ImmediateStringArm(value + "\n")));
+        compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(4)));
+        compiler.addInstruction(new LDR(RegisterArm.getR(1),lab));
+        compiler.addInstruction(new MOV(RegisterArm.getR(2), new ImmediateIntegerArm(value.length() + 1) ));
+        compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
     }
 
 }

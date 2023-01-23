@@ -71,6 +71,14 @@ public class Main extends AbstractMain {
         compiler.resetTempMax();
 
     }
+
+
+    @Override
+    protected void codeGenMainArm(DecacCompiler compiler){
+        declVariables.codeGenListDeclVariableArm(compiler);
+        insts.codeGenListInstArm(compiler);
+    }
+
     
     @Override
     public void decompile(IndentPrintStream s) {

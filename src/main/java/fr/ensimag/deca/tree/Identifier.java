@@ -1,5 +1,9 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.*;
+import fr.ensimag.arm.pseudocode.instructions.LDR;
+import fr.ensimag.arm.pseudocode.instructions.LDRreg;
+import fr.ensimag.arm.pseudocode.instructions.STR;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.context.TypeDefinition;
 import fr.ensimag.deca.context.ClassType;
@@ -393,7 +397,22 @@ public class Identifier extends AbstractIdentifier {
         return true;
     }
 
+    @Override
+    protected void codeGenInitArm(DecacCompiler compiler, OperandArm adr){
+        GPRegisterArm reg = (GPRegisterArm) codeGenLoadArm(compiler);
+        compiler.addInstruction(new LDR(RegisterArm.R1, (LabelArm) adr));
+        compiler.addInstruction(new STR(reg, new RegisterOffsetArm(0, RegisterArm.R1)));
+        compiler.freeRegArm();
+    }
 
+    @Override
+    protected DValArm codeGenLoadArm(DecacCompiler compiler){
+        GPRegisterArm reg = compiler.getFreeRegArm();
+        compiler.addInstruction(new LDR(RegisterArm.R0, (LabelArm) getExpDefinition().getOperandArm()));
+        compiler.addInstruction(new LDRreg(reg, new RegisterOffsetArm(0, RegisterArm.R0)));
+        compiler.useRegArm();
+        return reg;
+    }
 
 
 

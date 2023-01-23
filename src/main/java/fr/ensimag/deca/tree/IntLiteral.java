@@ -1,5 +1,6 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.OperandArm;
 import fr.ensimag.deca.DecacMain;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.DecacCompiler;
@@ -9,6 +10,8 @@ import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.*;
+import fr.ensimag.arm.pseudocode.*;
+import fr.ensimag.arm.pseudocode.instructions.*;
 
 import java.io.PrintStream;
 
@@ -90,4 +93,31 @@ public class IntLiteral extends AbstractExpr {
     protected void codeGenReturn(DecacCompiler compiler){
         compiler.addInstruction(new LOAD(value, Register.R0));
     }
+
+
+    /**
+     * Generate initialization code for a integer variable for ARM by
+     * adding it into our data
+     * @param compiler
+     * @param adr
+     */
+    @Override
+    protected void codeGenInitArm(DecacCompiler compiler, OperandArm adr){
+        compiler.addOperandData(adr);
+        compiler.addInstruction(new MOV(RegisterArm.R0, new ImmediateIntegerArm(value)));
+        compiler.addInstruction(new LDR(RegisterArm.R1, (LabelArm) adr));
+        compiler.addInstruction(new STR(RegisterArm.R0, new RegisterOffsetArm(0, RegisterArm.R1)));
+
+    }
+
+    @Override
+    protected DValArm codeGenLoadArm(DecacCompiler compiler){
+        GPRegisterArm reg = compiler.getFreeRegArm();
+        compiler.addInstruction(new MOV(reg, new ImmediateIntegerArm(value)));
+        compiler.useRegArm();
+        return reg;
+    }
+
+
+
 }

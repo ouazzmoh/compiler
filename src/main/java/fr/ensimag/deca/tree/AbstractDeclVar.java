@@ -1,5 +1,6 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.LabelArm;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
@@ -40,6 +41,12 @@ public abstract class AbstractDeclVar extends Tree {
      * @param refReg
      */
     protected abstract void codeGenDeclVariable(DecacCompiler compiler, int varOffset, Register refReg);
+
+
+
+    protected void codeGenDeclVariableArm(DecacCompiler compiler, LabelArm lab) {
+    }
+
 
 }
 

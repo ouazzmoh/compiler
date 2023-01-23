@@ -8,7 +8,6 @@ import fr.ensimag.deca.tools.SymbolTable;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
 import fr.ensimag.deca.tree.AbstractProgram;
 import fr.ensimag.deca.tree.LocationException;
-import fr.ensimag.deca.tree.Print;
 import fr.ensimag.ima.pseudocode.AbstractLine;
 import fr.ensimag.ima.pseudocode.IMAProgram;
 import fr.ensimag.ima.pseudocode.Instruction;
@@ -19,9 +18,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
+
+import fr.ensimag.arm.pseudocode.*;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -116,6 +115,11 @@ public class DecacCompiler {
         this.tempStack = 0;
         //
         this.blocRegMax = 0;
+
+        if (compilerOptions != null && compilerOptions.isArm()){
+            this.dataSetArm = new HashSet<OperandArm>();
+            this.currRegNumArm = 2;
+        }
 
     }
 
@@ -330,7 +334,13 @@ public class DecacCompiler {
 
         addComment("start main program");
 
-        prog.codeGenProgram(this);
+        if (!compilerOptions.isArm()){
+            prog.codeGenProgram(this);
+        }
+        else {
+            prog.codeGenProgramArm(this);
+        }
+
         addComment("end main program");
         LOG.debug("Generated assembly code:" + nl + program.display());
         LOG.info("Output file assembly file is: " + destName);
@@ -344,7 +354,23 @@ public class DecacCompiler {
 
         LOG.info("Writing assembler file ...");
 
-        program.display(new PrintStream(fstream));
+        if (!compilerOptions.isArm()){
+            program.display(new PrintStream(fstream));
+        }
+        else {
+            //Displaying the arm assembly
+            PrintStream s = new PrintStream(fstream);
+            programArm.display(s);
+
+            //Display data section
+            s.println(".section .data");
+            Iterator<OperandArm> it = dataSetArm.iterator();
+            while (it.hasNext()) {
+                OperandArm op = it.next();
+                s.println("\t\t" + op.toString() + ": .word  0");
+        }
+
+        }
         LOG.info("Compilation of " + sourceName + " successful.");
         return false;
     }
@@ -460,5 +486,117 @@ public class DecacCompiler {
 
 
 
+    /**************************For Arm*************************/
 
+    public static Map<LabelArm, DValArm> data = new HashMap<LabelArm, DValArm>();
+
+    public Set<OperandArm> dataSetArm;
+
+    //Adds data in .data section for arm
+    public void addOperandData(OperandArm op){
+        dataSetArm.add(op);
+    }
+
+    public void addData(LabelArm lab, DValArm dv) {
+        data.putIfAbsent(lab, dv);
+    }
+
+    private int currRegNumArm;
+
+    //todo: -r for -arm
+
+    public void useRegArm(){
+        assert(currRegNumArm <= regMax);
+        currRegNumArm++;
+    }
+
+
+    public void freeRegArm(){
+        assert(currRegNumArm >=2);
+        currRegNumArm--;
+    }
+
+
+    /**
+     * @see
+     * ArmProgram#add(AbstractLineArm)
+     */
+    public void add(AbstractLineArm line) {
+        programArm.add(line);
+    }
+
+
+    /**
+     * @see ArmProgram#addComment(java.lang.String)
+     */
+    public void addCommentArm(String comment) {
+        programArm.addComment(comment);
+    }
+
+
+    /**
+     * @see
+     * ArmProgram#addLabel(Label)
+     */
+    public void addLabel(LabelArm label) {
+        programArm.addLabel(label);
+    }
+
+
+    /**
+     * @see
+     * ArmProgram#addInstruction(InstructionArm)
+     */
+    public void addInstruction(InstructionArm instruction) {
+        programArm.addInstruction(instruction);
+    }
+
+
+    /**
+     * @see
+     * ArmProgram#addInstruction(InstructionArm,
+     * java.lang.String)
+     */
+    public void addInstruction(InstructionArm instruction, String comment) {
+        programArm.addFirst(instruction, comment);
+    }
+
+
+    /**
+     * @see
+     * ArmProgram#addInstruction(InstructionArm)
+     */
+    public void addInstructionFirst(InstructionArm instruction) {
+        programArm.addFirst(instruction);
+    }
+
+
+    /**
+     * @see
+     * ArmProgram#addInstruction(InstructionArm,
+     * java.lang.String)
+     */
+    public void addInstructionFirst(InstructionArm instruction, String comment) {
+        programArm.addInstruction(instruction, comment);
+    }
+
+
+    /**
+     * @see
+     * ArmProgram#display()
+     */
+    public String displayArmProgram() {
+        return programArm.display();
+    }
+
+    public GPRegisterArm getFreeRegArm(){
+        return RegisterArm.getR(currRegNumArm);
+    }
+
+    /**
+     * The main program. Every instruction generated will eventually end up here.
+     * choosing between the IMA and the ARM achitecture depending on the
+     * boolean isArm
+     */
+    private final ArmProgram programArm = new ArmProgram();
 }

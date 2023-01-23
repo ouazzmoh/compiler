@@ -1,5 +1,6 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.OperandArm;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
@@ -36,4 +37,6 @@ public abstract class AbstractInitialization extends Tree {
 
     public abstract boolean isExplicit();
 
+
+    protected abstract void codeGenInitArm(DecacCompiler compiler, OperandArm adr);
 }

@@ -1,5 +1,9 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.ImmediateIntegerArm;
+import fr.ensimag.arm.pseudocode.RegisterArm;
+import fr.ensimag.arm.pseudocode.instructions.MOV;
+import fr.ensimag.arm.pseudocode.instructions.SWI;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.tools.IndentPrintStream;
@@ -55,7 +59,6 @@ public class Program extends AbstractProgram {
 
     @Override
     public void codeGenProgram(DecacCompiler compiler) {
-        // todo :Faire les commandes TSTO ADDSP ET BOV
         if(!this.getClasses().isEmpty()){
             //The first class will necessarily have object as superclass
             //STORE null, 1(GB)
@@ -104,6 +107,18 @@ public class Program extends AbstractProgram {
 
 
     }
+
+
+    @Override
+    public void codeGenProgramArm(DecacCompiler compiler) {
+        main.codeGenMainArm(compiler);
+        //HALT instructions for arm: sends interruption signal to kernel
+        compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(1)));
+        compiler.addInstruction(new MOV(RegisterArm.getR(0), new ImmediateIntegerArm(0)));
+        compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
+    }
+
+
 
     @Override
     public void decompile(IndentPrintStream s) {
