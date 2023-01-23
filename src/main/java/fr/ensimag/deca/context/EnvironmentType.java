@@ -44,22 +44,25 @@ public class EnvironmentType {
         STRING = new StringType(stringSymb);
         //envTypes.put(stringSymb, new TypeDefinition(STRING, Location.BUILTIN));
         
+        Symbol nullType = compiler.createSymbol("null");
+        NULL = new NullType(nullType);
+        
         // not added to envTypes, it's not visible for the user.
-        Symbol object = compiler.createSymbol("object");
+        Symbol object = compiler.createSymbol("Object");
         OBJECT = new ClassType(object);
-        ClassDefinition def = new ClassDefinition(OBJECT, Location.BUILTIN, null);
-        def.setNumberOfMethods(1);
+        OBJECT.definition = new ClassDefinition(OBJECT, Location.BUILTIN, null);
+        OBJECT.definition.setNumberOfMethods(1);
         Symbol equals = compiler.createSymbol("equals");
         Signature s = new Signature();
         s.add(OBJECT);
         MethodDefinition eq = new MethodDefinition(this.BOOLEAN, Location.BUILTIN, s, 1);
         try {
-			def.getMembers().declare(equals, eq);
+        	OBJECT.definition.getMembers().declare(equals, eq);
 		} catch (DoubleDefException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        envTypes.put(object, def);
+        envTypes.put(object, OBJECT.definition);
         
         
     }
@@ -76,6 +79,9 @@ public class EnvironmentType {
     
     public boolean subType(Type t, Type t2) {
     	if(t.sameType(t2)) {
+    		return true;
+    	}
+    	if (t.isNull() && t2.isClass()) {
     		return true;
     	}
     	Set<Symbol> s = envTypes.keySet();
@@ -112,6 +118,7 @@ public class EnvironmentType {
     
     
 
+    public final NullType    NULL;
     public final VoidType    VOID;
     public final IntType     INT;
     public final FloatType   FLOAT;
@@ -119,3 +126,4 @@ public class EnvironmentType {
     public final BooleanType BOOLEAN;
     public final ClassType OBJECT;
 }
+

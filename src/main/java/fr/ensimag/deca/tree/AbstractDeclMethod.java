@@ -21,4 +21,3 @@ public abstract class AbstractDeclMethod extends Tree {
 
 	protected abstract void codeGenDeclMethod(DecacCompiler compiler, String className);
 }
-

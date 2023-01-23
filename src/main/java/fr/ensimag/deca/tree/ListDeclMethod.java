@@ -14,7 +14,10 @@ public class ListDeclMethod extends TreeList<AbstractDeclMethod> {
 	@Override
 	public void decompile(IndentPrintStream s) {
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Not yet implemented");
+        for (AbstractDeclMethod m : getList()) {
+            m.decompile(s);
+            s.println();
+	}
 	}
 	
     void verifyListDeclMethod(DecacCompiler compiler, Symbol className,

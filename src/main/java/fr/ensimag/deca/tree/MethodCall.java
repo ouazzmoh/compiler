@@ -52,11 +52,14 @@ public class MethodCall extends AbstractExpr  {
 		}
 		else {
 			if(currentClass == null) {
-				throw new ContextualError("method can't be called in main without an object", args.getLocation());
+				throw new ContextualError("method can't be called in main without an object", this.getLocation());
 			}
 			env2 = localEnv;
 		}
 		MethodDefinition res = this.methodIdent(env2);
+		if (res == null) {
+			throw new ContextualError("Object doesn't have this method", this.getLocation());
+		}
 		ident.setDefinition(res);
 		rvalue(compiler, localEnv, currentClass, res.getSignature());
 		this.setType(res.getType());
@@ -66,7 +69,7 @@ public class MethodCall extends AbstractExpr  {
 	public void rvalue(DecacCompiler compiler, EnvironmentExp env,ClassDefinition currentClass,
 			Signature s) throws ContextualError {
 		if(args.getList().size() != s.size()) {
-			throw new ContextualError("number of param not valid", args.getLocation());
+			throw new ContextualError("number of param not valid", this.getLocation());
 		}
 		int i = 0;
 		for(AbstractExpr e: this.args.getList()) {
@@ -85,7 +88,14 @@ public class MethodCall extends AbstractExpr  {
 	@Override
 	public void decompile(IndentPrintStream s) {
 		// TODO Auto-generated method stub
-		
+		if(this.exp != null){
+		    this.exp.decompile(s);
+		    s.print(".");
+		}
+		this.ident.decompile(s);
+		s.print("(");
+		this.args.decompile(s);
+		s.print(")");
 	}
 
 	@Override

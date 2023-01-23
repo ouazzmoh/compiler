@@ -28,7 +28,12 @@ public class MethodBody extends AbstractMethodBody {
 	@Override
 	public void decompile(IndentPrintStream s) {
 		// TODO Auto-generated method stub
-		
+		s.println("{");
+		s.indent();
+		this.declVariables.decompile(s);
+		this.insts.decompile(s);
+		s.unindent();
+		s.print("}");
 	}
 
 	@Override

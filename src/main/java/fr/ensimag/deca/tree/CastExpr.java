@@ -25,11 +25,17 @@ public class CastExpr extends AbstractExpr {
 		this.expr = operand;
 	}
 	
-	public boolean isCompatible(Type t1, Type t2) {
+	public boolean isCompatible(DecacCompiler compiler, Type t1, Type t2) {
 		if (t1.isFloat() && t2.isInt()) {
 			return true;
 		}
 		else if (t1.isInt() && t2.isFloat()) {
+			return true;
+		}
+		else if (compiler.environmentType.subType(t1, t2)) {
+			return true;
+		}
+		else if (compiler.environmentType.subType(t2, t1)) {
 			return true;
 		}
 		else {
@@ -43,8 +49,8 @@ public class CastExpr extends AbstractExpr {
 		// TODO Auto-generated method stub
 		Type t2 = type.verifyType(compiler);
 		Type t1 = expr.verifyExpr(compiler, localEnv, currentClass);
-		if (!t1.isVoid()) {
-			if (isCompatible(t1, t2)) {
+		if (!t2.isVoid()) {
+			if (isCompatible(compiler, t1, t2)) {
 				this.setType(t2);
 				return t2;
 			}
@@ -62,17 +68,22 @@ public class CastExpr extends AbstractExpr {
 		this.expr.decompile(s);
 		s.print(")");
 	}
+    @Override
+    String prettyPrintNode() {
+        return "Cast";
+    }
 
 	@Override
 	protected void prettyPrintChildren(PrintStream s, String prefix) {
-		// leaf node => nothing to do
-		
+		type.prettyPrint(s, prefix, false);
+		expr.prettyPrint(s, prefix, true);
 	}
 
 	@Override
 	protected void iterChildren(TreeFunction f) {
 		// leaf node => nothing to do
-		
+        type.iter(f);
+        expr.iter(f);
 	}
 
 }

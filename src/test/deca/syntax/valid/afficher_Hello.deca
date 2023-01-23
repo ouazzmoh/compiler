@@ -6,8 +6,16 @@
 // Historique:
 //    cree le 04/01/2023
 
-{
+class A {
+	int a;
+	protected int b;
+	void setA(int b){
+		this.a = b;
+	}
 
+}
+
+{
     float pp = 3.2;
     int r, m = 5;
     float k = 3;
@@ -76,6 +84,4 @@
     println();
     
     println("hello", "", "world");
-    
-
 }

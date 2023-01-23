@@ -52,6 +52,10 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 				this.setType(compiler.environmentType.BOOLEAN);
 				return this.getType();    			
     		}
+    		if ((t2.isClassOrNull()) && (t1.isClassOrNull())) {
+				this.setType(compiler.environmentType.BOOLEAN);
+				return this.getType(); 
+    		}
     	}
     	throw new ContextualError("erreur dans la condition" + this.getOperatorName() + "operands not permetted", this.getLocation());
     	}
