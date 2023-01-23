@@ -145,14 +145,12 @@ public class DeclMethod extends AbstractDeclMethod {
 		IMAProgram realProg = compiler.getProgram();
 
 		compiler.setProgram(virtualProg);
-		//We are adding inst
 		compiler.resetBlocRegMax();
 		//Set the adresses for the parameters
 		int paramOffset = -3; //The first paramter is in -3(LB)
 		for(AbstractDeclParam d : parametres.getList()){
 			d.setParamOperand(paramOffset);
 			paramOffset--;
-			//TODO: Make their adress null after ?
 		}
 		//Generating the code for the body by using the (No-Object) sublanguage functions
 		body.codeGenBodyMethod(compiler, null);
@@ -174,11 +172,6 @@ public class DeclMethod extends AbstractDeclMethod {
 		compiler.setCurrRegNum(oldRegNum);
 
 
-	}
-
-	@Override
-	protected AbstractIdentifier getMethodeName() {
-		return name;
 	}
 
 

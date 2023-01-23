@@ -6,10 +6,7 @@ import fr.ensimag.deca.DecacFatalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.deca.tools.SymbolTable;
 import fr.ensimag.deca.tools.SymbolTable.Symbol;
-import fr.ensimag.ima.pseudocode.Label;
-import fr.ensimag.ima.pseudocode.LabelOperand;
-import fr.ensimag.ima.pseudocode.Register;
-import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.*;
 
 import java.io.PrintStream;
@@ -159,7 +156,7 @@ public class DeclClass extends AbstractDeclClass {
 		LabelOperand oLabelOperand = new LabelOperand(objectLabel);
 		compiler.addInstruction(new LOAD(oLabelOperand, Register.R0));
 		compiler.addInstruction(new STORE(Register.R0, new RegisterOffset(compiler.getOffset(), Register.GB)));
-		compiler.incOffset(declmethods.size() + 1); //TODO: this or numberOfMethods
+		compiler.incOffset(declmethods.size() + 1);
 
 		//Creating the table:
 		//Structure will hold the methods to add
@@ -178,6 +175,8 @@ public class DeclClass extends AbstractDeclClass {
 			currSuperClass = currSuperClass.getSuperClass();
 		}
 
+		compiler.incOffset(1);
+
 		//Stacking the table
 		for (Map.Entry<Integer, String> couple : methodMap.entrySet()){
 			Label methodLabel = new Label(couple.getValue());
@@ -191,14 +190,24 @@ public class DeclClass extends AbstractDeclClass {
 
 	@Override
 	protected void codeGenFieldsMethods(DecacCompiler compiler){
-		//TODO: Generate the code of initialization for fields and methods of class
 		compiler.addComment("--------------------------------------------------");
 		compiler.addComment("                 Classe " + className.getName().getName());
 		compiler.addComment("--------------------------------------------------");
 		//Code for fields.initializations
 		compiler.addLabel(new Label("init."+ className.getName().getName()));
 		//TODO : TSTO
-		//TODO: Avec superclass, tous les nv champs, initialiser les champs heritees, init explicit des nv champs
+
+		int oldRegNum = compiler.getCurrRegNum();
+		compiler.setCurrRegNum(2);
+
+		compiler.addComment("Saving registers");
+		IMAProgram virtualProg = new IMAProgram();
+		IMAProgram realProg = compiler.getProgram();
+
+		compiler.setProgram(virtualProg);
+		compiler.resetBlocRegMax();
+
+
 		if (superClass.getName().getName().equals("Object")){
 			for (AbstractDeclField d : declfields.getList()){
 				d.codeGenDeclField(compiler);
@@ -225,7 +234,20 @@ public class DeclClass extends AbstractDeclClass {
 			}
 
 		}
-		compiler.addInstruction(new RTS()); //Return for the fields declarations
+
+		compiler.addComment("Restoring registers");
+		for (int i = compiler.getBlocRegMax()-1; i >= 2; i--){
+			compiler.addInstruction(new POP(Register.getR(i)));
+			compiler.addInstructionFirst(new PUSH(Register.getR(i)));
+		}
+		compiler.addInstruction(new RTS());
+		realProg.append(virtualProg);
+		compiler.setProgram(realProg);
+		compiler.resetBlocRegMax();
+		compiler.setCurrRegNum(oldRegNum);
+
+
+
 
 		for (AbstractDeclMethod m : declmethods.getList()){
 			m.codeGenDeclMethod(compiler, className.getName().getName());

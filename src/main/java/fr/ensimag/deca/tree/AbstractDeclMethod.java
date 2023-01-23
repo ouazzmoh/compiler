@@ -10,7 +10,6 @@ import fr.ensimag.deca.context.EnvironmentExp;
 public abstract class AbstractDeclMethod extends Tree {
 
 
-	protected abstract AbstractIdentifier getMethodeName();
     
 
 	protected abstract EnvironmentExp verifyDeclMethod(DecacCompiler compiler, Symbol className,

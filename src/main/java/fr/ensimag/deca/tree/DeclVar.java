@@ -101,7 +101,7 @@ public class DeclVar extends AbstractDeclVar {
 
     @Override
     protected void codeGenDeclVariable(DecacCompiler compiler, int varOffset, Register refRegister){
-        varName.getVariableDefinition().setOperand(new RegisterOffset(varOffset, refRegister));
+        varName.getExpDefinition().setOperand(new RegisterOffset(varOffset, refRegister));
         initialization.codeGenInit(compiler, varName.getExpDefinition().getOperand());
     }
 }
