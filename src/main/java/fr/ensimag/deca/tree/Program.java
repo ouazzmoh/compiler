@@ -3,11 +3,7 @@ package fr.ensimag.deca.tree;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.tools.IndentPrintStream;
-import fr.ensimag.ima.pseudocode.Label;
-import fr.ensimag.ima.pseudocode.LabelOperand;
-import fr.ensimag.ima.pseudocode.NullOperand;
-import fr.ensimag.ima.pseudocode.Register;
-import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.*;
 
 import java.io.PrintStream;
@@ -86,7 +82,10 @@ public class Program extends AbstractProgram {
         if (!classes.isEmpty()){
             classes.codeGenListFieldsMethods(compiler);
             compiler.addLabel(new Label("Code.Object.equals"));
-            //TODO: Remove this from here
+            GPRegister reg1 = compiler.getFreeReg();
+
+
+
             compiler.addInstruction(new RTS());
         }
 
