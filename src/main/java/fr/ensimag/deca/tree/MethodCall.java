@@ -72,8 +72,10 @@ public class MethodCall extends AbstractExpr  {
 			throw new ContextualError("number of param not valid", this.getLocation());
 		}
 		int i = 0;
+		AbstractExpr expr;
 		for(AbstractExpr e: this.args.getList()) {
-			e.verifyRValue(compiler, env, currentClass, s.paramNumber(i));
+			expr = e.verifyRValue(compiler, env, currentClass, s.paramNumber(i));
+			this.args.set(i, expr);
 			i++;
 		}
 	}

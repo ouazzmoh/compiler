@@ -2,7 +2,6 @@
 //    Utilisation simple de la classe Math
 //
 // Resultats:
-//    cos(0.0)=1.00000e+00
 //
 // Historique:
 //    cree le 01/01/2023
@@ -12,5 +11,5 @@
 #include "Math.decah"
 {
     Math m = new Math();
-    println("cos(0.0)=", m.cos(0.0));
+    //println("cos(0.0)=", m.cos(0));
 }
