@@ -116,11 +116,10 @@ public class Selection extends AbstractLValue {
 	@Override
 	protected DVal codeGenLoad(DecacCompiler compiler){
 		boolean set = setAdrField(compiler, null);
-		//TODO: Push Pop
 		GPRegister registerToReturn = (GPRegister) ident.codeGenLoad(compiler);
 		if (set) {
 			ident.getFieldDefinition().setOperand(null);
-			compiler.freeReg();
+//			compiler.freeReg();
 		}
 		return registerToReturn;
 	}

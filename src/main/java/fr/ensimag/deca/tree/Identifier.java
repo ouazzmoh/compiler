@@ -267,8 +267,11 @@ public class Identifier extends AbstractIdentifier {
         compiler.useReg();//Using thisReg
         boolean set = setAdrField(compiler, reg);
         compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
+        if (set){
+            //In this case it is a field
+            getExpDefinition().setOperand(null);
+        }
         return reg;
-
     }
 
 
@@ -367,11 +370,16 @@ public class Identifier extends AbstractIdentifier {
     @Override
     protected boolean setAdrField(DecacCompiler compiler, GPRegister refReg, Identifier ident){
         //This function is only called from a selection, so we are sure that
-        if (!getExpDefinition().isField() | getExpDefinition().getOperand() != null){
+        if (!getExpDefinition().isField()){
             GPRegister reg = compiler.getFreeReg();
             compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
             compiler.useReg();
-            //TODO: USING THE SAME REGISTER
+            ident.getExpDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(), reg));
+        }
+        else if (getExpDefinition().isField() && getExpDefinition().getOperand() != null){
+            GPRegister reg = (GPRegister)( (RegisterOffset) getExpDefinition().getOperand() ).getRegister();
+            compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
+
             ident.getExpDefinition().setOperand(new RegisterOffset(ident.getFieldDefinition().getIndex(), reg));
         }
         else {

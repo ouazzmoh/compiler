@@ -121,8 +121,6 @@ public class MethodCall extends AbstractExpr  {
 
 	@Override
 	protected void codeGenInst(DecacCompiler compiler, Label endIf) {
-
-
 			compiler.addError(deferLabel, "Erreur : dereferencement de null");
 			compiler.addInstruction(new ADDSP(1 + args.size()));
 			GPRegister regThis;
