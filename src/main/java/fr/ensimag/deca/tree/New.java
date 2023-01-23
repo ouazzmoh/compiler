@@ -64,10 +64,14 @@ public class New extends AbstractExpr {
 
 	@Override
 	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-		compiler.addError(heapErr, "Erreur : allocation impossible, tas plein");
+		if (!compiler.getCompilerOptions().getOptionN()) {
+			compiler.addError(heapErr, "Erreur : allocation impossible, tas plein");
+		}
 		GPRegister reg = compiler.getFreeReg();
 		compiler.addInstruction(new NEW(1 + ident.getClassDefinition().getNumberOfFields(), reg));
-		compiler.addInstruction(new BOV(new Label(heapErr)));
+		if (!compiler.getCompilerOptions().getOptionN()) {
+			compiler.addInstruction(new BOV(new Label(heapErr)));
+		}
 		compiler.useReg();
 		DAddr dGB = new RegisterOffset(ident.getClassDefinition().getStackIndex(), Register.GB);
 		compiler.addInstruction(new LEA(dGB, Register.R0));
@@ -85,10 +89,14 @@ public class New extends AbstractExpr {
 	@Override
 	protected DVal codeGenLoad(DecacCompiler compiler){
 
-		compiler.addError(heapErr, "Erreur : allocation impossible, tas plein");
+		if (!compiler.getCompilerOptions().getOptionN()) {
+			compiler.addError(heapErr, "Erreur : allocation impossible, tas plein");
+		}
 		GPRegister reg = compiler.getFreeReg();
 		compiler.addInstruction(new NEW(1 + ident.getClassDefinition().getNumberOfFields(), reg));
-		compiler.addInstruction(new BOV(new Label(heapErr)));
+		if (!compiler.getCompilerOptions().getOptionN()) {
+			compiler.addInstruction(new BOV(new Label(heapErr)));
+		}
 		compiler.useReg();
 		DAddr dGB = new RegisterOffset(ident.getClassDefinition().getStackIndex(), Register.GB);
 		compiler.addInstruction(new LEA(dGB, Register.R0));
