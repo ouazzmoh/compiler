@@ -97,10 +97,6 @@ public class Initialization extends AbstractInitialization {
         }
        else {
             GPRegister result = (GPRegister) expression.codeGenLoad(compiler); //The NEW uses the stack
-
-
-
-
             compiler.addInstruction(new LOAD(result, Register.R0));
             compiler.freeReg();
         }

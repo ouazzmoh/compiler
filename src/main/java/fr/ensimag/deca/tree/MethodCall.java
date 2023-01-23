@@ -121,30 +121,13 @@ public class MethodCall extends AbstractExpr  {
 
 	@Override
 	protected void codeGenInst(DecacCompiler compiler, Label endIf) {
-//		p1.diag(1);
-//		ADDSP #2
-//		; empile p1
-//		LOAD 9 (GB), R2
-//		STORE R2, 0 (SP)
-//		; empile 1
-//		LOAD #1, R2
-//		STORE R2, -1 (SP)
-//		; appel de méthode
-//		LOAD 0 (SP), R2
-//				; objet null dans
-//		; appel de methode ?
-//				CMP #null, R2
-//		BEQ dereferencement_null
-//				; adresse de la
-//		; méthode diag de p1.
-//		LOAD 0 (R2), R2
-//		BSR 2 (R2)
-//		SUBSP #2
-			//Call with an explicit instance
+
+
 			compiler.addError(deferLabel, "Erreur : dereferencement de null");
 			compiler.addInstruction(new ADDSP(1 + args.size()));
 			GPRegister regThis;
 			if (exp != null) {
+				//this.fct(), a.fct() with a an instance (variable/ field)
 				regThis = (GPRegister) exp.codeGenLoad(compiler);
 			}
 			else {
@@ -171,6 +154,7 @@ public class MethodCall extends AbstractExpr  {
 			compiler.addInstruction(new LOAD(new RegisterOffset(0, reg), reg));
 			compiler.addInstruction(new BSR(new RegisterOffset(ident.getMethodDefinition().getIndex(), reg)));
 			compiler.addInstruction(new SUBSP(1 + args.size()));
+			compiler.freeReg();
 
 	}
 

@@ -14,6 +14,7 @@ import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.STORE;
 
 public class Selection extends AbstractLValue {
 	private AbstractExpr exp;
@@ -143,6 +144,13 @@ public class Selection extends AbstractLValue {
 		return this.ident.setAdrField(compiler, refReg, (Identifier) ident);
 	}
 
+
+	@Override
+	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+		GPRegister reg = (GPRegister) codeGenLoad(compiler);
+		compiler.addInstruction(new STORE(reg, adr));
+		compiler.freeReg();
+	}
 
 
 
