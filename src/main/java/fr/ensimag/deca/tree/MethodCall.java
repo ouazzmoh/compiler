@@ -123,6 +123,7 @@ public class MethodCall extends AbstractExpr  {
 	protected void codeGenInst(DecacCompiler compiler, Label endIf) {
 			compiler.addError(deferLabel, "Erreur : dereferencement de null");
 			compiler.addInstruction(new ADDSP(1 + args.size()));
+			compiler.incrTemp(1 + args.size());
 			GPRegister regThis;
 			if (exp != null) {
 				//this.fct(), a.fct() with a an instance (variable/ field)
@@ -151,7 +152,9 @@ public class MethodCall extends AbstractExpr  {
 			compiler.addInstruction(new BEQ(new Label(deferLabel)));
 			compiler.addInstruction(new LOAD(new RegisterOffset(0, reg), reg));
 			compiler.addInstruction(new BSR(new RegisterOffset(ident.getMethodDefinition().getIndex(), reg)));
+			//BSR adds two but
 			compiler.addInstruction(new SUBSP(1 + args.size()));
+			compiler.decrTemp(2);
 			compiler.freeReg();
 
 	}

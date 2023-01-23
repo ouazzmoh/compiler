@@ -161,10 +161,12 @@ public class DeclMethod extends AbstractDeclMethod {
 
 
 		compiler.addComment("Restoring registers");
+		int d = compiler.getBlocRegMax() - 2;
 		for (int i = compiler.getBlocRegMax()-1; i >= 2; i--){
 			compiler.addInstruction(new POP(Register.getR(i)));
 			compiler.addInstructionFirst(new PUSH(Register.getR(i)));
 		}
+		if (d > 0){compiler.addInstructionFirst(new TSTO(d));}
 		compiler.addInstruction(new RTS());
 		realProg.append(virtualProg);
 		compiler.setProgram(realProg);

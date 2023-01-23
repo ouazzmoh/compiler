@@ -56,14 +56,17 @@ public class Main extends AbstractMain {
     protected void codeGenMain(DecacCompiler compiler) {
         compiler.addComment("Beginning of main instructions:");
         compiler.addComment("Generating code for variable declaration");
+        compiler.resetTempStack();
+        compiler.resetBlocRegMax();
         declVariables.codeGenListDeclVariable(compiler, Register.GB);
         compiler.addComment("Generating code for instructions");
         insts.codeGenListInst(compiler);
         if (compiler.getOffset() != 0){
             compiler.addInstructionFirst(new ADDSP(compiler.getOffset()-1)); // offset - 1 because we start at 1 and increment after using
             compiler.addInstructionFirst(new BOV(new Label("err_stack_overflow")));
-            compiler.addInstructionFirst(new TSTO(compiler.getOffset()-1 + compiler.getTempStack())); //TODO: Include temporary variables counted at each Push
+            compiler.addInstructionFirst(new TSTO(compiler.getOffset()-1 + compiler.getBlocTempMax())); //TODO: Include temporary variables counted at each Push
         }
+        compiler.resetTempMax();
 
     }
     
