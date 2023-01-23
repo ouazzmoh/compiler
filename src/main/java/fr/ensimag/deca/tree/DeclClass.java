@@ -199,7 +199,7 @@ public class DeclClass extends AbstractDeclClass {
 		compiler.addLabel(new Label("init."+ className.getName().getName()));
 		//TODO : TSTO
 		//TODO: Avec superclass, tous les nv champs, initialiser les champs heritees, init explicit des nv champs
-		if (superClass.getName().getName().equals("object")){
+		if (superClass.getName().getName().equals("Object")){
 			for (AbstractDeclField d : declfields.getList()){
 				d.codeGenDeclField(compiler);
 			}

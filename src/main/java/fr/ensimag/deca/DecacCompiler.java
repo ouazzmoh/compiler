@@ -98,7 +98,7 @@ public class DecacCompiler {
 
         this.errorsMap = new HashMap<String, String>();
 
-        this.regMax = 3;
+        this.regMax = 15;
         //
         this.currRegNum = 2;
         this.offset = 1;
