@@ -46,7 +46,7 @@ DOT: '.';
 READINT: 'readInt';
 READFLOAT: 'readFloat';
 RETURN: 'return';
-INSTANCEOF: 'intanceof';
+INSTANCEOF: 'instanceof';
 THIS: 'this';
 NEW: 'new';
 NULL: 'null';

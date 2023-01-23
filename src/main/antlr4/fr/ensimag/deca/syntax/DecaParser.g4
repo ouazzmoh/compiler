@@ -339,9 +339,8 @@ inequality_expr returns[AbstractExpr tree]
     | e1=inequality_expr INSTANCEOF type {
             assert($e1.tree != null);
             assert($type.tree != null);
-            if ($INSTANCEOF != null) {
-            	throw new InvalidMethod(this, $ctx);
-            }
+            $tree = new InstanceOf($e1.tree, $type.tree);
+            setLocation($tree, $INSTANCEOF);
             
         }
     ;
