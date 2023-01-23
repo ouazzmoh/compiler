@@ -1,5 +1,5 @@
 // Description:
-//    Code syntaxiquement correct pour verifier la decompilation par un junit
+//    Code syntaxiquement correct pour verifier la decompilation par un script
 //
 // Resultats:
 //
@@ -28,6 +28,7 @@ class B extends A {
 {
     A objet0 = new A();
     B objet = new B();
+    boolean noon = objet0 instanceof A;
 
     float pp = 3.2;
     int r, m = 5;

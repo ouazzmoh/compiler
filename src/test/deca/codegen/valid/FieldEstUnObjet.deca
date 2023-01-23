@@ -4,10 +4,15 @@
 // Resultats:
 //    5
 //    3
+//    10
 // 
 // Historique:
 //    cree le 01/01/2023
+class C {
+	int b = 10;
+}
 class A {
+	C c = new C();
 	int a = 5;
 	void setA(int b){
 		this.a = b;
@@ -22,11 +27,10 @@ class B {
 	}
 }
 {
-	A c;
 	B b = new B();
 	A a = b.getA();
 	println(a.a);
 	a.setA(3);
-	c = b.getA();
-	println(c.a);
+	println(b.a.a);
+	println(b.a.c.b);
 }

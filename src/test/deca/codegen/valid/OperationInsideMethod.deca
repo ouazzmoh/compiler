@@ -1,5 +1,5 @@
 // Description:
-//    printing with this
+//    plusieurs appels dans la methode
 //
 // Resultats:
 //    5
@@ -21,11 +21,14 @@ class B {
 			a.setA(a.a + 1);
 		}
 	}
+	A get(){
+		return this.a;
+	}
 }
 
 {
 	B b = new B();
-	A a = b.a;
+	A a = b.get();
 	b.setAa();
 	println(a.a);
 }

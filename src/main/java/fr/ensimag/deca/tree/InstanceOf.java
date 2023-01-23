@@ -149,8 +149,10 @@ public class InstanceOf extends AbstractExpr {
 
 	@Override
 	protected DVal codeGenLoad(DecacCompiler compiler){
-		Label debutInstanceOf = new Label("DebutInstanceOf");
-		Label finInstanceOf = new Label("FinInstanceOf");
+		Label debutInstanceOf = new Label("DebutInstanceOf" + getLocation().getLine() +
+                "c." + getLocation().getPositionInLine());
+		Label finInstanceOf = new Label("FinInstanceOf"+ getLocation().getLine() +
+                "c." + getLocation().getPositionInLine());
 		ClassType t = (ClassType) expr.getType();
 		ClassDefinition clas = t.getDefinition();
 		GPRegister r = compiler.getFreeReg();

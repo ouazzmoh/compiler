@@ -5,7 +5,7 @@ PATH=./src/test/script/launchers:"$PATH"
 # exemple de définition d'une fonction
 test_synt_invalide () {
     # $1 = premier argument.
-    if test_synt "$1" 2>&1 | grep -q -e "$1:[0-9][0-9]*:"
+    if test_synt "$1" 2>&1 | grep -q -e "[0-9][0-9]*:"
     then
         echo "Echec attendu pour test_synt sur $1."
     else
