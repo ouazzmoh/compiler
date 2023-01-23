@@ -83,6 +83,7 @@ public class New extends AbstractExpr {
 
 	@Override
 	protected DVal codeGenLoad(DecacCompiler compiler){
+
 		compiler.addError(heapErr, "Erreur : allocation impossible, tas plein");
 		GPRegister reg = compiler.getFreeReg();
 		compiler.addInstruction(new NEW(1 + ident.getClassDefinition().getNumberOfFields(), reg));

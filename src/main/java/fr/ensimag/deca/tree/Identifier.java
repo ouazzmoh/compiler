@@ -367,7 +367,7 @@ public class Identifier extends AbstractIdentifier {
     @Override
     protected boolean setAdrField(DecacCompiler compiler, GPRegister refReg, Identifier ident){
         //This function is only called from a selection, so we are sure that
-        if (!getExpDefinition().isField()){
+        if (!getExpDefinition().isField() | getExpDefinition().getOperand() != null){
             GPRegister reg = compiler.getFreeReg();
             compiler.addInstruction(new LOAD(getExpDefinition().getOperand(), reg));
             compiler.useReg();

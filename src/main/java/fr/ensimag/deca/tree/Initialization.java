@@ -96,7 +96,11 @@ public class Initialization extends AbstractInitialization {
             compiler.addInstruction(new LOAD(new ImmediateFloat(((FloatLiteral)expression).getValue()), Register.R0));
         }
        else {
-            GPRegister result = (GPRegister) expression.codeGenLoad(compiler);
+            GPRegister result = (GPRegister) expression.codeGenLoad(compiler); //The NEW uses the stack
+
+
+
+
             compiler.addInstruction(new LOAD(result, Register.R0));
             compiler.freeReg();
         }

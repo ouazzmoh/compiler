@@ -137,7 +137,10 @@ public class Selection extends AbstractLValue {
 
 	@Override
 	protected boolean setAdrField(DecacCompiler compiler, GPRegister refReg, Identifier ident){
-		return exp.setAdrField(compiler, refReg, (Identifier) ident);
+		//This is called recursively to propagate the adress setting on the left of the selection
+		boolean set1 = this.exp.setAdrField(compiler, refReg, (Identifier) this.ident);
+		//Setting the adress of the identifier using the last adress set with the recursion on the left part
+		return this.ident.setAdrField(compiler, refReg, (Identifier) ident);
 	}
 
 
