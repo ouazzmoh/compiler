@@ -8,7 +8,13 @@ import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.context.NullType;
 import fr.ensimag.deca.context.Type;
+import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.DAddr;
+import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.NullOperand;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.STORE;
 
 public class Null extends AbstractExpr {
 
@@ -36,5 +42,14 @@ public class Null extends AbstractExpr {
         // leaf node => nothing to do
 		
 	}
+
+	@Override
+	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+		GPRegister reg = compiler.getFreeReg();
+		compiler.addInstruction(new LOAD(new NullOperand(), reg));
+		compiler.addInstruction(new STORE(reg, adr));
+		//Implicit use and free of reg
+	}
+
 
 }

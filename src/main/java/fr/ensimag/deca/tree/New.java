@@ -75,6 +75,7 @@ public class New extends AbstractExpr {
 		compiler.addInstruction(new PUSH(reg));
 		compiler.freeReg();
 		compiler.addInstruction(new BSR(new Label("init." + getType().getName().getName())));
+		compiler.incrTemp(2);
 		compiler.addInstruction(new POP(reg));
 		compiler.addInstruction(new STORE(reg, adr));
 		//Implicit use and free of register
@@ -95,6 +96,7 @@ public class New extends AbstractExpr {
 		compiler.addInstruction(new PUSH(reg));
 		compiler.freeReg();
 		compiler.addInstruction(new BSR(new Label("init." + getType().getName().getName())));
+		compiler.incrTemp(2);
 		compiler.addInstruction(new POP(reg));
 		compiler.useReg();
 		return reg;

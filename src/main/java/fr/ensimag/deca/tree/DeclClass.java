@@ -226,7 +226,9 @@ public class DeclClass extends AbstractDeclClass {
 			//Push object
 			compiler.addInstruction(new PUSH(Register.R1));
 			compiler.addInstruction(new BSR(new LabelOperand(new Label("init." + superClass.getName().getName()))));
+			compiler.incrTemp(2);
 			compiler.addInstruction(new SUBSP(1));
+			compiler.decrTemp(1);
 			for (AbstractDeclField d : declfields.getList()){
 				//If the declaration is not explicit, it was already done before
 				if (d.getInitialization().isExplicit()){
@@ -237,10 +239,12 @@ public class DeclClass extends AbstractDeclClass {
 		}
 
 		compiler.addComment("Restoring registers");
+		int d = compiler.getBlocRegMax() - 2;
 		for (int i = compiler.getBlocRegMax()-1; i >= 2; i--){
 			compiler.addInstruction(new POP(Register.getR(i)));
 			compiler.addInstructionFirst(new PUSH(Register.getR(i)));
 		}
+		if (d > 0){compiler.addInstructionFirst(new TSTO(d));}
 		compiler.addInstruction(new RTS());
 		realProg.append(virtualProg);
 		compiler.setProgram(realProg);
