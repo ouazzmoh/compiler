@@ -165,7 +165,7 @@ public class DeclClass extends AbstractDeclClass {
 		//Structure will hold the methods to add
 		TreeMap<Integer, String> methodMap = new TreeMap<Integer, String>();//Stores index method
 		ClassDefinition currSuperClass = className.getClassDefinition();
-		while (!currSuperClass.getType().getName().getName().equals("object")){
+		while (!currSuperClass.getType().getName().getName().equals("Object")){
 			Iterator<Map.Entry<Symbol, ExpDefinition>> it = currSuperClass.getMembers().getEnvTypes().entrySet().iterator();
 			while (it.hasNext()){
 				Map.Entry<Symbol, ExpDefinition> couple = it.next();
