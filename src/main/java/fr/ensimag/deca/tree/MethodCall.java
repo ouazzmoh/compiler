@@ -178,19 +178,17 @@ public class MethodCall extends AbstractExpr  {
 	protected void codeGenPrint(DecacCompiler compiler, boolean printHex){
 		codeGenInst(compiler, null);
 		compiler.addInstruction(new LOAD(Register.R0, Register.R1));
-		compiler.addInstruction(new WINT());
-		Label lab = new Label("float_print_for_return" + getLocation().getLine() + ".c" + getLocation().getPositionInLine());
-		Label end = new Label("end_print_return" + getLocation().getLine() + ".c" + getLocation().getPositionInLine());
-		compiler.addInstruction(new BOV(lab));
-		compiler.addInstruction(new BRA(end));
-		compiler.addLabel(lab);
-		if (!printHex){
-			compiler.addInstruction(new WFLOAT());
+		if (this.getType().isFloat()){
+			if (!printHex){
+				compiler.addInstruction(new WFLOAT());
+			}
+			else {
+				compiler.addInstruction(new WFLOATX());
+			}
 		}
 		else {
-			compiler.addInstruction(new WFLOATX());
+			compiler.addInstruction(new WINT());
 		}
-		compiler.addLabel(end);
 	}
 
 
