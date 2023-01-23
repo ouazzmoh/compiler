@@ -157,7 +157,7 @@ public class DeclMethod extends AbstractDeclMethod {
 
 
 		compiler.addComment("Restoring registers");
-		for (int i = compiler.getBlocRegMax()+2; i >= 2; i--){
+		for (int i = compiler.getBlocRegMax()-1; i >= 2; i--){
 			compiler.addInstruction(new POP(Register.getR(i)));
 			compiler.addInstructionFirst(new PUSH(Register.getR(i)));
 		}

@@ -98,7 +98,7 @@ public class DecacCompiler {
 
         this.errorsMap = new HashMap<String, String>();
 
-        this.regMax = 3;
+        this.regMax = 15;
         //
         this.currRegNum = 2;
         this.offset = 1;
@@ -126,7 +126,7 @@ public class DecacCompiler {
 
         this.tempStack = 1;
 
-        this.blocRegMax = 0;
+        this.blocRegMax = 2;
 
     }
 
@@ -390,10 +390,17 @@ public class DecacCompiler {
     }
 
 
+    public void updateBlocRegMax(){
+        if(blocRegMax < (this.currRegNum)){
+            blocRegMax = (this.currRegNum);
+        }
+    }
+
+
     public void useReg(){
         assert(currRegNum <= regMax);
         currRegNum += 1;
-        blocRegMax += 1;
+        updateBlocRegMax();
     }
 
 
