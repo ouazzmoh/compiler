@@ -4,10 +4,24 @@ import java.io.PrintStream;
 
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
+import fr.ensimag.deca.context.ClassType;
 import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.tools.IndentPrintStream;
+import fr.ensimag.ima.pseudocode.DAddr;
+import fr.ensimag.ima.pseudocode.DVal;
+import fr.ensimag.ima.pseudocode.GPRegister;
+import fr.ensimag.ima.pseudocode.Label;
+import fr.ensimag.ima.pseudocode.Register;
+import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.instructions.BEQ;
+import fr.ensimag.ima.pseudocode.instructions.BNE;
+import fr.ensimag.ima.pseudocode.instructions.CMP;
+import fr.ensimag.ima.pseudocode.instructions.LEA;
+import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.SEQ;
+import fr.ensimag.ima.pseudocode.instructions.STORE;
 
 public class InstanceOf extends AbstractExpr {
 	private AbstractIdentifier type;
@@ -50,6 +64,111 @@ public class InstanceOf extends AbstractExpr {
 		// TODO Auto-generated method stub
         expr.iter(f);
         type.iter(f);
+	}
+
+	@Override
+	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+		Label debutInstanceOf = new Label("DebutInstanceOf");
+		Label finInstanceOf = new Label("FinInstanceOf");
+		ClassType t = (ClassType) expr.getType();
+		ClassDefinition clas = t.getDefinition();
+		GPRegister r = compiler.getFreeReg();
+		compiler.useReg();
+		compiler.addLabel(debutInstanceOf);
+		compiler.addInstruction(new LEA(new RegisterOffset(type.getClassDefinition().getStackIndex(),Register.GB), r));
+		GPRegister r2 = compiler.getFreeReg();
+		compiler.useReg();
+		compiler.addInstruction(new LEA(new RegisterOffset(clas.getStackIndex(), Register.GB), r2));
+		compiler.addInstruction(new CMP(r, r2));
+		GPRegister r3 = compiler.getFreeReg();
+		compiler.useReg();
+		compiler.addInstruction(new SEQ(r3));
+		compiler.addInstruction(new BEQ(finInstanceOf));
+		while(clas.getSuperClass().getType().getName().getName() != "Object"){
+			clas = clas.getSuperClass();
+			compiler.addInstruction(new LEA(new RegisterOffset(clas.getStackIndex(), Register.GB), r2));
+			compiler.addInstruction(new CMP(r, r2));
+			compiler.addInstruction(new SEQ(r3));
+			compiler.addInstruction(new BEQ(finInstanceOf));
+		}
+		compiler.addInstruction(new LEA(new RegisterOffset(1, Register.GB), r2));
+		compiler.addInstruction(new CMP(r, r2));
+		compiler.addInstruction(new SEQ(r3));
+		compiler.addInstruction(new BEQ(finInstanceOf));
+		compiler.addLabel(finInstanceOf);
+		compiler.addInstruction(new STORE(r3, adr));
+	}
+
+	@Override
+	protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
+		Label debutInstanceOf = new Label("DebutInstanceOf");
+		Label finInstanceOf = new Label("FinInstanceOf");
+		ClassType t = (ClassType) expr.getType();
+		ClassDefinition clas = t.getDefinition();
+		GPRegister r = compiler.getFreeReg();
+		compiler.useReg();
+		compiler.addLabel(debutInstanceOf);
+		compiler.addInstruction(new LEA(new RegisterOffset(type.getClassDefinition().getStackIndex(),Register.GB), r));
+		GPRegister r2 = compiler.getFreeReg();
+		compiler.useReg();
+		compiler.addInstruction(new LEA(new RegisterOffset(clas.getStackIndex(), Register.GB), r2));
+		compiler.addInstruction(new CMP(r, r2));
+		GPRegister r3 = compiler.getFreeReg();
+		compiler.useReg();
+		compiler.addInstruction(new SEQ(r3));
+		compiler.addInstruction(new BEQ(finInstanceOf));
+		while(clas.getSuperClass().getType().getName().getName() != "Object"){
+			clas = clas.getSuperClass();
+			compiler.addInstruction(new LEA(new RegisterOffset(clas.getStackIndex(), Register.GB), r2));
+			compiler.addInstruction(new CMP(r, r2));
+			compiler.addInstruction(new SEQ(r3));
+			compiler.addInstruction(new BEQ(finInstanceOf));
+		}
+		compiler.addInstruction(new LEA(new RegisterOffset(1, Register.GB), r2));
+		compiler.addInstruction(new CMP(r, r2));
+		compiler.addInstruction(new SEQ(r3));
+		compiler.addInstruction(new BEQ(finInstanceOf));
+		compiler.addLabel(finInstanceOf);
+		compiler.addInstruction(new CMP(0, r3));
+        if (b){
+            compiler.addInstruction(new BNE(label));
+        }
+        else {
+            compiler.addInstruction(new BEQ(label));
+        }
+	}
+
+	@Override
+	protected DVal codeGenLoad(DecacCompiler compiler){
+		Label debutInstanceOf = new Label("DebutInstanceOf");
+		Label finInstanceOf = new Label("FinInstanceOf");
+		ClassType t = (ClassType) expr.getType();
+		ClassDefinition clas = t.getDefinition();
+		GPRegister r = compiler.getFreeReg();
+		compiler.useReg();
+		compiler.addLabel(debutInstanceOf);
+		compiler.addInstruction(new LEA(new RegisterOffset(type.getClassDefinition().getStackIndex(),Register.GB), r));
+		GPRegister r2 = compiler.getFreeReg();
+		compiler.useReg();
+		compiler.addInstruction(new LEA(new RegisterOffset(clas.getStackIndex(), Register.GB), r2));
+		compiler.addInstruction(new CMP(r, r2));
+		GPRegister r3 = compiler.getFreeReg();
+		compiler.useReg();
+		compiler.addInstruction(new SEQ(r3));
+		compiler.addInstruction(new BEQ(finInstanceOf));
+		while(clas.getSuperClass().getType().getName().getName() != "Object"){
+			clas = clas.getSuperClass();
+			compiler.addInstruction(new LEA(new RegisterOffset(clas.getStackIndex(), Register.GB), r2));
+			compiler.addInstruction(new CMP(r, r2));
+			compiler.addInstruction(new SEQ(r3));
+			compiler.addInstruction(new BEQ(finInstanceOf));
+		}
+		compiler.addInstruction(new LEA(new RegisterOffset(1, Register.GB), r2));
+		compiler.addInstruction(new CMP(r, r2));
+		compiler.addInstruction(new SEQ(r3));
+		compiler.addInstruction(new BEQ(finInstanceOf));
+		compiler.addLabel(finInstanceOf);
+		return r3;
 	}
 
 }
