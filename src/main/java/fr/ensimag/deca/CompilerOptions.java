@@ -45,6 +45,10 @@ public class CompilerOptions {
     public boolean getOptionr() {
         return optionr;
     }
+
+    public boolean getOptionN(){return optionN;}
+
+    public boolean isArm(){return arm;}
     
     public boolean getOptionp() throws DecacFatalError {
     	if (optionv && optionp) {
@@ -69,6 +73,15 @@ public class CompilerOptions {
     	else if (s.equals("-r")) {
     		optionr = true;
     	}
+        else if (s.equals("-n")){
+            optionN = true;
+        }
+        else if (s.equals("-P")){
+            parallel = true;
+        }
+        else if (s.equals("-arm")){
+            arm = true;
+        }
     }
     
     public void setNb(int d) throws CLIException {
@@ -100,6 +113,10 @@ public class CompilerOptions {
     private boolean optionp = false;
     private boolean optionr = false;
 
+    private boolean optionN = false;
+
+    private boolean arm = false;
+
     private int customNumReg = 0;
     private List<File> sourceFiles = new ArrayList<File>();
 
@@ -115,6 +132,9 @@ public class CompilerOptions {
     	set.add("-v");
     	set.add("-b");
     	set.add("-r");
+        set.add("-n");
+        set.add("-P");
+        set.add("-arm");
         Logger logger = Logger.getRootLogger();
         // map command-line debug option to log4j's level.
         switch (getDebug()) {
@@ -175,13 +195,12 @@ public class CompilerOptions {
 
         }
         else{
-            //TODO: refine this with all the options
             File currSource = new File(args[0]);
             sourceFiles.add(currSource);
         }*/
     }
 
     protected void displayUsage() {
-        System.out.println("decac [[-p | -v] [-n] [-r X] [-d]* [-P] [-w] <fichier deca>...] | [-b]");
+        System.out.println("decac [[-p | -v] [-n] [-r X] [-d]* [-P] [-w] [-arm] <fichier deca>...] | [-b]");
     }
 }

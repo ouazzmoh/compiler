@@ -63,8 +63,10 @@ public class Main extends AbstractMain {
         insts.codeGenListInst(compiler);
         if (compiler.getOffset() != 0){
             compiler.addInstructionFirst(new ADDSP(compiler.getOffset()-1)); // offset - 1 because we start at 1 and increment after using
-            compiler.addInstructionFirst(new BOV(new Label("err_stack_overflow")));
-            compiler.addInstructionFirst(new TSTO(compiler.getOffset()-1 + compiler.getBlocTempMax())); //TODO: Include temporary variables counted at each Push
+            if (!compiler.getCompilerOptions().getOptionN()) {
+                compiler.addInstructionFirst(new BOV(new Label("err_stack_overflow")));
+                compiler.addInstructionFirst(new TSTO(compiler.getOffset()-1 + compiler.getBlocTempMax()));
+            }
         }
         compiler.resetTempMax();
 

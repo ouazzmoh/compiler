@@ -73,7 +73,9 @@ public class Program extends AbstractProgram {
             classes.codeGenListVirtualTable(compiler);
         }
         compiler.addComment("Main program");
-        compiler.getErrorsMap().put("err_stack_overflow", "Erreur: la pile est pleine");
+        if (!compiler.getCompilerOptions().getOptionN()) {
+            compiler.getErrorsMap().put("err_stack_overflow", "Erreur: la pile est pleine");
+        }
         main.codeGenMain(compiler);
 
         compiler.addInstruction(new HALT());
@@ -91,7 +93,7 @@ public class Program extends AbstractProgram {
 
         compiler.addComment("Generating code for errors");
         Iterator<Map.Entry<String, String>> it = compiler.getErrorsMap().entrySet().iterator();
-        while(it.hasNext()){
+        while (it.hasNext()) {
             Map.Entry<String, String> couple = it.next();
             compiler.addLabel(new Label(couple.getKey()));
             compiler.addInstruction(new WSTR(couple.getValue()));

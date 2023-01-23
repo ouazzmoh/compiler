@@ -64,7 +64,9 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 
 	@Override
 	protected DVal codeGenLoad(DecacCompiler compiler){
-		addArithErrors(compiler);
+		if (!compiler.getCompilerOptions().getOptionN()) {
+			addArithErrors(compiler);
+		}
 		if (!compiler.useLoad() &&!(getRightOperand() instanceof IntLiteral
 				| getRightOperand() instanceof Identifier | getRightOperand() instanceof FloatLiteral)){
 			//Store left operand in register
@@ -113,32 +115,38 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 	protected void codeGenOpMnem(DecacCompiler compiler,DVal dval1, GPRegister dval2){
 		if (getOperatorName().equals("+")){
 			compiler.addInstruction(new ADD(dval1, dval2));
-			compiler.addInstruction(new BOV(new Label(ovLabel)));
+			if (!compiler.getCompilerOptions().getOptionN()) {
+				compiler.addInstruction(new BOV(new Label(ovLabel)));}
 		}
 		else if (getOperatorName().equals("-")){
 			compiler.addInstruction(new SUB(dval1, dval2));
-			compiler.addInstruction(new BOV(new Label(ovLabel)));
+			if (!compiler.getCompilerOptions().getOptionN()) {
+			compiler.addInstruction(new BOV(new Label(ovLabel)));}
 		}
 		else if (getOperatorName().equals("*")){
 			compiler.addInstruction(new MUL(dval1, dval2));
-			compiler.addInstruction(new BOV(new Label(ovLabel)));
+			if (!compiler.getCompilerOptions().getOptionN()) {
+			compiler.addInstruction(new BOV(new Label(ovLabel)));}
 		}
 		else if (getOperatorName().equals("/")){
 			Type typeLeft = this.getLeftOperand().getType();
 			Type typeRight = this.getRightOperand().getType();
 			if (typeLeft.isFloat() || typeRight.isFloat()){
 				compiler.addInstruction(new DIV(dval1, dval2));
-				compiler.addInstruction(new BOV(new Label(ovLabel)));
+				if (!compiler.getCompilerOptions().getOptionN()) {
+				compiler.addInstruction(new BOV(new Label(ovLabel)));}
 			} else if (typeLeft.isInt() && typeRight.isInt()) {
 				compiler.addInstruction(new QUO(dval1, dval2));
-				compiler.addInstruction(new BOV(new Label(ovLabelInt)));
+				if (!compiler.getCompilerOptions().getOptionN()) {
+				compiler.addInstruction(new BOV(new Label(ovLabelInt)));}
 			} else {
 				throw new DecacInternalError("Operandes pour la division non valide");
 			}
 		}
 		else if (getOperatorName().equals("%")){
 			compiler.addInstruction(new REM(dval1, dval2));
-			compiler.addInstruction(new BOV(new Label(ovLabelInt)));
+			if (!compiler.getCompilerOptions().getOptionN()) {
+			compiler.addInstruction(new BOV(new Label(ovLabelInt)));}
 		}
 		else{
 			throw new DecacInternalError("Error in parsing");

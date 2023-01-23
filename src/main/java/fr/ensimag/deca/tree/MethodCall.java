@@ -123,7 +123,9 @@ public class MethodCall extends AbstractExpr  {
 
 	@Override
 	protected void codeGenInst(DecacCompiler compiler, Label endIf) {
-			compiler.addError(deferLabel, "Erreur : dereferencement de null");
+			if (!compiler.getCompilerOptions().getOptionN()) {
+				compiler.addError(deferLabel, "Erreur : dereferencement de null");
+			}
 			compiler.addInstruction(new ADDSP(1 + args.size()));
 			compiler.incrTemp(1 + args.size());
 			GPRegister regThis;
@@ -150,8 +152,10 @@ public class MethodCall extends AbstractExpr  {
 			GPRegister reg = compiler.getFreeReg();
 			compiler.useReg();
 			compiler.addInstruction(new LOAD(new RegisterOffset(0, Register.SP), reg));
-			compiler.addInstruction(new CMP(new NullOperand(), reg));
-			compiler.addInstruction(new BEQ(new Label(deferLabel)));
+			if (!compiler.getCompilerOptions().getOptionN()) {
+				compiler.addInstruction(new CMP(new NullOperand(), reg));
+				compiler.addInstruction(new BEQ(new Label(deferLabel)));
+			}
 			compiler.addInstruction(new LOAD(new RegisterOffset(0, reg), reg));
 			compiler.addInstruction(new BSR(new RegisterOffset(ident.getMethodDefinition().getIndex(), reg)));
 			//BSR adds two but

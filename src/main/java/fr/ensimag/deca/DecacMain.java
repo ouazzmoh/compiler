@@ -32,7 +32,6 @@ public class DecacMain {
             System.exit(1);
         }
         if (options.getPrintBanner()) {
-//            throw new UnsupportedOperationException("decac -b not yet implemented");
             System.out.print("***** team gl24 *****\n");
             System.exit(0);
         }
@@ -57,7 +56,8 @@ public class DecacMain {
                     "traces.\n" +
                     ". -P (parallel) : s'il y a plusieurs fichiers sources," +
                     "lance la compilation des fichiers en" +
-                    "parallèle (pour accélérer la compilation)\n");
+                    "parallèle (pour accélérer la compilation)\n +" +
+                    ".  -arm : compile vers un assembleur ARM 32bits\n");
 
         }
         if (options.getParallel()) {
