@@ -75,7 +75,6 @@ test_decac_invalid(){
     ima "$1.ass" > "$1.res"
     cat "$1.res" 
     echo "Erreur attendu"
-    rm "$.res"
 }
 
 
