@@ -2,7 +2,7 @@
 //    champs et methodes simples
 //
 // Resultats:
-//    a.getX() = 1
+//    a.getX()=1
 //
 // Historique:
 //    cree le 01/01/2023
@@ -23,5 +23,5 @@ class A {
    A a = new A() ;
 
    a.setX(1) ;
-   println("a.getX() = ", a.getX()) ;
+   println("a.getX()=", a.getX()) ;
 }
