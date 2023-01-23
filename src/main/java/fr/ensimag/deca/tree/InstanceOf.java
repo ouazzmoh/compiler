@@ -40,6 +40,7 @@ public class InstanceOf extends AbstractExpr {
 		Type t = expr.verifyExpr(compiler, localEnv, currentClass);
 		Type t2 = type.verifyType(compiler);
 		if (t.isClassOrNull() && t2.isClass()) {
+			this.setType(compiler.environmentType.BOOLEAN);
 			return compiler.environmentType.BOOLEAN;
 		}
 		throw new ContextualError("can't perform an instance of", this.getLocation());
@@ -48,7 +49,11 @@ public class InstanceOf extends AbstractExpr {
 	@Override
 	public void decompile(IndentPrintStream s) {
 		// TODO Auto-generated method stub
-		
+		s.print("( ");
+		this.expr.decompile(s);
+		s.print(" instanceof ");
+		this.type.decompile(s);
+		s.print(" )");
 	}
 
 	@Override
@@ -68,8 +73,10 @@ public class InstanceOf extends AbstractExpr {
 
 	@Override
 	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
-		Label debutInstanceOf = new Label("DebutInstanceOf");
-		Label finInstanceOf = new Label("FinInstanceOf");
+		Label debutInstanceOf = new Label("DebutInstanceOf"+ getLocation().getLine() +
+                "c." + getLocation().getPositionInLine());
+		Label finInstanceOf = new Label("FinInstanceOf"+ getLocation().getLine() +
+                "c." + getLocation().getPositionInLine());
 		ClassType t = (ClassType) expr.getType();
 		ClassDefinition clas = t.getDefinition();
 		GPRegister r = compiler.getFreeReg();
@@ -101,8 +108,10 @@ public class InstanceOf extends AbstractExpr {
 
 	@Override
 	protected void codeGenBranch(DecacCompiler compiler, boolean b, Label label){
-		Label debutInstanceOf = new Label("DebutInstanceOf");
-		Label finInstanceOf = new Label("FinInstanceOf");
+		Label debutInstanceOf = new Label("DebutInstanceOf"+ getLocation().getLine() +
+                "c." + getLocation().getPositionInLine());
+		Label finInstanceOf = new Label("FinInstanceOf"+ getLocation().getLine() +
+                "c." + getLocation().getPositionInLine());
 		ClassType t = (ClassType) expr.getType();
 		ClassDefinition clas = t.getDefinition();
 		GPRegister r = compiler.getFreeReg();
