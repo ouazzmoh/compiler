@@ -84,4 +84,12 @@ public abstract class AbstractPrint extends AbstractInst {
         arguments.prettyPrint(s, prefix, true);
     }
 
+
+    @Override
+    protected void codeGenInstArm(DecacCompiler compiler, Label label) {
+        for (AbstractExpr a : getArguments().getList()) {
+            a.codeGenPrintArm(compiler, printHex);
+        }
+    }
+
 }

@@ -1,5 +1,6 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.OperandArm;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
@@ -106,6 +107,16 @@ public class Initialization extends AbstractInitialization {
     public boolean isExplicit(){
         return true;
     }
+
+
+    @Override
+    protected void codeGenInitArm(DecacCompiler compiler, OperandArm adr){
+        //super.codeGenInitArm(compiler,adr);
+        //ArmProgram.data.put(new LabelArm(getName().),new ImmediateIntegerArm(0));
+        expression.codeGenInitArm(compiler, adr);
+    }
+
+
 
 
 }

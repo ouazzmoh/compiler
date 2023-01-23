@@ -1,5 +1,9 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.*;
+import fr.ensimag.arm.pseudocode.instructions.ArmADD;
+import fr.ensimag.arm.pseudocode.instructions.LDR;
+import fr.ensimag.arm.pseudocode.instructions.STR;
 import fr.ensimag.deca.context.*;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.tools.DecacInternalError;
@@ -187,6 +191,40 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 			}
 		}
 	}
+
+
+	@Override
+	protected void codeGenInitArm(DecacCompiler compiler, OperandArm adr){
+
+		GPRegisterArm result = (GPRegisterArm) codeGenLoadArm(compiler);
+		//Store result
+		compiler.addInstruction(new LDR(RegisterArm.R0, (LabelArm) adr));
+		compiler.addInstruction(new STR(result, new RegisterOffsetArm(0, RegisterArm.R0)));
+		compiler.freeRegArm();
+	}
+
+
+	/**
+	 * Does the operation between the two operands and returns the result in a register
+	 * @param compiler
+	 * @return opLeft with the value of the operation
+	 */
+	@Override
+	protected DValArm codeGenLoadArm(DecacCompiler compiler){
+		//Store left in register: If no freeing problems, we are sure there is at least one free register
+		GPRegisterArm opLeft = (GPRegisterArm) getLeftOperand().codeGenLoadArm(compiler);
+		//Evaluate right
+		GPRegisterArm opRight = (GPRegisterArm) getRightOperand().codeGenLoadArm(compiler);
+		//Do the operation
+		//TODO: Optimize for immediates
+		compiler.addInstruction(new ArmADD(opLeft, opLeft, opRight));
+		compiler.freeRegArm();
+		return opLeft;
+
+	}
+
+
+
 
 
 }

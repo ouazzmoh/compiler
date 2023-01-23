@@ -53,4 +53,11 @@ public class ListInst extends TreeList<AbstractInst> {
         String[] parts = this.toString().split("@");
         return parts[1];
     }
+
+    public void codeGenListInstArm(DecacCompiler compiler) {
+        for (AbstractInst i : getList()) {
+            i.codeGenInstArm(compiler, null);
+        }
+
+    }
 }

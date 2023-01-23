@@ -1,5 +1,7 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.DValArm;
+import fr.ensimag.arm.pseudocode.OperandArm;
 import fr.ensimag.deca.context.*;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.tools.DecacInternalError;
@@ -269,4 +271,35 @@ public abstract class AbstractExpr extends AbstractInst {
             s.println();
         }
     }
+
+
+
+
+    /*****************************Methods for arm generation**************************************/
+    /**
+     * Generate code to print the expression
+     * @param compiler
+     */
+    protected void codeGenPrintArm(DecacCompiler compiler, boolean hex) {
+        //throw new DecacInternalError("expression cannot be printed");
+
+    }
+
+
+    protected void codeGenInitArm(DecacCompiler compiler, OperandArm adr){
+        throw new DecacInternalError("Not yet implemented");
+    }
+
+
+    protected void codeGenAssignArm(DecacCompiler compiler, Identifier identifier){
+        throw new DecacInternalError("Not yet implemented");
+    }
+
+
+    protected DValArm codeGenLoadArm(DecacCompiler compiler){
+        throw new DecacInternalError("Not yet implemented");
+    }
+
+
+
 }

@@ -1,5 +1,7 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.LabelArm;
+import fr.ensimag.arm.pseudocode.OperandArm;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.context.TypeDefinition;
 import fr.ensimag.deca.context.VariableDefinition;
@@ -103,5 +105,14 @@ public class DeclVar extends AbstractDeclVar {
     protected void codeGenDeclVariable(DecacCompiler compiler, int varOffset, Register refRegister){
         varName.getExpDefinition().setOperand(new RegisterOffset(varOffset, refRegister));
         initialization.codeGenInit(compiler, varName.getExpDefinition().getOperand());
+    }
+
+
+    @Override
+    protected void codeGenDeclVariableArm(DecacCompiler compiler, LabelArm lab) {
+        LabelArm varLabel = new LabelArm("var_" + varName.getName().getName());
+        varName.getExpDefinition().setOperandArm(varLabel);
+        compiler.addOperandData(varName.getExpDefinition().getOperandArm());
+        initialization.codeGenInitArm(compiler, varName.getExpDefinition().getOperandArm());
     }
 }
