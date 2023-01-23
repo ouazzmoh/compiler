@@ -86,13 +86,13 @@ public class ArmProgram  {
         for (AbstractLineArm l: lines) {
             l.display(s);
         }
-//        s.println(".section .data");
-//        for (LabelArm lab :DecacCompiler.data.keySet() ) {
-//        	lab.display(s);
-//        	if (DecacCompiler.data.get(lab)!= null) {
-//        		DecacCompiler.data.get(lab).display(s);
-//        	}
-//        }
+        s.println(".section .data");
+        for (LabelArm lab :DecacCompiler.data.keySet() ) {
+        	lab.display(s);
+        	if (DecacCompiler.data.get(lab)!= null) {
+        		DecacCompiler.data.get(lab).display(s);
+        	}
+        }
         }
 
     /**

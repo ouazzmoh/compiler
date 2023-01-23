@@ -116,7 +116,7 @@ public class DecacCompiler {
         //
         this.blocRegMax = 0;
 
-        if (compilerOptions.isArm()){
+        if (compilerOptions != null && compilerOptions.isArm()){
             this.dataSetArm = new HashSet<OperandArm>();
             this.currRegNumArm = 2;
         }
