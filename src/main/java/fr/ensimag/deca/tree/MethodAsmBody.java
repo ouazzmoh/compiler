@@ -29,21 +29,22 @@ public class MethodAsmBody extends AbstractMethodBody {
 	@Override
 	protected void prettyPrintChildren(PrintStream s, String prefix) {
 		// TODO Auto-generated method stub
-		string.prettyPrintChildren(s, prefix);
+		string.prettyPrint(s, prefix, true);
 		
 	}
 
 	@Override
 	protected void iterChildren(TreeFunction f) {
 		// TODO Auto-generated method stub
-		
+		string.iter(f);
 	}
 
 	@Override
 	protected void verifyBody(DecacCompiler compiler, EnvironmentExp env, EnvironmentExp envExpParam, Symbol className,
 			Type returnType) {
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("not yet implemented");
+		//throw new UnsupportedOperationException("not yet implemented");
+		this.string.setType(compiler.environmentType.STRING);
 	}
 
 
