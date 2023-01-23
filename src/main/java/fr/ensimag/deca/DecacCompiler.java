@@ -62,8 +62,12 @@ public class DecacCompiler {
     //Variable Offset: current d in d(GB)
     private int offset ;
 
-    //Number of temporaries reserved in stack, in the main program(Push=> +1, Pop=> -1)
+    //Number of temporaries reserved in stack, in the main program(
     private int tempStack;
+
+    //Maximum temporaries stacked in a bloc
+    private int blocTempMax;
+
 
     //The maximum number of registers used in a block: we reset this at the beginning of each block
     private int blocRegMax;
@@ -76,7 +80,13 @@ public class DecacCompiler {
         blocRegMax = 0;
     }
 
+    public int getBlocTempMax(){
+        return blocTempMax;
+    }
 
+    public void resetTempMax(){
+        blocTempMax = 0;
+    }
 
 
 
@@ -394,11 +404,22 @@ public class DecacCompiler {
         }
     }
 
+    public void updateBlocTempMax(){
+        if(blocTempMax < (this.tempStack)){
+            blocTempMax = (this.tempStack);
+        }
+    }
+
 
     public void useReg(){
         assert(currRegNum <= regMax);
         currRegNum += 1;
         updateBlocRegMax();
+    }
+
+
+    public void resetTempStack(){
+        tempStack = 0;
     }
 
 
@@ -415,15 +436,19 @@ public class DecacCompiler {
     /**
      * Increment the number of temporary variables, should be called after each PUSH
      */
-    public void incrTemp(){
-        tempStack++;
+    public void incrTemp(int i){
+
+        tempStack += i;
+        updateBlocTempMax();
     }
 
     /**
      * Decrement the number of temporary variables, should be called after each POP
       */
-    public void decrTemp(){
-        tempStack--;
+    public void decrTemp(int i){
+
+        tempStack -= i;
+
     }
 
     //TODO: Solution for temporary variables
