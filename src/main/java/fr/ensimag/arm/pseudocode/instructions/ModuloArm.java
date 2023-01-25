@@ -22,16 +22,18 @@ public class ModuloArm extends TernaryInstructionArm {
 	 @Override
 		protected void display(PrintStream s){
 		String r0 = getOperand1().toString();
-		String r1 = getOperand1().toString();
-		String r2 = getOperand1().toString();
+		String r1 = getOperand2().toString();
+		String r2 = getOperand3().toString();
+		 s.println("#start of division algorithm");
 		 s.println("substract:");
-		 s.println("       subs r1,r1,r2");
-		 s.println("       add r0, r0, #1");
-		 s.println("       BHI substract");
+		 s.println("\t\tsubs "+ r0+ "," + r1 +" ," + r2);
+		 s.println("\t\tadd "+ r0 + ", " + r0 + ", " + "#1");
+		 s.println("\t\tBHI substract");
 		 s.println("_substract:");
-		 s.println("           subs r1,r1,r2");
-		 s.println("           add r0, r0, #1");
-		 s.println("           BHI substract");
+		 s.println("\t\tsubs "+ r1+ "," + r1 +" ," + r2);
+		 s.println("\t\tadd "+ r0 + ", " + r0 + ", " + "#1");
+		 s.println("\t\tBHI substract");
+		 s.println("#end of division algorithm");
 	 }
 
 }

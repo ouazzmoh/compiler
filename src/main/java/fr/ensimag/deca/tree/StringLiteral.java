@@ -75,6 +75,7 @@ public class StringLiteral extends AbstractStringLiteral {
         LabelArm lab = new LabelArm("string" + getLocation().getLine() +
                 "c" + getLocation().getPositionInLine());
         compiler.dataMapArm.put(lab, value + "\\n");
+        compiler.addInstruction(new MOV(RegisterArm.getR(0), new ImmediateIntegerArm(0)));
         compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(4)));
         compiler.addInstruction(new LDR(RegisterArm.getR(1),lab));
         compiler.addInstruction(new MOV(RegisterArm.getR(2), new ImmediateIntegerArm(value.length() + 1) ));

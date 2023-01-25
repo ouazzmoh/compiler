@@ -437,4 +437,11 @@ public class Identifier extends AbstractIdentifier {
     }
 
 
+
+
+    @Override
+    protected void codeGenPrintArm(DecacCompiler compiler, boolean hex){
+        compiler.addInstruction(new PrintIntegerArm(getExpDefinition().getOperandArm()));
+    }
+
 }

@@ -1,5 +1,7 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.LabelArm;
+import fr.ensimag.arm.pseudocode.instructions.ArmBal;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
@@ -82,6 +84,22 @@ public class While extends AbstractInst {
         body.codeGenListInst(compiler);
         compiler.addLabel(condWhile);
         condition.codeGenBranch(compiler, true, startWhile);
+    }
+
+
+
+    @Override
+    protected void codeGenInstArm(DecacCompiler compiler, LabelArm label) {
+        compiler.addComment("Generating While code");
+        LabelArm startWhile = new LabelArm("startWhile.l" + getLocation().getLine() +
+                ".c" + getLocation().getPositionInLine());
+        LabelArm condWhile = new LabelArm("condWhile.l"+getLocation().getLine() +
+                ".c" + getLocation().getPositionInLine());
+        compiler.addInstruction(new ArmBal(condWhile));
+        compiler.addLabel(startWhile);
+        body.codeGenListInstArm(compiler);
+        compiler.addLabel(condWhile);
+        condition.codeGenBranchArm(compiler, true, startWhile);
     }
 
 }

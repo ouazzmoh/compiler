@@ -3,6 +3,7 @@ package fr.ensimag.arm.pseudocode.instructions;
 import java.io.PrintStream;
 
 import fr.ensimag.arm.pseudocode.LabelArm;
+import fr.ensimag.arm.pseudocode.OperandArm;
 import fr.ensimag.arm.pseudocode.UnaryInstructionArm;
 import org.apache.commons.lang.Validate;
 import fr.ensimag.arm.pseudocode.InstructionArm;
@@ -19,9 +20,9 @@ import fr.ensimag.arm.pseudocode.InstructionArm;
 */
 
 public class PrintIntegerArm extends UnaryInstructionArm {
-	public LabelArm lab;
-	public PrintIntegerArm(LabelArm lab) {
-		super(lab);
+	public OperandArm op;
+	public PrintIntegerArm(OperandArm op) {
+		super(op);
 	}
 	 @Override
 	 public String getName() {
@@ -73,10 +74,10 @@ public class PrintIntegerArm extends UnaryInstructionArm {
 	        
 	        s.println("_next: ");
 	        s.println("	    add r0, r0, #48");
-	        s.println("	    ldr r9, =" + lab.toString());
-	        s.println("	    str r0, r9]");
+	        s.println("	    ldr r9, =" + getOperand().toString());
+	        s.println("	    str r0, [r9]");
 	        s.println("	    mov r0, #1");
-	        s.println("	    ldr r1, =" + lab.toString());
+	        s.println("	    ldr r1, =" + getOperand().toString());
 	        s.println("	    mov r2, #1");
 	        s.println("	    mov r7, #4");
 	        s.println("	    swi 0");
@@ -91,10 +92,10 @@ public class PrintIntegerArm extends UnaryInstructionArm {
 	        s.println("	    mov r0, r3");
 	        s.println("	    add r0, r0, #48");
 	        
-	        s.println("	    ldr r9, =" + lab.toString());
+	        s.println("	    ldr r9, =" + getOperand().toString());
 	        s.println("	    str r0, [r9]");
 	        s.println("	    mov r0, #1");
-	        s.println("	    ldr r1, =" + lab.toString());
+	        s.println("	    ldr r1, =" + getOperand().toString());
 	        
 	        s.println("	    mov r2, #1");
 	        s.println("	    mov r7, #4");

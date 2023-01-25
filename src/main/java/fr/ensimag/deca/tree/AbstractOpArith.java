@@ -240,7 +240,7 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 //				compiler.addInstruction(new BOV(new Label(ovLabel)));}
 		}
 		else if (getOperatorName().equals("-")){
-			compiler.addInstruction(new ArmSUB(dval1, dval2, dval1));
+			compiler.addInstruction(new ArmSUB(dval1, dval1, dval2));
 //			if (!compiler.getCompilerOptions().getOptionN()) {
 //				compiler.addInstruction(new BOV(new Label(ovLabel)));}
 		}
@@ -250,6 +250,7 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 //				compiler.addInstruction(new BOV(new Label(ovLabel)));}
 		}
 		else if (getOperatorName().equals("/")){
+			compiler.addInstruction(new ModuloArm(dval1, dval1, dval2));
 //			Type typeLeft = this.getLeftOperand().getType();
 //			Type typeRight = this.getRightOperand().getType();
 //			if (typeLeft.isFloat() || typeRight.isFloat()){
@@ -261,7 +262,6 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 //				if (!compiler.getCompilerOptions().getOptionN()) {
 //					compiler.addInstruction(new BOV(new Label(ovLabelInt)));}
 //			} else {
-				throw new DecacInternalError("Operandes pour la division non valide");
 //			}
 		}
 		else if (getOperatorName().equals("%")){

@@ -128,4 +128,10 @@ public class IntLiteral extends AbstractExpr {
 
 
 
+//    @Override
+//    protected void codeGenPrintArm(DecacCompiler compiler, boolean hex){
+//        compiler.addInstruction(new PrintIntegerArm());
+//    }
+
+
 }
