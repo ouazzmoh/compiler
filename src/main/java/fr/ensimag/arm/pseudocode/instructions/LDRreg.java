@@ -5,8 +5,8 @@ import fr.ensimag.arm.pseudocode.GPRegisterArm;
 import fr.ensimag.arm.pseudocode.OperandArm;
 
 /**
- * STR : The STR instruction STR operation: stores
- *  the value found in a register to a memory address
+ * LDR loads a 32-bit constant (LDRH (halfword): 16 bit, LDRB (byte): 8 bit)
+ * from memory into the specified target register.
  *
  * @author aitdriss
  * @date 17/01/2023

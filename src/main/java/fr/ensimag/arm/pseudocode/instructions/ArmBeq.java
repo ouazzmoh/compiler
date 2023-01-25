@@ -14,4 +14,9 @@ public class ArmBeq extends UnaryInstructionArm{
 	public ArmBeq(OperandArm op1) {
 		super(op1);
 	}
+
+	@Override
+	public String getName(){
+		return "beq";
+	}
 }

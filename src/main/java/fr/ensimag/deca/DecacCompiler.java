@@ -119,6 +119,7 @@ public class DecacCompiler {
         if (compilerOptions != null && compilerOptions.isArm()){
             this.dataSetArm = new HashSet<OperandArm>();
             this.currRegNumArm = 2;
+            this.dataMapArm = new HashMap<LabelArm, String>();
         }
 
     }
@@ -367,8 +368,14 @@ public class DecacCompiler {
             Iterator<OperandArm> it = dataSetArm.iterator();
             while (it.hasNext()) {
                 OperandArm op = it.next();
+                //0 permets us to have a unique adress for 0
                 s.println("\t\t" + op.toString() + ": .word  0");
-        }
+            }
+
+            for (LabelArm lab :dataMapArm.keySet() ) {
+                s.println("\t\t" + lab.toString() + ": .ascii\t" + "\""+ dataMapArm.get(lab) + "\"");
+            }
+
 
         }
         LOG.info("Compilation of " + sourceName + " successful.");
@@ -488,7 +495,8 @@ public class DecacCompiler {
 
     /**************************For Arm*************************/
 
-    public static Map<LabelArm, DValArm> data = new HashMap<LabelArm, DValArm>();
+    //Used for strings
+    public Map<LabelArm, String> dataMapArm;
 
     public Set<OperandArm> dataSetArm;
 
@@ -497,9 +505,6 @@ public class DecacCompiler {
         dataSetArm.add(op);
     }
 
-    public void addData(LabelArm lab, DValArm dv) {
-        data.putIfAbsent(lab, dv);
-    }
 
     private int currRegNumArm;
 

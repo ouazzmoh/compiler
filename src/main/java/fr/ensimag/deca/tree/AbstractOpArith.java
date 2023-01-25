@@ -1,14 +1,13 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.arm.pseudocode.*;
-import fr.ensimag.arm.pseudocode.instructions.ArmADD;
-import fr.ensimag.arm.pseudocode.instructions.LDR;
-import fr.ensimag.arm.pseudocode.instructions.STR;
+import fr.ensimag.arm.pseudocode.instructions.*;
 import fr.ensimag.deca.context.*;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.*;
+import fr.ensimag.ima.pseudocode.instructions.PUSH;
 
 import java.awt.peer.ComponentPeer;
 
@@ -193,13 +192,16 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 	}
 
 
+	/******************************** FOR ARM ***********************************/
+
 	@Override
 	protected void codeGenInitArm(DecacCompiler compiler, OperandArm adr){
 
 		GPRegisterArm result = (GPRegisterArm) codeGenLoadArm(compiler);
 		//Store result
-		compiler.addInstruction(new LDR(RegisterArm.R0, (LabelArm) adr));
-		compiler.addInstruction(new STR(result, new RegisterOffsetArm(0, RegisterArm.R0)));
+		GPRegisterArm regTemp = compiler.getFreeRegArm(); //Implicit use and free of this register
+		compiler.addInstruction(new LDR(regTemp, (LabelArm) adr));
+		compiler.addInstruction(new STR(result, new RegisterOffsetArm(0, regTemp)));
 		compiler.freeRegArm();
 	}
 
@@ -217,13 +219,59 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 		GPRegisterArm opRight = (GPRegisterArm) getRightOperand().codeGenLoadArm(compiler);
 		//Do the operation
 		//TODO: Optimize for immediates
-		compiler.addInstruction(new ArmADD(opLeft, opLeft, opRight));
+		codeGenOpMnemArm(compiler, opLeft, opRight);
 		compiler.freeRegArm();
 		return opLeft;
 
 	}
 
 
+	/**
+	 * Generate MNEM(dval1, dval2) corresponding to the operation
+	 * It generates BOV after to catch the execution error
+	 * @param compiler
+	 * @param dval1
+	 * @param dval2
+	 */
+	protected void codeGenOpMnemArm(DecacCompiler compiler,GPRegisterArm dval1, GPRegisterArm dval2){
+		if (getOperatorName().equals("+")){
+			compiler.addInstruction(new ArmADD(dval1, dval1, dval2));
+//			if (!compiler.getCompilerOptions().getOptionN()) {
+//				compiler.addInstruction(new BOV(new Label(ovLabel)));}
+		}
+		else if (getOperatorName().equals("-")){
+			compiler.addInstruction(new ArmSUB(dval1, dval2, dval1));
+//			if (!compiler.getCompilerOptions().getOptionN()) {
+//				compiler.addInstruction(new BOV(new Label(ovLabel)));}
+		}
+		else if (getOperatorName().equals("*")){
+			compiler.addInstruction(new ArmMUL(dval1, dval1, dval2));
+//			if (!compiler.getCompilerOptions().getOptionN()) {
+//				compiler.addInstruction(new BOV(new Label(ovLabel)));}
+		}
+		else if (getOperatorName().equals("/")){
+//			Type typeLeft = this.getLeftOperand().getType();
+//			Type typeRight = this.getRightOperand().getType();
+//			if (typeLeft.isFloat() || typeRight.isFloat()){
+//				compiler.addInstruction(new DIV(dval1, dval2));
+//				if (!compiler.getCompilerOptions().getOptionN()) {
+//					compiler.addInstruction(new BOV(new Label(ovLabel)));}
+//			} else if (typeLeft.isInt() && typeRight.isInt()) {
+//				compiler.addInstruction(new QUO(dval1, dval2));
+//				if (!compiler.getCompilerOptions().getOptionN()) {
+//					compiler.addInstruction(new BOV(new Label(ovLabelInt)));}
+//			} else {
+				throw new DecacInternalError("Operandes pour la division non valide");
+//			}
+		}
+		else if (getOperatorName().equals("%")){
+//
+
+		}
+		else{
+			throw new DecacInternalError("Error in parsing");
+		}
+	}
 
 
 

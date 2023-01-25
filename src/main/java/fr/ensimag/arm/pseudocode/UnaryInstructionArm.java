@@ -17,7 +17,9 @@ public abstract class UnaryInstructionArm extends InstructionArm {
 
     @Override
     void displayOperands(PrintStream s){
-        s.print(operand.toStringSWI());
+
+        s.print(" ");
+        s.print(operand);
     }
 
     protected UnaryInstructionArm(OperandArm operand){

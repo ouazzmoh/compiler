@@ -1,5 +1,6 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.LabelArm;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.deca.DecacCompiler;
@@ -102,5 +103,15 @@ public class Assign extends AbstractBinaryExpr {
         }
         return reg;
     }
+
+
+    @Override
+    protected void codeGenInstArm(DecacCompiler compiler, LabelArm label) {
+        this.getRightOperand().codeGenAssignArm(compiler, (Identifier) getLeftOperand());
+    }
+
+
+
+
 
 }

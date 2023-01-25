@@ -13,7 +13,8 @@ public class ImmediateStringArm extends DValArm{
 
 	    @Override
 	    public String toString() {
-	        return "\"" + value.replace("\"", "\"\"") + "\"";
+	        return
+				"\t\t" + "asciz :" +	"\"" + value.replace("\"", "\"\"") + "\"";
 	    }
 	    
 	    @Override

@@ -1,6 +1,9 @@
-package fr.ensimag.arm.pseudocode;
+package fr.ensimag.arm.pseudocode.instructions;
 
 import java.io.PrintStream;
+
+import fr.ensimag.arm.pseudocode.LabelArm;
+import fr.ensimag.arm.pseudocode.UnaryInstructionArm;
 import org.apache.commons.lang.Validate;
 import fr.ensimag.arm.pseudocode.InstructionArm;
 
@@ -15,21 +18,20 @@ import fr.ensimag.arm.pseudocode.InstructionArm;
 * @date 23/01/2023
 */
 
-public class PrintIntegerArm extends InstructionArm {
+public class PrintIntegerArm extends UnaryInstructionArm {
 	public LabelArm lab;
-	public PrintIntegerArm() {
-		//nothing to do
+	public PrintIntegerArm(LabelArm lab) {
+		super(lab);
 	}
 	 @Override
 	 public String getName() {
 	        return this.getClass().getSimpleName().toLowerCase();
 	    }
 
-	@Override
-	protected
-    void displayOperands(PrintStream s) {
-        s.print(" ");
-	    }
+//	@Override
+//	public  void displayOperands(PrintStream s) {
+//        s.print(" ");
+//	    }
 	 
 	 @Override
 	    protected void display(PrintStream s){

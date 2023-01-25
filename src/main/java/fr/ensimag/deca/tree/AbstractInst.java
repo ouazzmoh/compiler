@@ -1,5 +1,6 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.LabelArm;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
@@ -62,5 +63,5 @@ public abstract class AbstractInst extends Tree {
      * @param compiler
      * @param endIf : useful to store the endIf label in if instructions
      */
-    protected  void codeGenInstArm(DecacCompiler compiler, Label endIf){}
+    protected  void codeGenInstArm(DecacCompiler compiler, LabelArm endIf){}
 }
