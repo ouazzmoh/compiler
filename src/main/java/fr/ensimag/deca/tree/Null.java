@@ -11,6 +11,7 @@ import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.DAddr;
+import fr.ensimag.ima.pseudocode.DVal;
 import fr.ensimag.ima.pseudocode.GPRegister;
 import fr.ensimag.ima.pseudocode.NullOperand;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
@@ -49,6 +50,13 @@ public class Null extends AbstractExpr {
 		compiler.addInstruction(new LOAD(new NullOperand(), reg));
 		compiler.addInstruction(new STORE(reg, adr));
 		//Implicit use and free of reg
+	}
+
+	@Override
+	protected DVal codeGenLoad(DecacCompiler compiler){
+		GPRegister reg = compiler.getFreeReg();
+		compiler.addInstruction(new LOAD(new NullOperand(), reg));
+		return reg;
 	}
 
 
