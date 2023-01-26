@@ -8,10 +8,9 @@ import fr.ensimag.deca.context.ContextualError;
 import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.tools.IndentPrintStream;
-import fr.ensimag.ima.pseudocode.GPRegister;
-import fr.ensimag.ima.pseudocode.Register;
-import fr.ensimag.ima.pseudocode.RegisterOffset;
+import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.LOAD;
+import fr.ensimag.ima.pseudocode.instructions.STORE;
 
 public class This extends AbstractExpr {
 
@@ -69,6 +68,24 @@ public class This extends AbstractExpr {
 	@Override
 	protected boolean setAdrField(DecacCompiler compiler, GPRegister refReg, Identifier ident){
 		return ident.setAdrField(compiler, refReg);
+	}
+
+
+	@Override
+	protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+		GPRegister reg = compiler.getFreeReg();
+		compiler.addInstruction(new LOAD(new RegisterOffset(-2 , Register.LB), reg));
+		compiler.addInstruction(new STORE(reg, adr));
+		//Implicit free and use of register
+	}
+
+
+	@Override
+	protected DVal codeGenLoad(DecacCompiler compiler){
+		GPRegister reg = compiler.getFreeReg();
+		compiler.addInstruction(new LOAD(new RegisterOffset(-2 , Register.LB), reg));
+		compiler.useReg();
+		return reg;
 	}
 
 

@@ -56,8 +56,8 @@ public class Null extends AbstractExpr {
 	protected DVal codeGenLoad(DecacCompiler compiler){
 		GPRegister reg = compiler.getFreeReg();
 		compiler.addInstruction(new LOAD(new NullOperand(), reg));
+		compiler.useReg();
 		return reg;
 	}
-
 
 }
