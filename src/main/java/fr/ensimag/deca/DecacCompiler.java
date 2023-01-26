@@ -104,22 +104,23 @@ public class DecacCompiler {
         this.compilerOptions = compilerOptions;
         this.source = source;
         //
-
-        this.errorsMap = new HashMap<String, String>();
-
-        this.regMax = 15;
-        //
-        this.currRegNum = 2;
-        this.offset = 1;
-        //
-        this.tempStack = 0;
-        //
-        this.blocRegMax = 0;
-
         if (compilerOptions != null && compilerOptions.isArm()){
             this.dataSetArm = new HashSet<OperandArm>();
             this.currRegNumArm = 2;
             this.dataMapArm = new HashMap<LabelArm, String>();
+            this.errorsMapArm = new HashMap<String, String >();
+            this.definedFctArm = new HashSet<String>();
+        }
+        else {
+            this.errorsMap = new HashMap<String, String>();
+            this.regMax = 15;
+            //
+            this.currRegNum = 2;
+            this.offset = 1;
+            //
+            this.tempStack = 0;
+            //
+            this.blocRegMax = 0;
         }
 
     }
@@ -361,7 +362,15 @@ public class DecacCompiler {
         else {
             //Displaying the arm assembly
             PrintStream s = new PrintStream(fstream);
+            s.println(".global _start");
+            s.println(".section .text");
+            s.println();
+            s.println("_start:");
+
             programArm.display(s);
+
+            //Displaying the functions for arm assembly
+            fctProgArm.display(s);
 
             //Display data section
             s.println(".section .data");
@@ -604,4 +613,39 @@ public class DecacCompiler {
      * boolean isArm
      */
     private final ArmProgram programArm = new ArmProgram();
+    private ArmProgram fctProgArm = new ArmProgram();
+
+    public ArmProgram getFctProgArm() {
+        return fctProgArm;
+    }
+
+    private HashMap<String, String> errorsMapArm;
+
+    private HashSet<String> definedFctArm;
+
+
+    public HashMap<String, String> getErrorsMapArm() {
+        return errorsMapArm;
+    }
+
+    public void addErrorArm(String errLab, String errMsg){
+        if (!errorsMapArm.containsKey(errLab)){
+            errorsMapArm.put(errLab, errMsg);
+        }
+    }
+
+
+    public void addFunction(String fct){
+        if (!(definedFctArm.contains(fct))){
+            definedFctArm.add(fct);
+        }
+    }
+
+    public boolean isDefined(String fct){
+       if (definedFctArm != null) {
+           return definedFctArm.contains(fct);
+       }
+       return false;
+    }
+
 }
