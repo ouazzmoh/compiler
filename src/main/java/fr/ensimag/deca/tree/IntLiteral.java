@@ -34,10 +34,10 @@ public class IntLiteral extends AbstractExpr {
 
     @Override
     public Type verifyExpr(DecacCompiler compiler, EnvironmentExp localEnv,
-            ClassDefinition currentClass) throws ContextualError {
+                           ClassDefinition currentClass) throws ContextualError {
         //throw new UnsupportedOperationException("not yet implemented");
-    	this.setType(compiler.environmentType.INT);
-    	return this.getType();
+        this.setType(compiler.environmentType.INT);
+        return this.getType();
     }
 
 
@@ -63,11 +63,12 @@ public class IntLiteral extends AbstractExpr {
 
     /**
      * Generate initialization code for a integer variable
+     *
      * @param compiler
      * @param adr
      */
     @Override
-    protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+    protected void codeGenInit(DecacCompiler compiler, DAddr adr) {
         GPRegister reg = compiler.getFreeReg();
         compiler.addInstruction(new LOAD(value, reg));
         compiler.addInstruction(new STORE(reg, adr));
@@ -84,13 +85,13 @@ public class IntLiteral extends AbstractExpr {
 
 
     @Override
-    protected void codeGenPrint(DecacCompiler compiler, boolean hex){
+    protected void codeGenPrint(DecacCompiler compiler, boolean hex) {
         compiler.addInstruction(new LOAD(value, Register.R1));
         compiler.addInstruction(new WINT());
     }
 
     @Override
-    protected void codeGenReturn(DecacCompiler compiler){
+    protected void codeGenReturn(DecacCompiler compiler) {
         compiler.addInstruction(new LOAD(value, Register.R0));
     }
 
@@ -98,11 +99,12 @@ public class IntLiteral extends AbstractExpr {
     /**
      * Generate initialization code for a integer variable for ARM by
      * adding it into our data
+     *
      * @param compiler
      * @param adr
      */
     @Override
-    protected void codeGenInitArm(DecacCompiler compiler, OperandArm adr){
+    protected void codeGenInitArm(DecacCompiler compiler, OperandArm adr) {
         compiler.addOperandData(adr);
         GPRegisterArm reg1 = (GPRegisterArm) compiler.getFreeRegArm();
         compiler.useRegArm();
@@ -119,19 +121,29 @@ public class IntLiteral extends AbstractExpr {
     }
 
     @Override
-    protected DValArm codeGenLoadArm(DecacCompiler compiler){
+    protected DValArm codeGenLoadArm(DecacCompiler compiler) {
         GPRegisterArm reg = compiler.getFreeRegArm();
-        compiler.addInstruction(new MOV(reg, new ImmediateIntegerArm(value)));
+        if (encodableImmediate(value)) {
+            compiler.addInstruction(new MOV(reg, new ImmediateIntegerArm(value)));
+        }
+        else {
+            compiler.addInstruction(new LDR(reg, new LabelArm(Integer.toString(value))));
+        }
         compiler.useRegArm();
         return reg;
     }
 
 
-
-//    @Override
-//    protected void codeGenPrintArm(DecacCompiler compiler, boolean hex){
-//        compiler.addInstruction(new PrintIntegerArm());
-//    }
-
+    /**
+     * Returns true if the value can be encoded as an immediate for the Arm Instruction set
+     * @param value
+     * @return
+     */
+    private boolean encodableImmediate(int value){
+        if (value <= 256){
+            return true;
+        }
+        return false;
+    }
 
 }

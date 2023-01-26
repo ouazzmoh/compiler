@@ -9,8 +9,6 @@ import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.*;
 import fr.ensimag.ima.pseudocode.instructions.PUSH;
 
-import java.awt.peer.ComponentPeer;
-
 /**
  * Arithmetic binary operations (+, -, /, ...)
  * 
@@ -250,7 +248,7 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 //				compiler.addInstruction(new BOV(new Label(ovLabel)));}
 		}
 		else if (getOperatorName().equals("/")){
-			compiler.addInstruction(new ModuloArm(dval1, dval1, dval2));
+			compiler.addInstruction(new QuoARM(dval1, dval1, dval2));
 //			Type typeLeft = this.getLeftOperand().getType();
 //			Type typeRight = this.getRightOperand().getType();
 //			if (typeLeft.isFloat() || typeRight.isFloat()){
@@ -265,7 +263,7 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 //			}
 		}
 		else if (getOperatorName().equals("%")){
-//
+			compiler.addInstruction(new RemARM(dval1, dval1, dval2));
 
 		}
 		else{

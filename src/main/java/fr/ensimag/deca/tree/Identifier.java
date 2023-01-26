@@ -444,4 +444,12 @@ public class Identifier extends AbstractIdentifier {
         compiler.addInstruction(new PrintIntegerArm(getExpDefinition().getOperandArm()));
     }
 
+    @Override
+    protected void codeGenPrintLNArm(DecacCompiler compiler, boolean hex){
+        compiler.addInstruction(new PrintIntegerArm(getExpDefinition().getOperandArm()));
+        StringLiteral newLine = new StringLiteral("");
+        newLine.setLocation(getLocation());
+        newLine.codeGenPrintLNArm(compiler, hex);
+    }
+
 }

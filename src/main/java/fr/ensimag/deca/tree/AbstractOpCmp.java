@@ -275,23 +275,11 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 	 */
 	@Override
 	protected void codeGenBranchArm(DecacCompiler compiler, boolean b, LabelArm label){
-		//If comparable, we load the values and compare
-//		if (compiler.useLoad()){
 			GPRegisterArm opLeft = (GPRegisterArm) getLeftOperand().codeGenLoadArm(compiler);
 			GPRegisterArm opRight = (GPRegisterArm) getRightOperand().codeGenLoadArm(compiler);
 			compiler.addInstruction(new ArmCMP(opLeft, opRight));
 			compiler.freeRegArm();
 			compiler.freeRegArm();
-//		}
-//		else {
-//			GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
-//			compiler.addInstruction(new PUSH(opLeft));
-//			compiler.freeReg();
-//			GPRegister opRight = (GPRegister) getRightOperand().codeGenLoad(compiler);
-//			compiler.addInstruction(new POP(Register.R0));
-//			compiler.addInstruction(new CMP(opRight, Register.R0));
-//			compiler.freeReg();
-//		}
 		//Free the two registers because we no longer need to use them
 		codeGenMnemArm(compiler, label, !b);
 
@@ -307,35 +295,17 @@ public abstract class AbstractOpCmp extends AbstractBinaryExpr {
 	protected DValArm codeGenLoadArm(DecacCompiler compiler){
 		LabelArm falseComp = new LabelArm("falseComp." + this.toString().split("@")[1]);
 		LabelArm endComp = new LabelArm("endComp." + this.toString().split("@")[1]);
-//		if (compiler.useLoad()){
-			//We are sure in this case that the operands are atomic
-			GPRegisterArm opLeft = (GPRegisterArm) getLeftOperand().codeGenLoadArm(compiler);
-			GPRegisterArm opRight =  (GPRegisterArm) getRightOperand().codeGenLoadArm(compiler);
-			compiler.addInstruction(new ArmCMP(opRight, opLeft));
-			codeGenMnemArm(compiler, falseComp, getOpp());
-			compiler.addInstruction(new MOV(opLeft, new ImmediateIntegerArm(1)));
-			compiler.addInstruction(new ArmBal(endComp));
-			compiler.addLabel(falseComp);
-			compiler.addInstruction(new MOV(opLeft, new ImmediateIntegerArm(0)));
-			compiler.addLabel(endComp);
-			compiler.freeRegArm();//Free the right register
-			return opLeft;
-//		}
-//		else {
-//			GPRegister opLeft = (GPRegister) getLeftOperand().codeGenLoad(compiler);
-//			compiler.addInstruction(new PUSH(opLeft));
-//			compiler.freeReg();
-//			GPRegister opRight =  (GPRegister) getRightOperand().codeGenLoad(compiler);
-//			compiler.addInstruction(new POP(Register.R0));
-//			compiler.addInstruction(new CMP(opRight, Register.R0));
-//			codeGenMnem(compiler, falseComp, getOpp());
-//			compiler.addInstruction(new LOAD(1, (GPRegister) opRight));
-//			compiler.addInstruction(new BRA(endComp));
-//			compiler.addLabel(falseComp);
-//			compiler.addInstruction(new LOAD(0, (GPRegister) opRight));
-//			compiler.addLabel(endComp);
-//			return opRight;
-//		}
+		GPRegisterArm opLeft = (GPRegisterArm) getLeftOperand().codeGenLoadArm(compiler);
+		GPRegisterArm opRight =  (GPRegisterArm) getRightOperand().codeGenLoadArm(compiler);
+		compiler.addInstruction(new ArmCMP(opRight, opLeft));
+		codeGenMnemArm(compiler, falseComp, getOpp());
+		compiler.addInstruction(new MOV(opLeft, new ImmediateIntegerArm(1)));
+		compiler.addInstruction(new ArmBal(endComp));
+		compiler.addLabel(falseComp);
+		compiler.addInstruction(new MOV(opLeft, new ImmediateIntegerArm(0)));
+		compiler.addLabel(endComp);
+		compiler.freeRegArm();//Free the right register
+		return opLeft;
 	}
 
 

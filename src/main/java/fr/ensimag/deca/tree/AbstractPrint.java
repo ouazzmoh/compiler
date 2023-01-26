@@ -88,8 +88,10 @@ public abstract class AbstractPrint extends AbstractInst {
 
     @Override
     protected void codeGenInstArm(DecacCompiler compiler, LabelArm label) {
-        for (AbstractExpr a : getArguments().getList()) {
-            a.codeGenPrintArm(compiler, printHex);
+        if (getSuffix().equals("ln")){
+            for (AbstractExpr a : getArguments().getList()) {
+                a.codeGenPrintLNArm(compiler, printHex);
+            }
         }
     }
 

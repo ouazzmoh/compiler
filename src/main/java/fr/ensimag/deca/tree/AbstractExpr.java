@@ -290,6 +290,16 @@ public abstract class AbstractExpr extends AbstractInst {
     }
 
 
+    /**
+     * Generate code to print the expression
+     * @param compiler
+     */
+    protected void codeGenPrintLNArm(DecacCompiler compiler, boolean hex) {
+        //throw new DecacInternalError("expression cannot be printed");
+
+    }
+
+
     protected void codeGenInitArm(DecacCompiler compiler, OperandArm adr){
         throw new DecacInternalError("Not yet implemented");
     }
