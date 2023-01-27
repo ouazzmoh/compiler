@@ -52,6 +52,9 @@ public class LineArm extends AbstractLineArm {
             instruction.display(s);
             s.println();
         }
+        if (label != null){
+            label.display(s);
+        }
     }
 
     public InstructionArm getInstruction() {

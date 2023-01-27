@@ -1,5 +1,6 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.LabelArm;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
@@ -86,9 +87,11 @@ public abstract class AbstractPrint extends AbstractInst {
 
 
     @Override
-    protected void codeGenInstArm(DecacCompiler compiler, Label label) {
-        for (AbstractExpr a : getArguments().getList()) {
-            a.codeGenPrintArm(compiler, printHex);
+    protected void codeGenInstArm(DecacCompiler compiler, LabelArm label) {
+        if (getSuffix().equals("ln")){
+            for (AbstractExpr a : getArguments().getList()) {
+                a.codeGenPrintLNArm(compiler, printHex);
+            }
         }
     }
 

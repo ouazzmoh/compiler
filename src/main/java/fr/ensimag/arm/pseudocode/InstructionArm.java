@@ -16,10 +16,5 @@ public abstract class InstructionArm {
 
     abstract void displayOperands(PrintStream s);
 
-    /**protected void display(PrintStream s){
-        s.print("		" + getName());
-        displayOperands(s);
-    }
-    */
     abstract protected void display(PrintStream s);
 }

@@ -1,7 +1,9 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.arm.pseudocode.ImmediateIntegerArm;
+import fr.ensimag.arm.pseudocode.LabelArm;
 import fr.ensimag.arm.pseudocode.RegisterArm;
+import fr.ensimag.arm.pseudocode.instructions.LDR;
 import fr.ensimag.arm.pseudocode.instructions.MOV;
 import fr.ensimag.arm.pseudocode.instructions.SWI;
 import fr.ensimag.deca.DecacCompiler;
@@ -116,6 +118,27 @@ public class Program extends AbstractProgram {
         compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(1)));
         compiler.addInstruction(new MOV(RegisterArm.getR(0), new ImmediateIntegerArm(0)));
         compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
+        if (!compiler.getCompilerOptions().getOptionN()) {
+            Iterator<Map.Entry<String, String>> it = compiler.getErrorsMapArm().entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<String, String> couple = it.next();
+                compiler.addLabel(new LabelArm(couple.getKey()));
+                //Printing
+                LabelArm lab = new LabelArm("string_" + couple.getKey());
+                compiler.dataMapArm.put(lab, couple.getValue() + "\\n");
+                compiler.addInstruction(new MOV(RegisterArm.getR(0), new ImmediateIntegerArm(1)));
+                compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(4)));
+                compiler.addInstruction(new LDR(RegisterArm.getR(1), lab));
+                compiler.addInstruction(new MOV(RegisterArm.getR(2), new ImmediateIntegerArm(couple.getValue().length() + 1)));
+                compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
+                //Error Status
+                compiler.addInstruction(new MOV(RegisterArm.getR(7), new ImmediateIntegerArm(1)));
+                compiler.addInstruction(new MOV(RegisterArm.getR(0), new ImmediateIntegerArm(1)));
+                compiler.addInstruction(new SWI(new ImmediateIntegerArm(0)));
+                //
+                it.remove();
+            }
+        }
     }
 
 

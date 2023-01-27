@@ -17,13 +17,14 @@ import fr.ensimag.deca.DecacCompiler;
 public class LabelArm extends OperandArm {
 	    @Override
 	    public String toString() {
-	        return name;
+
+			return name;
 	    }
 	    
 	    public LabelArm(String name) {
 	        super();
 	        // a vérifier label name length
-	        // TODO: verifier si labels sont comme ca
+			//TODO: Conditions for ARM  labels
 	        //Validate.isTrue(name.length() <= 1024, "Label name too long, not supported by IMA");
 	        //Validate.isTrue(name.matches("^[a-zA-Z][a-zA-Z0-9_.]*$"), "Invalid label name " + name);
 	        this.name = name;
@@ -31,7 +32,7 @@ public class LabelArm extends OperandArm {
 	    private String name;
 		public void display(PrintStream s) {
 			// TODO Auto-generated method stub
-			s.println("		" + this.toString() + ":");
+			s.println(this.toString() + ":");
 			
 		}
 	}

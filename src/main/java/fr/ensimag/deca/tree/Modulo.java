@@ -37,5 +37,13 @@ public class Modulo extends AbstractOpArith {
         return "%";
     }
 
+    /**
+     * Useful for function calls in arm assembly
+     * @return
+     */
+    protected String getFctName(){
+        return "fct_rem_arm";
+    }
+
 
 }

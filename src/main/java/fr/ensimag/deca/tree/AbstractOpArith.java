@@ -1,16 +1,13 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.arm.pseudocode.*;
-import fr.ensimag.arm.pseudocode.instructions.ArmADD;
-import fr.ensimag.arm.pseudocode.instructions.LDR;
-import fr.ensimag.arm.pseudocode.instructions.STR;
+import fr.ensimag.arm.pseudocode.instructions.*;
 import fr.ensimag.deca.context.*;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.tools.DecacInternalError;
 import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.*;
-
-import java.awt.peer.ComponentPeer;
+import fr.ensimag.ima.pseudocode.instructions.PUSH;
 
 /**
  * Arithmetic binary operations (+, -, /, ...)
@@ -26,6 +23,9 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 
 	protected String ovLabelInt = "err_ov_div_int";
 	protected String ovLabel = "err_ov_arith";
+
+	private boolean remSet = false;
+
 
     @Override
     public Type verifyExpr(DecacCompiler compiler, EnvironmentExp localEnv,
@@ -120,17 +120,20 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 		if (getOperatorName().equals("+")){
 			compiler.addInstruction(new ADD(dval1, dval2));
 			if (!compiler.getCompilerOptions().getOptionN()) {
-				compiler.addInstruction(new BOV(new Label(ovLabel)));}
+//				compiler.addInstruction(new BOV(new Label(ovLabel)));
+			}
 		}
 		else if (getOperatorName().equals("-")){
 			compiler.addInstruction(new SUB(dval1, dval2));
 			if (!compiler.getCompilerOptions().getOptionN()) {
-			compiler.addInstruction(new BOV(new Label(ovLabel)));}
+//			compiler.addInstruction(new BOV(new Label(ovLabel)));
+			}
 		}
 		else if (getOperatorName().equals("*")){
 			compiler.addInstruction(new MUL(dval1, dval2));
 			if (!compiler.getCompilerOptions().getOptionN()) {
-			compiler.addInstruction(new BOV(new Label(ovLabel)));}
+//			compiler.addInstruction(new BOV(new Label(ovLabel)));
+			}
 		}
 		else if (getOperatorName().equals("/")){
 			Type typeLeft = this.getLeftOperand().getType();
@@ -193,13 +196,19 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 	}
 
 
+	/******************************** FOR ARM ***********************************/
+
 	@Override
 	protected void codeGenInitArm(DecacCompiler compiler, OperandArm adr){
+		if (!compiler.getCompilerOptions().getOptionN()) {
+			addArithErrorsArm(compiler);
+		}
 
 		GPRegisterArm result = (GPRegisterArm) codeGenLoadArm(compiler);
 		//Store result
-		compiler.addInstruction(new LDR(RegisterArm.R0, (LabelArm) adr));
-		compiler.addInstruction(new STR(result, new RegisterOffsetArm(0, RegisterArm.R0)));
+		GPRegisterArm regTemp = compiler.getFreeRegArm(); //Implicit use and free of this register
+		compiler.addInstruction(new LDR(regTemp, (LabelArm) adr));
+		compiler.addInstruction(new STR(result, new RegisterOffsetArm(0, regTemp)));
 		compiler.freeRegArm();
 	}
 
@@ -211,20 +220,142 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 	 */
 	@Override
 	protected DValArm codeGenLoadArm(DecacCompiler compiler){
+		if (!compiler.getCompilerOptions().getOptionN()) {
+			addArithErrorsArm(compiler);
+		}
 		//Store left in register: If no freeing problems, we are sure there is at least one free register
 		GPRegisterArm opLeft = (GPRegisterArm) getLeftOperand().codeGenLoadArm(compiler);
 		//Evaluate right
 		GPRegisterArm opRight = (GPRegisterArm) getRightOperand().codeGenLoadArm(compiler);
 		//Do the operation
 		//TODO: Optimize for immediates
-		compiler.addInstruction(new ArmADD(opLeft, opLeft, opRight));
+		codeGenOpMnemArm(compiler, opLeft, opRight);
 		compiler.freeRegArm();
 		return opLeft;
 
 	}
 
 
+	/**
+	 * Generate MNEM(dval1, dval2) corresponding to the operation
+	 * It generates BOV after to catch the execution error
+	 * @param compiler
+	 * @param dval1
+	 * @param dval2
+	 */
+	protected void codeGenOpMnemArm(DecacCompiler compiler,GPRegisterArm dval1, GPRegisterArm dval2){
+		if (getOperatorName().equals("+")){
+			compiler.addInstruction(new ArmADDs(dval1, dval1, dval2));
+
+			LabelArm no_ov_lab = new LabelArm("no_ov_" + toString().split("@")[1]);
+			compiler.addInstruction(new ArmBvc(no_ov_lab));
+			//Doing the modulo if there is an overflow left = left %2147483647
+			compiler.addInstruction(new MOV(RegisterArm.R0, dval1));
+			compiler.addInstruction(new MOV(RegisterArm.R1, new ImmediateIntegerArm(2147483647)));
+			compiler.addInstruction(new ArmBl(new LabelArm("fct_rem_arm")));
+			if (!compiler.isDefined("fct_rem_arm")){
+				compiler.getFctProgArm().addInstruction(new RemARM());
+				compiler.addFunction("fct_rem_arm");
+			}
+			compiler.addInstruction(new MOV(dval1, RegisterArm.R0));
+			compiler.addInstruction(new ArmSUB(dval1, dval1, new ImmediateIntegerArm(1)));
+			//right = right % 2147483647
+			compiler.addInstruction(new MOV(RegisterArm.R0, dval2));
+			compiler.addInstruction(new MOV(RegisterArm.R1, new ImmediateIntegerArm(2147483647)));
+			compiler.addInstruction(new ArmBl(new LabelArm("fct_rem_arm")));
+			compiler.addInstruction(new MOV(dval2, RegisterArm.R0));
+			compiler.addInstruction(new ArmSUB(dval2, dval2, new ImmediateIntegerArm(1)));
+			compiler.addInstruction(new ArmADD(dval1, dval1, dval2));
+			compiler.addLabel(no_ov_lab);
+		}
+		else if (getOperatorName().equals("-")){
+			compiler.addInstruction(new ArmSUBs(dval1, dval1, dval2));
+			LabelArm no_ov_lab = new LabelArm("no_ov_" + toString().split("@")[1]);
+			compiler.addInstruction(new ArmBvc(no_ov_lab));
+			//Doing the modulo if there is an overflow left = left %2147483647
+			compiler.addInstruction(new MOV(RegisterArm.R0, dval1));
+			compiler.addInstruction(new MOV(RegisterArm.R1, new ImmediateIntegerArm(2147483647)));
+			compiler.addInstruction(new ArmBl(new LabelArm("fct_rem_arm")));
+			if (!compiler.isDefined("fct_rem_arm")){
+				compiler.getFctProgArm().addInstruction(new RemARM());
+				compiler.addFunction("fct_rem_arm");
+			}
+			compiler.addInstruction(new MOV(dval1, RegisterArm.R0));
+			compiler.addInstruction(new ArmSUB(dval1, dval1, new ImmediateIntegerArm(1)));
+			//right = right % 2147483647
+			compiler.addInstruction(new MOV(RegisterArm.R0, dval2));
+			compiler.addInstruction(new MOV(RegisterArm.R1, new ImmediateIntegerArm(2147483647)));
+			compiler.addInstruction(new ArmBl(new LabelArm("fct_rem_arm")));
+			compiler.addInstruction(new MOV(dval2, RegisterArm.R0));
+			compiler.addInstruction(new ArmSUB(dval2, dval2, new ImmediateIntegerArm(1)));
+			compiler.addInstruction(new ArmSUB(dval1, dval1, dval2));
+			compiler.addLabel(no_ov_lab);
+		}
+		else if (getOperatorName().equals("*")){
+			compiler.addInstruction(new ArmMULs(dval1, dval2, dval1));
+			LabelArm no_ov_lab = new LabelArm("no_ov_" + toString().split("@")[1]);
+			compiler.addInstruction(new ArmBvc(no_ov_lab));
+			//Doing the modulo if there is an overflow left = left %2147483647
+			compiler.addInstruction(new MOV(RegisterArm.R0, dval1));
+			compiler.addInstruction(new MOV(RegisterArm.R1, new ImmediateIntegerArm(2147483647)));
+			compiler.addInstruction(new ArmBl(new LabelArm("fct_rem_arm")));
+			if (!compiler.isDefined("fct_rem_arm")){
+				compiler.getFctProgArm().addInstruction(new RemARM());
+				compiler.addFunction("fct_rem_arm");
+			}
+			compiler.addInstruction(new MOV(dval1, RegisterArm.R0));
+			compiler.addInstruction(new ArmSUB(dval1, dval1, new ImmediateIntegerArm(1)));
+			//right = right % 2147483647
+			compiler.addInstruction(new MOV(RegisterArm.R0, dval2));
+			compiler.addInstruction(new MOV(RegisterArm.R1, new ImmediateIntegerArm(2147483647)));
+			compiler.addInstruction(new ArmBl(new LabelArm("fct_rem_arm")));
+			compiler.addInstruction(new MOV(dval2, RegisterArm.R0));
+			compiler.addInstruction(new ArmSUB(dval2, dval2, new ImmediateIntegerArm(1)));
+			compiler.addInstruction(new ArmMUL(dval1, dval2, dval1));
+			compiler.addLabel(no_ov_lab);
+		}
+		else if (getOperatorName().equals("/")){
+			if (!compiler.getCompilerOptions().getOptionN()) {
+				compiler.addInstruction(new ArmCMP(dval2, new ImmediateIntegerArm(0)));
+				compiler.addInstruction(new ArmBeq(new LabelArm(ovLabelInt)));
+			}
+			compiler.addInstruction(new MOV(RegisterArm.R0, dval1));
+			compiler.addInstruction(new MOV(RegisterArm.R1, dval2));
+			compiler.addInstruction(new ArmBl(new LabelArm(((Divide)this).getFctNameQuo())));
+			if (!compiler.isDefined("fct_quo_arm")){
+				compiler.getFctProgArm().addInstruction(new QuoARM());
+				compiler.addFunction("fct_quo_arm");
+			}
+			compiler.addInstruction(new MOV(dval1, RegisterArm.R0));
+		}
+		else if (getOperatorName().equals("%")){
+			//Calling a function
+			if (!compiler.getCompilerOptions().getOptionN()) {
+				compiler.addInstruction(new ArmCMP(dval2, new ImmediateIntegerArm(0)));
+				compiler.addInstruction(new ArmBeq(new LabelArm(ovLabelInt)));
+			}
+			compiler.addInstruction(new MOV(RegisterArm.R0, dval1));
+			compiler.addInstruction(new MOV(RegisterArm.R1, dval2));
+			compiler.addInstruction(new ArmBl(new LabelArm(((Modulo)this).getFctName())));
+			if (!compiler.isDefined("fct_rem_arm")){
+				compiler.getFctProgArm().addInstruction(new RemARM());
+				compiler.addFunction("fct_rem_arm");
+			}
+			compiler.addInstruction(new MOV(dval1, RegisterArm.R0));
+
+		}
+		else{
+			throw new DecacInternalError("Error in parsing");
+		}
+	}
 
 
+	/**
+	 * Adds error labels for arithmetique operations
+	 * @param compiler
+	 */
+	protected void addArithErrorsArm(DecacCompiler compiler){
+		compiler.addErrorArm(ovLabelInt, "Erreur : Division entiere par 0");
+	}
 
 }

@@ -13,5 +13,10 @@ public class ArmCMP extends BinaryInstructionArm{
 	public ArmCMP(GPRegisterArm op1, DValArm op2) {
 		super(op1, op2);
 	}
+
+	@Override
+	public String getName(){
+		return "cmp";
+	}
 }
 

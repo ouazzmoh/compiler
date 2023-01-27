@@ -1,5 +1,7 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.*;
+import fr.ensimag.arm.pseudocode.instructions.*;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
@@ -8,6 +10,7 @@ import fr.ensimag.deca.context.EnvironmentExp;
 import fr.ensimag.deca.tools.IndentPrintStream;
 import fr.ensimag.ima.pseudocode.*;
 import fr.ensimag.ima.pseudocode.instructions.*;
+import fr.ensimag.ima.pseudocode.instructions.CMP;
 
 import java.io.PrintStream;
 
@@ -114,6 +117,79 @@ public class BooleanLiteral extends AbstractExpr {
         compiler.useReg();
         return registerToUse;
     }
+
+
+
+
+    /**
+     * Generate instruction for boolean initialization
+     * @param compiler
+     * @param adr
+     */
+    @Override
+    protected void codeGenInitArm(DecacCompiler compiler, OperandArm adr){
+//        compiler.addOperandData(adr);
+        //true is #1 false is #0
+        int valueToAdd;
+        if (value){
+            valueToAdd = 1;
+        }
+        else{
+            valueToAdd = 0;
+        }
+
+        GPRegisterArm reg1 = (GPRegisterArm) compiler.getFreeRegArm();
+        compiler.useRegArm();
+        GPRegisterArm reg2 = (GPRegisterArm) compiler.getFreeRegArm();//Implicit use and free of this register
+        //We only use mov if it respects the codable immediates conditions in arm assembly
+        compiler.addInstruction(new MOV(reg1, new ImmediateIntegerArm(valueToAdd)));
+        compiler.addInstruction(new LDR(reg2, (LabelArm) adr));
+        compiler.addInstruction(new STR(reg1, new RegisterOffsetArm(0, reg2)));
+        compiler.freeRegArm();
+    }
+
+
+    @Override
+    protected void codeGenBranchArm(DecacCompiler compiler, boolean b, LabelArm label){
+        GPRegisterArm reg = compiler.getFreeRegArm();
+        DValArm trueDval = new ImmediateIntegerArm(1);
+        DValArm falseDval = new ImmediateIntegerArm(0);
+        //Implicit use and free for register
+        if (value){
+            compiler.addInstruction(new MOV(reg, trueDval));
+        }
+        else {
+            compiler.addInstruction(new MOV(reg, falseDval));
+        }
+
+        compiler.addInstruction(new ArmCMP(reg, falseDval));
+        if (b){
+            compiler.addInstruction(new ArmBne(label));
+        }
+        else {
+            compiler.addInstruction(new ArmBeq(label));
+        }
+    }
+
+
+
+
+    @Override
+    protected DValArm codeGenLoadArm(DecacCompiler compiler){
+        GPRegisterArm registerToUse = compiler.getFreeRegArm();
+        int toLoad = 0;
+        if(value){
+            toLoad = 1;
+        }
+        compiler.addInstruction(new MOV(registerToUse, new ImmediateIntegerArm(toLoad)));
+        compiler.useRegArm();
+        return registerToUse;
+    }
+
+
+
+
+
 
 }
 

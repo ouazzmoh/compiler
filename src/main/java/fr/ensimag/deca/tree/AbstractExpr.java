@@ -1,6 +1,7 @@
 package fr.ensimag.deca.tree;
 
 import fr.ensimag.arm.pseudocode.DValArm;
+import fr.ensimag.arm.pseudocode.LabelArm;
 import fr.ensimag.arm.pseudocode.OperandArm;
 import fr.ensimag.deca.context.*;
 import fr.ensimag.deca.DecacCompiler;
@@ -150,6 +151,9 @@ public abstract class AbstractExpr extends AbstractInst {
         throw new UnsupportedOperationException("no available code generation for this instruction");
     }
 
+
+
+
     /**
      * Generate assembly code for the initialization of the expression
      * @param compiler
@@ -286,13 +290,23 @@ public abstract class AbstractExpr extends AbstractInst {
     }
 
 
+    /**
+     * Generate code to print the expression
+     * @param compiler
+     */
+    protected void codeGenPrintLNArm(DecacCompiler compiler, boolean hex) {
+        //throw new DecacInternalError("expression cannot be printed");
+
+    }
+
+
     protected void codeGenInitArm(DecacCompiler compiler, OperandArm adr){
         throw new DecacInternalError("Not yet implemented");
     }
 
 
     protected void codeGenAssignArm(DecacCompiler compiler, Identifier identifier){
-        throw new DecacInternalError("Not yet implemented");
+       codeGenInitArm(compiler, identifier.getExpDefinition().getOperandArm());
     }
 
 
@@ -301,5 +315,27 @@ public abstract class AbstractExpr extends AbstractInst {
     }
 
 
+
+    /**
+     * Generate the code corresponding to the instruction
+     * @param compiler
+     * @param endIf : useful to store the endIf label in if instructions
+     */
+    @Override
+    protected void codeGenInstArm(DecacCompiler compiler, LabelArm endIf) {
+        throw new UnsupportedOperationException("no available code generation for this instruction");
+    }
+
+
+    /**
+     * Generate branching operations ( ARM version)
+     * branch to this label if the exprBool == b
+     * @param compiler
+     * @param b : true or false/ compare the exprBool to this
+     * @param label :
+     */
+    protected void codeGenBranchArm(DecacCompiler compiler, boolean b, LabelArm label){
+        throw new DecacInternalError("Expression cannot be used for boolean expressions");
+    }
 
 }

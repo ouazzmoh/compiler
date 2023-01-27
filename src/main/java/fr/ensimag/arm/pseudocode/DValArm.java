@@ -14,7 +14,7 @@ import fr.ensimag.deca.DecacCompiler;
 public abstract class DValArm extends OperandArm{
 	public String toString() {
 		// TODO Auto-generated method stub
-		return null;
+		return "\t\t .asciz ";
 	}
 	
 

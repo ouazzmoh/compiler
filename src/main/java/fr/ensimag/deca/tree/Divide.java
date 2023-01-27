@@ -24,5 +24,9 @@ public class Divide extends AbstractOpArith {
         return "/";
     }
 
+    protected String getFctNameQuo(){
+        return "fct_quo_arm";
+    }
+
 
 }

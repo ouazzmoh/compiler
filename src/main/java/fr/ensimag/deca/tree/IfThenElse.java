@@ -1,5 +1,7 @@
 package fr.ensimag.deca.tree;
 
+import fr.ensimag.arm.pseudocode.LabelArm;
+import fr.ensimag.arm.pseudocode.instructions.ArmBal;
 import fr.ensimag.deca.context.Type;
 import fr.ensimag.deca.DecacCompiler;
 import fr.ensimag.deca.context.ClassDefinition;
@@ -122,4 +124,46 @@ public class IfThenElse extends AbstractInst {
         thenBranch.prettyPrint(s, prefix, false);
         elseBranch.prettyPrint(s, prefix, true);
     }
+
+
+
+
+
+
+    /******************* For Arm ******************************/
+    @Override
+    protected void codeGenInstArm(DecacCompiler compiler, LabelArm endIf) {
+        if (endIf == null){
+            LabelArm endIfInst = new LabelArm("endIf.l" + getLocation().getLine() +
+                    "c." + getLocation().getPositionInLine());
+            //This function is useful for recursion and storing the endIf label
+            codeGenInstIfRecArm(compiler, endIfInst);
+            compiler.addLabel(endIfInst);
+        }
+        else {
+            codeGenInstIfRecArm(compiler, endIf);
+        }
+
+
+    }
+
+    /**
+     * Generate the branching recursively inside the if statement, branches to endIf at the end
+     * @param compiler
+     * @param endIf
+     */
+    protected void codeGenInstIfRecArm(DecacCompiler compiler, LabelArm endIf) {
+        LabelArm elseIf = new LabelArm("elseIf.l" + getLocation().getLine() + "c."
+                + getLocation().getPositionInLine());
+        condition.codeGenBranchArm(compiler, false, elseIf);
+        thenBranch.codeGenListInstArm(compiler);
+        compiler.addInstruction(new ArmBal(endIf));
+        compiler.addLabel(elseIf);
+        for (AbstractInst i : elseBranch.getList()) {
+            i.codeGenInstArm(compiler, endIf);
+        }
+    }
+
+
+
 }

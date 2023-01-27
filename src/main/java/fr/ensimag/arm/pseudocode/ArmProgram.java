@@ -79,20 +79,16 @@ public class ArmProgram  {
      * Display the program in a textual form readable by ARM to stream s.
      */
     public void display(PrintStream s) {
-    	s.println(".global _start");
-    	s.println(".section .text");
-    	s.println();
-    	s.println("_start:");
         for (AbstractLineArm l: lines) {
             l.display(s);
         }
-        s.println(".section .data");
-        for (LabelArm lab :DecacCompiler.data.keySet() ) {
-        	lab.display(s);
-        	if (DecacCompiler.data.get(lab)!= null) {
-        		DecacCompiler.data.get(lab).display(s);
-        	}
-        }
+//        s.println(".section .data");
+//        for (LabelArm lab :DecacCompiler.data.keySet() ) {
+//        	lab.display(s);
+//        	if (DecacCompiler.data.get(lab)!= null) {
+//        		DecacCompiler.data.get(lab).display(s);
+//        	}
+//        }
         }
 
     /**
@@ -112,5 +108,8 @@ public class ArmProgram  {
     public void addFirst(InstructionArm i, String comment) {
         addFirst(new LineArm(null, i, comment));
     }
-    
+
+    public LinkedList<AbstractLineArm> getLines() {
+        return lines;
+    }
 }
