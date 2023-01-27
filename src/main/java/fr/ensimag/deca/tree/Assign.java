@@ -111,6 +111,10 @@ public class Assign extends AbstractBinaryExpr {
     }
 
 
+    @Override
+    protected void codeGenInit(DecacCompiler compiler, DAddr adr){
+//        GPRegister reg = (GPRegister) th
+    }
 
 
 

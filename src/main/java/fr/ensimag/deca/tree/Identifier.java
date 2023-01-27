@@ -441,12 +441,26 @@ public class Identifier extends AbstractIdentifier {
 
     @Override
     protected void codeGenPrintArm(DecacCompiler compiler, boolean hex){
-        compiler.addInstruction(new PrintIntegerArm(getExpDefinition().getOperandArm()));
+        compiler.addInstruction(new LDR(RegisterArm.getR(10), (LabelArm) getExpDefinition().getOperandArm()));
+        if (!compiler.isDefined("fct_print_int")) {
+            compiler.getFctProgArm().addInstruction(new PrintIntegerArm());
+            compiler.addFunction("fct_print_int");
+        }
+        compiler.addInstruction(new ArmBl(new LabelArm("fct_print_int")));
     }
 
     @Override
     protected void codeGenPrintLNArm(DecacCompiler compiler, boolean hex){
-        compiler.addInstruction(new PrintIntegerArm(getExpDefinition().getOperandArm()));
+        compiler.addInstruction(new LDR(RegisterArm.getR(10), (LabelArm) getExpDefinition().getOperandArm()));
+        if (!compiler.isDefined("fct_print_int")) {
+            compiler.getFctProgArm().addInstruction(new PrintIntegerArm());
+            compiler.addFunction("fct_print_int");
+        }
+        compiler.addInstruction(new ArmBl(new LabelArm("fct_print_int")));
+
+
+
+
         StringLiteral newLine = new StringLiteral("");
         newLine.setLocation(getLocation());
         newLine.codeGenPrintLNArm(compiler, hex);

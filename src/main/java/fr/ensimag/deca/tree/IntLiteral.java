@@ -146,4 +146,9 @@ public class IntLiteral extends AbstractExpr {
         return false;
     }
 
+    @Override
+    protected void codeGenInst(DecacCompiler compiler, Label lab){
+
+    }
+
 }

@@ -120,17 +120,20 @@ public abstract class AbstractOpArith extends AbstractBinaryExpr {
 		if (getOperatorName().equals("+")){
 			compiler.addInstruction(new ADD(dval1, dval2));
 			if (!compiler.getCompilerOptions().getOptionN()) {
-				compiler.addInstruction(new BOV(new Label(ovLabel)));}
+//				compiler.addInstruction(new BOV(new Label(ovLabel)));
+			}
 		}
 		else if (getOperatorName().equals("-")){
 			compiler.addInstruction(new SUB(dval1, dval2));
 			if (!compiler.getCompilerOptions().getOptionN()) {
-			compiler.addInstruction(new BOV(new Label(ovLabel)));}
+//			compiler.addInstruction(new BOV(new Label(ovLabel)));
+			}
 		}
 		else if (getOperatorName().equals("*")){
 			compiler.addInstruction(new MUL(dval1, dval2));
 			if (!compiler.getCompilerOptions().getOptionN()) {
-			compiler.addInstruction(new BOV(new Label(ovLabel)));}
+//			compiler.addInstruction(new BOV(new Label(ovLabel)));
+			}
 		}
 		else if (getOperatorName().equals("/")){
 			Type typeLeft = this.getLeftOperand().getType();

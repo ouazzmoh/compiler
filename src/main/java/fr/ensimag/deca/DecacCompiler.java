@@ -520,13 +520,11 @@ public class DecacCompiler {
     //todo: -r for -arm
 
     public void useRegArm(){
-        assert(currRegNumArm <= regMax);
         currRegNumArm++;
     }
 
 
     public void freeRegArm(){
-        assert(currRegNumArm >=2);
         currRegNumArm--;
     }
 
