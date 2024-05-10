@@ -1,5 +1,6 @@
-# Projet Génie Logiciel, Ensimag.
+# Compiler from scratch
 gl24, 01/01/2023.
+
 
 En ce qui concerne l'extension, vous trouverez le script run_arm pour executer les assembleurs de l'ARM.
 Pour cela il faut avoir une machine linux et utiliser l'emulateur qemu.
